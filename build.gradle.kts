@@ -1,7 +1,9 @@
+import io.papermc.paperweight.util.Git
+
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "7.0.0" apply false
-    id("io.papermc.paperweight.patcher") version "1.1.0-SNAPSHOT"
+    id("io.papermc.paperweight.patcher") version "1.1.5"
 }
 
 repositories {
@@ -53,16 +55,37 @@ subprojects {
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
     }
 }
+
+val paperDir = layout.projectDirectory.dir("Paper")
+val initSubmodules by tasks.registering {
+    outputs.upToDateWhen { false }
+    doLast {
+        Git(layout.projectDirectory)("submodule", "update", "--init").executeOut()
+    }
+}
+
 paperweight {
     serverProject.set(project(":Sugarcane-Server"))
 
-    usePaperUpstream(providers.gradleProperty("paperCommit")) {
-        withPaperPatcher {
-            apiPatchDir.set(layout.projectDirectory.dir("patches/api"))
-            apiOutputDir.set(layout.projectDirectory.dir("Sugarcane-API"))
+    upstreams {
+        register("paper") {
+            upstreamDataTask {
+                dependsOn(initSubmodules)
+                projectDir.set(paperDir)
+            }
 
-            serverPatchDir.set(layout.projectDirectory.dir("patches/server"))
-            serverOutputDir.set(layout.projectDirectory.dir("Sugarcane-Server"))
+            patchTasks {
+                register("api") {
+                    upstreamDir.set(paperDir.dir("Paper-API"))
+                    patchDir.set(layout.projectDirectory.dir("patches/api"))
+                    outputDir.set(layout.projectDirectory.dir("Sugarcane-API"))
+                }
+                register("server") {
+                    upstreamDir.set(paperDir.dir("Paper-Server"))
+                    patchDir.set(layout.projectDirectory.dir("patches/server"))
+                    outputDir.set(layout.projectDirectory.dir("Sugarcane-Server"))
+                }
+            }
         }
     }
 }
