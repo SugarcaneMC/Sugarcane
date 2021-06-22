@@ -23,7 +23,7 @@ pipeline {
         }
         stage('Decompile & apply patches') {
             tools {
-                jdk "OpenJDK 16"
+                jdk "JDK 16"
             }
             steps {
                     sh '''
