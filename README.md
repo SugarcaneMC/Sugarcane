@@ -1,5 +1,5 @@
 # Sugarcane
-Highly optimized Airplane fork based off of Airplane focusing on stability and performance.
+Highly optimized Airplane fork focusing on stability and performance.
 
 ##### NOTE: We borrow some patches from Yatopia
 
