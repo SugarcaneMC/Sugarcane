@@ -56,9 +56,48 @@ index 47733a7677344ef659b384a75a788ed6f7b48d79..d02c397a7de57d4b9885304cc4243733
      }
  
      public SystemReport fillSystemReport(SystemReport systemreport) {
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index a05ced9f9719ecbf20e74e5178063ce671dd804b..e04642698effbfcf8bc69a128a3f5d1c45dcb46a 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
+ import javax.annotation.Nonnull; // Paper
+ 
+ public final class CraftServer implements Server {
+-    private final String serverName = "Airplane"; // Airplane // Tuinity // Paper
++    private final String serverName = "Sugarcane"; // Sugarcane // Airplane // Tuinity // Paper
+     private final String serverVersion;
+     private final String bukkitVersion = Versioning.getBukkitVersion();
+     private final Logger logger = Logger.getLogger("Minecraft");
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..7e8596341414f47b2555dfc1e74771408b8abbd9 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+@@ -395,7 +395,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+ 
+     @Override
+     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
+-        return new com.destroystokyo.paper.PaperVersionFetcher();
++        return new org.sugarcanemc.sugarcane.server.util.VersionFetcher.SugarcaneVersionFetcher(); // Sugarcane
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a0e5994ec 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/gg.airplane/airplane-api/pom.properties"); // Tuinity // Airplane
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.sugarcanemc.sugarcane/sugarcane-api/pom.properties"); // Tuinity // Airplane // Sugarcane
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6b2eff484259f188c08fbf641e09b2da1c7c8e29
+index 0000000000000000000000000000000000000000..fa35edba62c29c36da4ebad93399dad0be44675e
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java
 @@ -0,0 +1,132 @@
@@ -194,42 +233,3 @@ index 0000000000000000000000000000000000000000..6b2eff484259f188c08fbf641e09b2da
 +        return Component.text("Previous version: " + oldVersion, NamedTextColor.GRAY, TextDecoration.ITALIC);
 +    }
 +}
-diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index a05ced9f9719ecbf20e74e5178063ce671dd804b..e04642698effbfcf8bc69a128a3f5d1c45dcb46a 100644
---- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-+++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
- import javax.annotation.Nonnull; // Paper
- 
- public final class CraftServer implements Server {
--    private final String serverName = "Airplane"; // Airplane // Tuinity // Paper
-+    private final String serverName = "Sugarcane"; // Sugarcane // Airplane // Tuinity // Paper
-     private final String serverVersion;
-     private final String bukkitVersion = Versioning.getBukkitVersion();
-     private final Logger logger = Logger.getLogger("Minecraft");
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..4aa0c2d1db2704e593ec6f682c9af8f06f6d5046 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -395,7 +395,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
- 
-     @Override
-     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
--        return new com.destroystokyo.paper.PaperVersionFetcher();
-+        return new org.sugarcanemc.sugarcane.server.util.VersionFetcher.SugarcaneVersionFetcher(); // Sugarcane
-     }
- 
-     @Override
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 1788d79ea489e446d3d9f541693d4ba3dfc26015..c0472f4008dd3a76ba064425924b2491736ac745 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-@@ -11,7 +11,7 @@ public final class Versioning {
-     public static String getBukkitVersion() {
-         String result = "Unknown-Version";
- 
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/gg.airplane/airplane-api/pom.properties"); // Tuinity // Airplane
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.sugarcanemc.sugarcane/sugarcane-api/pom.properties"); // Tuinity // Airplane // Sugarcane
-         Properties properties = new Properties();
- 
-         if (stream != null) {

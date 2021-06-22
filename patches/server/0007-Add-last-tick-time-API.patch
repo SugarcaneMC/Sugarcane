@@ -8,7 +8,7 @@ Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 320a3eb5b637cd87e40df7725ab3da2b1c29cbf3..1113777e6e212cb0245141826d11bd3a571216cf 100644
+index 535a0628b0b7527084a63e10fecc1248e0cbeeac..2b8cc0203ce02d20378a468515bc69b147843634 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1183,6 +1183,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -20,7 +20,7 @@ index 320a3eb5b637cd87e40df7725ab3da2b1c29cbf3..1113777e6e212cb0245141826d11bd3a
      protected void runServer() {
          try {
              long serverStartTime = Util.getNanos(); // Paper
-@@ -1249,7 +1251,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1250,7 +1252,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                      this.nextTickTime += 50L;
                      this.startMetricsRecordingTick();
                      this.profiler.push("tick");
@@ -31,18 +31,18 @@ index 320a3eb5b637cd87e40df7725ab3da2b1c29cbf3..1113777e6e212cb0245141826d11bd3a
                      this.mayHaveDelayedTasks = true;
                      this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 4743f70e20beeb06ab4659fda4ff1a60a124766a..319eeb97138e23b4136df6a62ff6c2d4a5a196b6 100644
+index f0f363b5e28c4d448fb640997851ba4de7ad3d15..fa62f9747777df0453d72c9f3af9eb687b96b029 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2530,4 +2530,6 @@ public final class CraftServer implements Server {
-    }
+@@ -2541,4 +2541,6 @@ public final class CraftServer implements Server {
+     }
  
-    // Paper end
+     // Paper end
 +
 +    @Override public java.time.Duration getLastTickTime() { return net.minecraft.server.MinecraftServer.lastTickTime; } // Sugarcane
  }
 diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
-index 9bede6a26c08ede063c7a38f1149c811df14b258..dc01b9331e056f1701adb364dfec4a22c1317faf 100644
+index 9bede6a26c08ede063c7a38f1149c811df14b258..08eb613513f0b3ebf31dfa5792ae6ebfe914f15f 100644
 --- a/src/main/java/org/spigotmc/TicksPerSecondCommand.java
 +++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
 @@ -32,6 +32,10 @@ public class TicksPerSecondCommand extends Command

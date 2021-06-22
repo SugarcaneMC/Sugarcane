@@ -6,10 +6,10 @@ Subject: [PATCH] Add nspt command
 From Yatopia
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 542620adbeb03394e567696ffc5e014b8dae6e79..4b9bf3f508fee1b8bc7ae0d3f9cf77aababb7fba 100644
+index caadc398038155900e417036f7df16140e003315..6e1d03a97ae3c674505ba2b88704532996b19a9f 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -218,6 +218,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -217,6 +217,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
              DedicatedServer.LOGGER.error("Unable to load server configuration", e);
              return false;
          }
@@ -18,7 +18,7 @@ index 542620adbeb03394e567696ffc5e014b8dae6e79..4b9bf3f508fee1b8bc7ae0d3f9cf77aa
          com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 69e0265f5580824cde09eb03f084c3994c65e429..715790cd29db3730c29031c5249bd5daeb3e6aac 100644
+index fa62f9747777df0453d72c9f3af9eb687b96b029..93647a5976ba98cd7e0a86f30e854d5ab6a86f46 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -927,6 +927,7 @@ public final class CraftServer implements Server {
@@ -31,7 +31,7 @@ index 69e0265f5580824cde09eb03f084c3994c65e429..715790cd29db3730c29031c5249bd5da
  
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/NSPTCommand.java b/src/main/java/org/sugarcanemc/sugarcane/server/NSPTCommand.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e6eaa07c57e04bbfba9e4aa8e0e939f85169d0c8
+index 0000000000000000000000000000000000000000..29ab41a91fdd02c4442353a42fa020a545a62351
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/NSPTCommand.java
 @@ -0,0 +1,59 @@
@@ -95,7 +95,7 @@ index 0000000000000000000000000000000000000000..e6eaa07c57e04bbfba9e4aa8e0e939f8
 +    }
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-index 2fc78f7cee379e690e846a3ab91eab01869f3346..3c6d2606f12519c844214b32b2ac42aa356fb986 100644
+index ab9898feda54854b178fd6e2f91e16b7d0ba7421..dbfb8053177f9a086395e981c6c1c10015cd8840 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
 @@ -6,11 +6,14 @@ import java.io.IOException;
