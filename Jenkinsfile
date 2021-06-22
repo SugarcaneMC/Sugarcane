@@ -18,7 +18,7 @@ pipeline {
                 sh 'rm -rf ./Sugarcane-API ./Sugarcane-Server'
                 sh 'rm -rf .gradle'
                 sh 'chmod +x ./gradlew'
-                sh './gradlew clean'
+                sh './gradlew clean -DXms1G -DXmx2G'
             }
         }
         stage('Decompile & apply patches') {
