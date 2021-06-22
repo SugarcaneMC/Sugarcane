@@ -21,10 +21,10 @@ index 9d920565ff65a84b1b9a2a4777fd8bc8f07e0153..524983853bf7aba4879fbc4ef3d122e1
  
          new TimingsExport(listeners, parent, history).start();
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 1ba335f85e918f22a8e594b5a59406655069e50f..caadc398038155900e417036f7df16140e003315 100644
+index b737d50547c1b0e396facc6c2aa38201e208ed84..828b0dfcaf2a04f1ae10546f8380608cce5d7973 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -224,7 +224,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -225,7 +225,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          com.tuinity.tuinity.config.TuinityConfig.init((java.io.File) options.valueOf("tuinity-settings")); // Tuinity - Server Config
          gg.airplane.AirplaneConfig.load(); // Airplane - config
          gg.airplane.commands.AirplaneCommands.init(); // Airplane - command
