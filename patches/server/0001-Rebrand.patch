@@ -1,0 +1,235 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Toffikk <slodkitofik@gmail.com>
+Date: Wed, 16 Jun 2021 15:04:11 +0100
+Subject: [PATCH] Rebrand
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 0a864557a7648c7dc98e91b6d398fbd07ca120b7..bfb9daee37f2ff9507729fc3fa1cae9570e41397 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -30,7 +30,7 @@ repositories {
+ }
+ 
+ dependencies {
+-    implementation(project(":Airplane-API")) // Airplane // Tuinity
++    implementation(project(":Sugarcane-API")) // Sugarcane // Airplane // Tuinity
+     implementation("com.destroystokyo.paper:paper-mojangapi:1.16.5-R0.1-SNAPSHOT") // Tuinity
+     // Paper start
+     implementation("org.jline:jline-terminal-jansi:3.12.1")
+@@ -80,10 +80,11 @@ tasks.jar {
+     manifest {
+         val git = Git(rootProject.layout.projectDirectory.path)
+         val gitHash = git("rev-parse", "HEAD").getText().substring(0, 7)
++        val implementationVersion = System.getenv("BUILD_NUMBER") ?: "\"$gitHash\"" // Sugarcane
+         attributes(
+             "Main-Class" to "org.bukkit.craftbukkit.Main",
+             "Implementation-Title" to "CraftBukkit",
+-            "Implementation-Version" to "git-Airplane-\"$gitHash\"", // Airplane // Tuinity
++            "Implementation-Version" to "git-Sugarcane-$implementationVersion", // Sugarcane // Airplane // Tuinity
+             "Implementation-Vendor" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Date()), // Paper
+             "Specification-Title" to "Bukkit",
+             "Specification-Version" to project.version,
+diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
+index e0b1f0671d16ddddcb6725acd25a1d1d69e42701..2e34821a9ae568e2a7291db666f06b52fa361ca6 100644
+--- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
++++ b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
+@@ -17,7 +17,7 @@ public final class PaperConsole extends SimpleTerminalConsole {
+     @Override
+     protected LineReader buildReader(LineReaderBuilder builder) {
+         builder
+-                .appName("Paper")
++                .appName("Sugarcane") // Sugarcane
+                 .variable(LineReader.HISTORY_FILE, java.nio.file.Paths.get(".console_history"))
+                 .completer(new ConsoleCommandCompleter(this.server))
+                 .option(LineReader.Option.COMPLETE_IN_WORD, true);
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 47733a7677344ef659b384a75a788ed6f7b48d79..d02c397a7de57d4b9885304cc42437331d85a488 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1714,7 +1714,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     @DontObfuscate
+     public String getServerModName() {
+-        return "Airplane"; // Airplane - Airplane > // Tuinity - Tuinity > //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
++        return "Sugarcane"; // Sugarcane - Sugarcane > // Airplane - Airplane > // Tuinity - Tuinity > //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+     }
+ 
+     public SystemReport fillSystemReport(SystemReport systemreport) {
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..6b2eff484259f188c08fbf641e09b2da1c7c8e29
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java
+@@ -0,0 +1,132 @@
++package org.sugarcanemc.sugarcane.server.util.VersionFetcher;
++
++import com.destroystokyo.paper.VersionHistoryManager;
++import com.google.common.base.Charsets;
++import com.google.common.io.Resources;
++import com.google.gson.Gson;
++import com.google.gson.JsonObject;
++import com.google.gson.JsonSyntaxException;
++import net.kyori.adventure.text.Component;
++import net.kyori.adventure.text.TextComponent;
++import net.kyori.adventure.text.format.NamedTextColor;
++import net.kyori.adventure.text.format.TextDecoration;
++
++import java.io.BufferedReader;
++import java.io.IOException;
++import java.io.InputStream;
++import java.io.InputStreamReader;
++import java.net.HttpURLConnection;
++import java.net.URL;
++import java.net.URLEncoder;
++import java.util.Arrays;
++import java.util.Objects;
++import java.util.jar.Manifest;
++import javax.annotation.Nonnull;
++
++import com.destroystokyo.paper.util.VersionFetcher;
++import javax.annotation.Nullable;
++import net.kyori.adventure.text.Component;
++import net.kyori.adventure.text.format.NamedTextColor;
++import net.kyori.adventure.text.TextComponent;
++import net.kyori.adventure.text.format.TextDecoration;
++
++public class SugarcaneVersionFetcher implements VersionFetcher {
++
++    @Override
++    public long getCacheTime() {
++        return 3600000;
++    }
++
++    @Nonnull
++    @Override
++    public Component getVersionMessage(@Nonnull String serverVersion) {
++        if (serverVersion.equals("null")) return Component.text("Custom build");
++        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
++        String branch = "ver/1.17"; //String branch = String.join("-", Arrays.copyOfRange(parts, 0, parts.length - 3)); // add back when main branch
++        String version = parts[parts.length - 3];
++        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, version);
++        final Component history = getHistory();
++
++        return history != null ?  TextComponent.ofChildren(history, Component.newline(), updateMessage) : updateMessage;
++    }
++
++    private Component getUpdateStatusMessage(String repo, String branch, String versionInfo) {
++        int distance;
++        try {
++            int jenkinsBuild = Integer.parseInt(versionInfo);
++            distance = fetchDistanceFromJenkins(branch, jenkinsBuild);
++        } catch (NumberFormatException ignored) {
++            distance = fetchDistanceFromGitHub(repo, branch, versionInfo.replace("\"", ""));
++        }
++
++        switch (distance) {
++            case -1:
++                return Component.text("Error obtaining version information", NamedTextColor.YELLOW);
++            case 0:
++                return Component.text("You are running the latest version", NamedTextColor.GREEN);
++            case -2:
++                return Component.text("Unknown version", NamedTextColor.YELLOW);
++            default:
++                return Component.text("You are " + distance + " version(s) behind", NamedTextColor.YELLOW);
++        }
++    }
++
++    // modified from PurpurVersionFetcher
++    private static int fetchDistanceFromJenkins(String branch, int jenkinsBuild) {
++        try {
++            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/SugarcaneMC/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
++                return Integer.decode(reader.readLine()) - jenkinsBuild;
++            } catch (NumberFormatException ex) {
++                ex.printStackTrace();
++                return -2;
++            }
++        } catch (IOException e) {
++            e.printStackTrace();
++            return -1;
++        }
++    }
++
++    // Contributed by Techcable <Techcable@outlook.com> in GH-65
++    // from PaperVersionFetcher
++    private static int fetchDistanceFromGitHub(@Nonnull String repo, @Nonnull String branch, @Nonnull String hash) {
++        try {
++            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/" + repo + "/compare/" + branch + "..." + hash).openConnection();
++            connection.connect();
++            if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) return -2; // Unknown commit
++            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charsets.UTF_8))) {
++                JsonObject obj = new Gson().fromJson(reader, JsonObject.class);
++                String status = obj.get("status").getAsString();
++                switch (status) {
++                    case "identical":
++                        return 0;
++                    case "behind":
++                        return obj.get("behind_by").getAsInt();
++                    default:
++                        return -1;
++                }
++            } catch (JsonSyntaxException | NumberFormatException e) {
++                e.printStackTrace();
++                return -1;
++            }
++        } catch (IOException e) {
++            e.printStackTrace();
++            return -1;
++        }
++    }
++
++    // from PaperVersionFetcher
++    @Nullable
++    private Component getHistory() {
++        final VersionHistoryManager.VersionData data = VersionHistoryManager.INSTANCE.getVersionData();
++        if (data == null) {
++            return null;
++        }
++
++        final String oldVersion = data.getOldVersion();
++        if (oldVersion == null) {
++            return null;
++        }
++
++        return Component.text("Previous version: " + oldVersion, NamedTextColor.GRAY, TextDecoration.ITALIC);
++    }
++}
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index a05ced9f9719ecbf20e74e5178063ce671dd804b..e04642698effbfcf8bc69a128a3f5d1c45dcb46a 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
+ import javax.annotation.Nonnull; // Paper
+ 
+ public final class CraftServer implements Server {
+-    private final String serverName = "Airplane"; // Airplane // Tuinity // Paper
++    private final String serverName = "Sugarcane"; // Sugarcane // Airplane // Tuinity // Paper
+     private final String serverVersion;
+     private final String bukkitVersion = Versioning.getBukkitVersion();
+     private final Logger logger = Logger.getLogger("Minecraft");
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..4aa0c2d1db2704e593ec6f682c9af8f06f6d5046 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+@@ -395,7 +395,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+ 
+     @Override
+     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
+-        return new com.destroystokyo.paper.PaperVersionFetcher();
++        return new org.sugarcanemc.sugarcane.server.util.VersionFetcher.SugarcaneVersionFetcher(); // Sugarcane
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 1788d79ea489e446d3d9f541693d4ba3dfc26015..c0472f4008dd3a76ba064425924b2491736ac745 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/gg.airplane/airplane-api/pom.properties"); // Tuinity // Airplane
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.sugarcanemc.sugarcane/sugarcane-api/pom.properties"); // Tuinity // Airplane // Sugarcane
+         Properties properties = new Properties();
+ 
+         if (stream != null) {

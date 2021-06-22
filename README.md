@@ -1,2 +1,2 @@
 # Sugarcane
-Highly optimized Paper fork focusing on stability and performance.
+Highly optimized Airplane fork focusing on stability and performance.

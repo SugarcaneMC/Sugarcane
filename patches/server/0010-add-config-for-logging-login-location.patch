@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Simon Gardling <titaniumtown@gmail.com>
+Date: Wed, 20 Jan 2021 16:36:48 -0500
+Subject: [PATCH] add config for logging login location
+
+From Yatopia
+
+diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
+index cedc14221393121279427b88b2ddb7ef4ffcbda0..4dd7747e2daff8648b3452c833863d1917d6e61a 100644
+--- a/src/main/java/net/minecraft/server/players/PlayerList.java
++++ b/src/main/java/net/minecraft/server/players/PlayerList.java
+@@ -475,7 +475,14 @@ public abstract class PlayerList {
+         }
+         // Paper end
+         // CraftBukkit - Moved from above, added world
+-        PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
++
++        // Sugarcane start - configurable logging of player login location
++        if (org.sugarcanemc.sugarcane.server.SugarcaneConfig.logPlayerLoginLoc) {
++            PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
++        } else {
++            PlayerList.LOGGER.info("{}[{}] logged in with entity id {}", player.getName().getString(), s1, player.getId());
++        }
++        // Sugarcane end - configurable logging of player login location
+     }
+ 
+     public void updateEntireScoreboard(ServerScoreboard scoreboard, ServerPlayer player) {
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
+index 538c98c0a237503eeadcf6c783e377249f0ba4a1..2fc78f7cee379e690e846a3ab91eab01869f3346 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
+@@ -170,6 +170,10 @@ public class SugarcaneConfig {
+ 		return config.getString(path, config.getString(path));
+ }
+ 
++public static boolean logPlayerLoginLoc = true;
++	private static void general() {
++		logPlayerLoginLoc = getBoolean("settings.log-player-login-location", logPlayerLoginLoc);
++	}
+ 	public static boolean fixProtocolLib = true;
+ 	private static void protocolLib() {
+ 		fixProtocolLib = getBoolean("settings.fix-protocollib", fixProtocolLib);
