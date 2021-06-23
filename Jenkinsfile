@@ -38,14 +38,12 @@ pipeline {
                 jdk "JDK 16"
             }
             steps {
-                    withCredentials([usernamePassword(credentialsId: 'mvn-credentials')]) {
                         sh'''
                         ./gradlew build publish -DXms1G -DXmx2G
                         ./gradlew paperclip -DXms1G -DXmx2G
                         mkdir -p "./target"
                         cp -v "sugarcane-paperclip.jar" "./target/sugarcane-paperclip-b$BUILD_NUMBER.jar"
                         '''
-                }
             }
         }
 
