@@ -22,7 +22,7 @@ index e8dc7f21c709ecc70050e863cf91b6adca5d871e..7d7e4a7c2fbb45d54b7b1bf81f988991
          if (org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) {
              MinecraftServer.LOGGER.info("Saving usercache.json");
 diff --git a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
-index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..bc90cac482031dcd9db74cbe3941156a0f78044b 100644
+index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..a8eb3f0e5dcf78955a76b93d6f268a6b65930511 100644
 --- a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 +++ b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 @@ -24,6 +24,10 @@ public class PlayerDataStorage {
@@ -45,7 +45,7 @@ index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..bc90cac482031dcd9db74cbe3941156a
 -            File file2 = new File(this.playerDir, player.getStringUUID() + ".dat_old");
 -
 -            Util.safeReplaceFile(file1, file, file2);
-+            // NbtIo.writeCompressed(nbttagcompound, file); // Yatopia
++            // NbtIo.writeCompressed(nbttagcompound, file); // Sugarcane
 +            // Sugarcane start - NBT Cache system
 +            Runnable task = () -> {
 +                try {
@@ -77,7 +77,7 @@ index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..bc90cac482031dcd9db74cbe3941156a
 +            synchronized (this.dataCache){
 +                playerData = this.dataCache.get(file);
 +            }
-+            if (playerData == null && org.bukkit.Bukkit.getOnlineMode() && !normalFile ) // Paper - Check online mode first // Akarin - ensures normal file // Yatopia
++            if (playerData == null && org.bukkit.Bukkit.getOnlineMode() && !normalFile ) // Paper - Check online mode first // Akarin - ensures normal file // Sugarcane
              {
                  file = new File( this.playerDir, java.util.UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + player.getScoreboardName() ).getBytes( "UTF-8" ) ).toString() + ".dat");
 +                synchronized (this.dataCache){
@@ -91,7 +91,7 @@ index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..bc90cac482031dcd9db74cbe3941156a
              // Spigot End
  
 -            if (normalFile) { // Akarin - avoid double I/O operation
-+            // if (normalFile) { // Akarin - avoid double I/O operation // Yatopia
++            // if (normalFile) { // Akarin - avoid double I/O operation // Sugarcane
 +            if (playerData != null) {
 +                nbttagcompound = playerData;
 +            } else if (normalFile) { // Akarin - avoid double I/O operation
