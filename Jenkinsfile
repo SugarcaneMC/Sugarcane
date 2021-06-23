@@ -27,6 +27,8 @@ pipeline {
             }
             steps {
                     sh '''
+                    git config --global user.email "jenkins@sugarcanemc.org"
+                    git config --global user.name "Jenkins"
                     ./gradlew applyPatches -DXms1G -DXmx2G
                     '''
                 }
