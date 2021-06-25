@@ -13,7 +13,7 @@
 # We use patches from the following projects
 * [Paper](https://github.com/PaperMC/Paper)
 * [Tuinity](https://github.com/Tuinity/Tuinity)
-* NOTE: We also borrow some patches from <a href="https://github.com/YatopiaMC/Yatopia">Yatopia.</a></h3>
+* NOTE: We also borrow some patches from <a href="https://github.com/YatopiaMC/Yatopia">Yatopia</a>.
 
 # ❗ Reminder
 This project is still **work in progress**, so there will not have stable build for production for a while, until we did enough test to ensure it's already stable for production.
