@@ -3,6 +3,7 @@ From: l_MrBoom_l <admin@epserv.ru>
 Date: Wed, 30 Sep 2020 18:20:12 +0300
 Subject: [PATCH] Configurable flight checks
 
+Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 index 9dc5c82ea1d497174d288000f9f1ccaabbcb4a18..a3d5b136d3b64f26eb57bc7583d10501b8c795f0 100644
