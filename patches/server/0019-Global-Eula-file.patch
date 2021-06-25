@@ -3,7 +3,7 @@ From: tr7zw <tr7zw@live.de>
 Date: Sat, 25 Jul 2020 17:16:18 +0200
 Subject: [PATCH] Global Eula file
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 Ported to 1.17 by: Toffikk <slodkitofik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/server/Eula.java b/src/main/java/net/minecraft/server/Eula.java

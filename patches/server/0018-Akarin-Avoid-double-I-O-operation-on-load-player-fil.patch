@@ -4,6 +4,8 @@ From: =?UTF-8?q?=E3=84=97=E3=84=A0=CB=8B=20=E3=84=91=E3=84=A7=CB=8A?=
 Date: Thu, 2 Apr 2020 11:29:08 +0800
 Subject: [PATCH] Akarin Avoid double I/O operation on load player file
 
+Original code by Akarin-project, licensed under GNU General Public License version 3
+you can find the original code on https://github.com/Akarin-project/Akarin/
 
 diff --git a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 index 6727468946ea5f60bd80549f827a7c2b9a42b98b..10e4985e2eb09e6d736c0ac976ef8009907c0f6a 100644

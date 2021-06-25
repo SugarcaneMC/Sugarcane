@@ -3,7 +3,7 @@ From: ishland <ishlandMC@yeah.net>
 Date: Wed, 27 Jan 2021 20:16:47 +0800
 Subject: [PATCH] Preload ProtocolLib EnumWrappers
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index src/main/java/net/minecraft/server/MinecraftServer.java..685220edb6690d2d560a7153d5eb9877238b57c0 100644
