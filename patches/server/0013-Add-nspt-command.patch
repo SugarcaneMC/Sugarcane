@@ -3,7 +3,7 @@ From: Ivan Pekov <ivan@mrivanplays.com>
 Date: Wed, 30 Sep 2020 18:05:45 +0300
 Subject: [PATCH] Add nspt command
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 index caadc398038155900e417036f7df16140e003315..6e1d03a97ae3c674505ba2b88704532996b19a9f 100644

@@ -3,7 +3,7 @@ From: tr7zw <tr7zw@live.de>
 Date: Thu, 2 Apr 2020 18:49:38 +0200
 Subject: [PATCH] Add NBT API as a first-class lib
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 
 diff --git a/build.gradle.kts b/build.gradle.kts
 index 1e547cba9e8e1f7a1fa29f25859285db9d5f0c4d..9e09265b2f777fa66e2e85a9791a363ec87e7602 100644
