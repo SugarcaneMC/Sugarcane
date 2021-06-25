@@ -3,7 +3,7 @@ From: tr7zw <tr7zw@live.de>
 Date: Thu, 25 Jun 2020 23:40:12 +0200
 Subject: [PATCH] Heavily optimize furnance fuel and recipe lookups
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 Co-authored-by: Mykyta Komarn <nkomarn@hotmail.com>
 Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
 

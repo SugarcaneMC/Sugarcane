@@ -3,7 +3,7 @@ From: Ivan Pekov <ivan@mrivanplays.com>
 Date: Mon, 4 Jan 2021 20:12:36 +0200
 Subject: [PATCH] Optimised hallowen checker
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index d02c397a7de57d4b9885304cc42437331d85a488..320a3eb5b637cd87e40df7725ab3da2b1c29cbf3 100644
