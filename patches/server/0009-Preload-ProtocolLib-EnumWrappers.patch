@@ -6,10 +6,10 @@ Subject: [PATCH] Preload ProtocolLib EnumWrappers
 From Yatopia
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index src/main/java/net/minecraft/server/MinecraftServer.java..685220edb6690d2d560a7153d5eb9877238b57c0 100644
+index 24f33acf16ee2bda46031da62d8e90c8d39d6058..0c142596661fd35676e9424fb017737cedcc792d 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1206,6 +1206,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1209,6 +1209,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                  LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
                  // Paper end
  
@@ -18,7 +18,7 @@ index src/main/java/net/minecraft/server/MinecraftServer.java..685220edb6690d2d5
                  org.spigotmc.WatchdogThread.tick(); // Paper
                  org.spigotmc.WatchdogThread.hasStarted = true; // Paper
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-index eb6786fa040ede035b649d3f9c2c117afe390406..538c98c0a237503eeadcf6c783e377249f0ba4a1 100644
+index bc8a4a9f70d494bdb6e7ee737475c29b4eb31136..b19a07ad3641c4c4d06ef7cc3867018c7dc1c857 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
 @@ -108,18 +108,11 @@ public class SugarcaneConfig {
@@ -59,7 +59,7 @@ index eb6786fa040ede035b649d3f9c2c117afe390406..538c98c0a237503eeadcf6c783e37724
  	disableEntityStuckChecks = getBoolean("settings.disableEntityStuckChecks", false);
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/SugarcanePreloadProtocolLib.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/SugarcanePreloadProtocolLib.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..85906aa00163a4626b16190e2e48385bc5eba801
+index 0000000000000000000000000000000000000000..2aebc6a19457dff5599a9ed66a305002f5e68d7c
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/SugarcanePreloadProtocolLib.java
 @@ -0,0 +1,28 @@

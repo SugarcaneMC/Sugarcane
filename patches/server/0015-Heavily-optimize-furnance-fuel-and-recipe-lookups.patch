@@ -8,10 +8,10 @@ Co-authored-by: Mykyta Komarn <nkomarn@hotmail.com>
 Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
-index c559ec5041474e585e4d95a664c84e1fa895cf16..0dc25a12bc487895bb9a8d08acedb247d318c912 100644
+index 1eab83cefdf1484b8cf80072d9a0ee61dea4fd6c..9e253f8fd68dca0a70864365409a3aa2b121aae4 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
-@@ -322,7 +322,11 @@ public abstract class AbstractFurnaceBlockEntity extends BaseContainerBlockEntit
+@@ -339,7 +339,11 @@ public abstract class AbstractFurnaceBlockEntity extends BaseContainerBlockEntit
                  blockEntity.cookingProgress = Mth.clamp(blockEntity.cookingProgress - 2, 0, blockEntity.cookingTotalTime);
              }
          } else {
@@ -24,7 +24,7 @@ index c559ec5041474e585e4d95a664c84e1fa895cf16..0dc25a12bc487895bb9a8d08acedb247
              int i = blockEntity.getMaxStackSize();
  
              if (!blockEntity.isLit() && AbstractFurnaceBlockEntity.canBurn(irecipe, blockEntity.items, i)) {
-@@ -644,4 +648,17 @@ public abstract class AbstractFurnaceBlockEntity extends BaseContainerBlockEntit
+@@ -662,4 +666,17 @@ public abstract class AbstractFurnaceBlockEntity extends BaseContainerBlockEntit
          }
  
      }

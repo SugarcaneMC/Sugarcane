@@ -1,5 +1,5 @@
 # Sugarcane
-Highly optimized Airplane fork focusing on stability and performance.
+Highly optimized Airplane fork focusing on stability , performance and features.
 
 ##### NOTE: We borrow some patches from Yatopia
 
@@ -13,4 +13,4 @@ If you find any issue or have some suggestion to this project, feel free to [ope
 
 
 # Try it out 
-You can download the latest development build for 1.17 in [GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3Aver%2F1.17). There is not stable build for production yet
+You can download the latest development build for 1.17 with Purpur using [GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3A1.17%2Fpurpur). There is not stable build for production yet

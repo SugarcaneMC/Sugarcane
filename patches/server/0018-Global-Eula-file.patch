@@ -7,7 +7,7 @@ From Yatopia
 Ported to 1.17 by: Toffikk <slodkitofik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/server/Eula.java b/src/main/java/net/minecraft/server/Eula.java
-index 3789df8ef9c0b4150c3baccf84dbaff57c0fb65a..e76973410c663234cef5e6709ff5b5bd24c5cddc 100644
+index 43a88bc58716eef4040584944f52893c5a47699f..1593a0d52d43b05830a43afde85b3074d736b1ef 100644
 --- a/src/main/java/net/minecraft/server/Eula.java
 +++ b/src/main/java/net/minecraft/server/Eula.java
 @@ -16,12 +16,26 @@ public class Eula {

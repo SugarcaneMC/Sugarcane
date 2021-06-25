@@ -6,10 +6,10 @@ Subject: [PATCH] Optimised hallowen checker
 From Yatopia
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index d02c397a7de57d4b9885304cc42437331d85a488..320a3eb5b637cd87e40df7725ab3da2b1c29cbf3 100644
+index c73fc8ceb54eee6937a6fa13462af9349d61b627..739b9d5a1c6087e6bb17c4848f0b7cc8a0a1d34c 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1516,6 +1516,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1530,6 +1530,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Paper end
  
@@ -18,10 +18,10 @@ index d02c397a7de57d4b9885304cc42437331d85a488..320a3eb5b637cd87e40df7725ab3da2b
          // Paper start
          long endTime = System.nanoTime();
 diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..f33ff5efe406c596d79c6fc31f0263bf6e0af83f 100644
+index e749f0f3a35783cada224e4b0c12f294c3245210..3200716d8cc6727514c7f9b9251af8586143a16c 100644
 --- a/src/main/java/net/minecraft/world/entity/ambient/Bat.java
 +++ b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-@@ -255,10 +255,12 @@ public class Bat extends AmbientCreature {
+@@ -315,10 +315,12 @@ public class Bat extends AmbientCreature {
      }
  
      // Airplane start - only check for spooky season once an hour
@@ -37,7 +37,7 @@ index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..f33ff5efe406c596d79c6fc31f0263bf
          if (net.minecraft.server.MinecraftServer.currentTick - lastSpookyCheck > ONE_HOUR) {
          LocalDate localdate = LocalDate.now();
          int i = localdate.get(ChronoField.DAY_OF_MONTH);
-@@ -268,6 +270,9 @@ public class Bat extends AmbientCreature {
+@@ -328,6 +330,9 @@ public class Bat extends AmbientCreature {
          lastSpookyCheck = net.minecraft.server.MinecraftServer.currentTick;
          }
          return isSpookySeason;
@@ -48,10 +48,10 @@ index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..f33ff5efe406c596d79c6fc31f0263bf
      // Airplane end
  
 diff --git a/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java b/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
-index c54a37516ef1d8a76f7161917bf448127cd98603..87e23a3ea27949d8f6b6259f6d744ac3399853ab 100644
+index 5b19d8db09867791782c899d41d314c511f6c8a2..34d7716444808aedc9ba4394a005604efc5d16cb 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
-@@ -156,11 +156,16 @@ public abstract class AbstractSkeleton extends Monster implements RangedAttackMo
+@@ -138,11 +138,16 @@ public abstract class AbstractSkeleton extends Monster implements RangedAttackMo
          this.reassessWeaponGoal();
          this.setCanPickUpLoot(this.level.paperConfig.skeletonsAlwaysCanPickUpLoot || this.random.nextFloat() < 0.55F * difficulty.getSpecialMultiplier()); // Paper
          if (this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
@@ -69,10 +69,10 @@ index c54a37516ef1d8a76f7161917bf448127cd98603..87e23a3ea27949d8f6b6259f6d744ac3
                  this.armorDropChances[EquipmentSlot.HEAD.getIndex()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Zombie.java b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-index bb3b932c57fd1e5b1517940c7602c7f4aeeaf17e..49bce95ec40c8477d70810cee1678dfdf1cc9dbf 100644
+index 5adef472e37b422c9b83ac00221be3fb8558d225..2bc15238cb6c85d82a69856440a5209081d11d09 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-@@ -534,11 +534,16 @@ public class Zombie extends Monster {
+@@ -558,11 +558,16 @@ public class Zombie extends Monster {
          }
  
          if (this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
@@ -91,7 +91,7 @@ index bb3b932c57fd1e5b1517940c7602c7f4aeeaf17e..49bce95ec40c8477d70810cee1678dfd
              }
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/entity/HalloweenChecker.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/entity/HalloweenChecker.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c4fc90aa523b062c1860b4d679707e0b65bd70dc
+index 0000000000000000000000000000000000000000..ffbb56098e0219a7373ee6c010659f489e2e5d67
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/entity/HalloweenChecker.java
 @@ -0,0 +1,59 @@

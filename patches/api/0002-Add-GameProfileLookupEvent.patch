@@ -6,20 +6,20 @@ Subject: [PATCH] Add GameProfileLookupEvent
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index e142072f31a41b25ac637970f79e71ab70c2f28c..8c62cdb5b2a1e0309fb66395611e95ef2b8cf598 100644
+index 407bf7c09304c76ef1dbec43bb5d665f02ce4840..fb86517f4396858ddd05dd047c73e80c51b75963 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -27,6 +27,7 @@ dependencies {
-     api("org.ow2.asm:asm:9.0")
+@@ -28,6 +28,7 @@ dependencies {
      api("org.ow2.asm:asm-commons:9.0")
      api("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
+     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") // Purpur
 +    api("com.mojang:authlib:2.3.31") // Sugarcane
  
      compileOnly("org.apache.maven:maven-resolver-provider:3.8.1")
      compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.7.0")
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/events/GameProfileLookupEvent.java b/src/main/java/org/sugarcanemc/sugarcane/server/events/GameProfileLookupEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..70109fba0f7553e29077640549f150a762b1796e
+index 0000000000000000000000000000000000000000..190b77eacba848033cdcb0874c26952028243fde
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/events/GameProfileLookupEvent.java
 @@ -0,0 +1,51 @@

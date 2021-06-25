@@ -1,17 +1,16 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: YatopiaMC <yatopiamc@gmail.com>
+From: Toffikk <slodkitofik@gmail.com>
 Date: Sun, 17 Jan 2021 15:37:52 -0600
 Subject: [PATCH] Sugarcane Config
 
-From Yatopia
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index f55ae8275c297c4c86215fba8d7197ffe9715879..78e6bd4a1dbde5a72fa15c9889b74ca57d8d0e25 100644
+index a7fcd00ae37f9a2026759642562b1059c9dd9526..d7e40b7954bceabc64e095f49c3436f6079227b7 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1614,6 +1614,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1629,6 +1629,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
-         // Tuinity end - add config to timings report
+         // Purpur end
  
 +        // Sugarcane start - add config to timings report
 +        @NotNull

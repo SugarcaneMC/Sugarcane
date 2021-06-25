@@ -6,29 +6,29 @@ Subject: [PATCH] Add nspt command
 From Yatopia
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index caadc398038155900e417036f7df16140e003315..6e1d03a97ae3c674505ba2b88704532996b19a9f 100644
+index 59a401b890ecb954bf93613562b1ff4abe93c7df..00a352ba8ef8689a86915df05f6ef5f9e5b865f7 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -217,6 +217,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
-             DedicatedServer.LOGGER.error("Unable to load server configuration", e);
-             return false;
+@@ -227,6 +227,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          }
+         net.pl3x.purpur.PurpurConfig.registerCommands();
+         // Purpur end
 +        org.sugarcanemc.sugarcane.server.SugarcaneConfig.registerCommands(); // Sugarcane
-         com.destroystokyo.paper.PaperConfig.registerCommands();
          com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
+         io.papermc.paper.util.StacktraceDeobfuscator.INSTANCE.getClass(); // load mappings for stacktrace deobf
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index fa62f9747777df0453d72c9f3af9eb687b96b029..93647a5976ba98cd7e0a86f30e854d5ab6a86f46 100644
+index afaa2106b7357474ff14f607673793a3da1111bd..c1cc7aae89efed7e212156c50312e18fcde91430 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -927,6 +927,7 @@ public final class CraftServer implements Server {
+@@ -929,6 +929,7 @@ public final class CraftServer implements Server {
          this.reloadData();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          com.destroystokyo.paper.PaperConfig.registerCommands(); // Paper
 +        org.sugarcanemc.sugarcane.server.SugarcaneConfig.registerCommands(); // Sugarcane
+         net.pl3x.purpur.PurpurConfig.registerCommands(); // Purpur
          this.overrideAllCommandBlockCommands = this.commandsConfiguration.getStringList("command-block-overrides").contains("*");
          this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
- 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/NSPTCommand.java b/src/main/java/org/sugarcanemc/sugarcane/server/NSPTCommand.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..29ab41a91fdd02c4442353a42fa020a545a62351
