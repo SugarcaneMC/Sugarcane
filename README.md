@@ -13,6 +13,7 @@
 # We use patches from the following projects
 * [Paper](https://github.com/PaperMC/Paper)
 * [Tuinity](https://github.com/Tuinity/Tuinity)
+* [Purpur](https://github.com/pl3xgaming/Purpur) - Its patches are used in a separate branch.
 * NOTE: We also borrow some patches from <a href="https://github.com/YatopiaMC/Yatopia">Yatopia</a>.
 
 # ❗ Reminder
@@ -25,4 +26,5 @@ If you find any issue or have some suggestion to this project, feel free to [ope
 
 
 # Give it a try
-* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3Aver%2F1.17)** - Download last developmet build for Minecraft 1.17 (not for production).
+* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3Aver%2F1.17)** - Download last developmet build for Minecraft 1.17 (**not for production**).
+* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3A1.17%2Fpurpur++)** - Download last developmet build with patches Purpur for Minecraft 1.17 (**not for production**).
