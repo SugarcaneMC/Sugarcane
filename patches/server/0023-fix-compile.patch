@@ -1,19 +1,19 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Kylepoops <62238380+Kylepoops@users.noreply.github.com>
-Date: Sat, 26 Jun 2021 21:56:13 +0800
+Date: Sat, 26 Jun 2021 22:12:08 +0800
 Subject: [PATCH] fix compile
 
 
-diff --git a/src/main/java/gg/airplane/flare/ProfilingManager.java b/src/main/java/gg/airplane/flare/ProfilingManager.java
-index 68a9b09d6251accb31e5a44ed3132098b1960638..73dfcd59feb9f3698e52796478888084d3ff9047 100644
---- a/src/main/java/gg/airplane/flare/ProfilingManager.java
-+++ b/src/main/java/gg/airplane/flare/ProfilingManager.java
-@@ -28,7 +28,7 @@ public class ProfilingManager {
-         return Optional.of(AirplaneConfig.profileWebUrl + "/" + currentController.getId());
-     }
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 9e09265b2f777fa66e2e85a9791a363ec87e7602..41f2d99a01fb2b471f52946606d4cf7c0d3d983a 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -68,7 +68,7 @@ dependencies {
+     implementation("org.quiltmc:tiny-mappings-parser:0.3.0") // Paper - needed to read mappings for stacktrace deobfuscation
  
--    public static synchronized boolean start(@Nullable ProfileType type, int interval) throws UserReportableException {
-+    public static synchronized boolean start(@Nullable gg.airplane.flare.ProfileType type, int interval) throws UserReportableException { // Sugarcane - fix compile
-         if (isProfiling()) {
-             return false;
-         }
+     implementation("com.github.technove:AIR:fe3dbb4420") // Airplane - config
+-    implementation("com.github.technove:Flare:master-SNAPSHOT") // Airplane - flare
++    implementation("com.github.technove:Flare:v3-SNAPSHOT") // Airplane - flare
+ 
+     testImplementation("io.github.classgraph:classgraph:4.8.47") // Paper - mob goal test
+     testImplementation("junit:junit:4.13.1")
