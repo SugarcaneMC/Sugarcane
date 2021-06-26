@@ -5,7 +5,7 @@ Subject: [PATCH] Rebrand
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 0a864557a7648c7dc98e91b6d398fbd07ca120b7..bfb9daee37f2ff9507729fc3fa1cae9570e41397 100644
+index 8851a24b61f8340f37a525d5ae2344f0349a6f86..e1e68a2520897555cf94a51bd2dafb84167840e6 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -30,7 +30,7 @@ repositories {
@@ -17,19 +17,39 @@ index 0a864557a7648c7dc98e91b6d398fbd07ca120b7..bfb9daee37f2ff9507729fc3fa1cae95
      implementation("com.destroystokyo.paper:paper-mojangapi:1.16.5-R0.1-SNAPSHOT") // Tuinity
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.12.1")
-@@ -80,10 +80,11 @@ tasks.jar {
-     manifest {
-         val git = Git(rootProject.layout.projectDirectory.path)
-         val gitHash = git("rev-parse", "HEAD").getText().substring(0, 7)
-+        val implementationVersion = System.getenv("BUILD_NUMBER") ?: "\"$gitHash\"" // Sugarcane
+@@ -85,7 +85,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
--            "Implementation-Version" to "git-Airplane-\"$gitHash\"", // Airplane // Tuinity
+-            "Implementation-Version" to "git-Airplane-$implementationVersion", // Airplane // Tuinity
 +            "Implementation-Version" to "git-Sugarcane-$implementationVersion", // Sugarcane // Airplane // Tuinity
              "Implementation-Vendor" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Date()), // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
+diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
+index f5d01bce4d5547b4aeca96b7962b2090f47ea541..8f24d0c3fc2aeee085143176535001f5de9159f6 100644
+--- a/src/main/java/com/destroystokyo/paper/Metrics.java
++++ b/src/main/java/com/destroystokyo/paper/Metrics.java
+@@ -593,7 +593,7 @@ public class Metrics {
+             boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
+             // Only start Metrics, if it's enabled in the config
+             if (config.getBoolean("enabled", true)) {
+-                Metrics metrics = new Metrics("Airplane", serverUUID, logFailedRequests, Bukkit.getLogger()); // Tuinity - we have our own bstats page // Airplane
++                Metrics metrics = new Metrics("Sugarcane", serverUUID, logFailedRequests, Bukkit.getLogger()); // Tuinity - we have our own bstats page // Airplane
+ 
+                 metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+                     String minecraftVersion = Bukkit.getVersion();
+@@ -602,8 +602,8 @@ public class Metrics {
+                 }));
+ 
+                 metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+-                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : "offline"));
+-                metrics.addCustomChart(new Metrics.SimplePie("airplane_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Tuinity - we have our own bstats page // Airplane
++                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () ->  Bukkit.getOnlineMode() ? "online" : (PaperConfig.isProxyOnlineMode() ? "bungee" : "offline"))); // Sugarcane
++                metrics.addCustomChart(new Metrics.SimplePie("sugarcane_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Tuinity - we have our own bstats page // Airplane // Sugarcane
+ 
+                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+                     Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 index e0b1f0671d16ddddcb6725acd25a1d1d69e42701..2e34821a9ae568e2a7291db666f06b52fa361ca6 100644
 --- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
@@ -57,7 +77,7 @@ index d1167eba7449d15b874751187b1fd4679f4fbf2c..03a32575ddd28b1ce7b8bc865ba61758
  
      public SystemReport fillSystemReport(SystemReport systemreport) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index a05ced9f9719ecbf20e74e5178063ce671dd804b..e04642698effbfcf8bc69a128a3f5d1c45dcb46a 100644
+index 33c747370d5753a88c938b9ba42031a73d1b7479..ee5749e205a25e3c7b9d636c63f222e8ba9c9ec0 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
@@ -233,30 +253,6 @@ index 0000000000000000000000000000000000000000..f2dafd719e3fb9c7257cbac8efc261ac
 +        return Component.text("Previous version: " + oldVersion, NamedTextColor.GRAY, TextDecoration.ITALIC);
 +    }
 +}
-diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
-index f5d01bce4d5547b4aeca96b7962b2090f47ea541..8f24d0c3fc2aeee085143176535001f5de9159f6 100644
---- a/src/main/java/com/destroystokyo/paper/Metrics.java
-+++ b/src/main/java/com/destroystokyo/paper/Metrics.java
-@@ -593,7 +593,7 @@ public class Metrics {
-             boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
-             // Only start Metrics, if it's enabled in the config
-             if (config.getBoolean("enabled", true)) {
--                Metrics metrics = new Metrics("Airplane", serverUUID, logFailedRequests, Bukkit.getLogger()); // Tuinity - we have our own bstats page // Airplane
-+                Metrics metrics = new Metrics("Sugarcane", serverUUID, logFailedRequests, Bukkit.getLogger()); // Tuinity - we have our own bstats page // Airplane
- 
-                 metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
-                     String minecraftVersion = Bukkit.getVersion();
-@@ -602,8 +602,8 @@ public class Metrics {
-                 }));
- 
-                 metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
--                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : "offline"));
--                metrics.addCustomChart(new Metrics.SimplePie("airplane_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Tuinity - we have our own bstats page // Airplane
-+                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () ->  Bukkit.getOnlineMode() ? "online" : (PaperConfig.isProxyOnlineMode() ? "bungee" : "offline"))); // Sugarcane
-+                metrics.addCustomChart(new Metrics.SimplePie("sugarcane_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Tuinity - we have our own bstats page // Airplane // Sugarcane
- 
-                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
-                     Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/resources/logo.png b/src/main/resources/logo.png
 index 1e6ee83b1a207eca59d82b25c06895ce894e8173..cd935e3b9e21e326faf2d66717897fc7bde65ce0 100644
 GIT binary patch
