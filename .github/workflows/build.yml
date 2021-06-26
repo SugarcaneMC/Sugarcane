@@ -24,11 +24,11 @@ jobs:
           sudo chmod +x ./gradlew
       - name: Apply Patches
         run: |
-          ./gradlew applyPatches --stacktrace --no-daemon
+          ./gradlew applyPatches --stacktrace
       - name: Build
         run: |
-          ./gradlew build --stacktrace --no-daemon
-          ./gradlew paperclip --stacktrace --no-daemon
+          ./gradlew build --stacktrace
+          ./gradlew paperclip --stacktrace
       - name: Archive Sugarcane Paperclip
         uses: actions/upload-artifact@v2
         with:
