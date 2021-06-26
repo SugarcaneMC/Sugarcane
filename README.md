@@ -25,6 +25,6 @@ If you find any issue or have some suggestion to this project, feel free to [ope
 ## Please join our [Discord Server](https://sugarcanemc.org/discord) to get support.
 
 
-# Give it a try
-* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3Aver%2F1.17)** - Download last developmet build for Minecraft 1.17 (**not for production**).
-* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3A1.17%2Fpurpur++)** - Download last developmet build with patches Purpur for Minecraft 1.17 (**not for production**).
+# Try it for yourself
+* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3Aver%2F1.17)** - Download last developmemt build for Minecraft 1.17 (**not for production**).
+* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3A1.17%2Fpurpur++)** - Download last development build with Purpur Patches for Minecraft 1.17 (**not for production**).
