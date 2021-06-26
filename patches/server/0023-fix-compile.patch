@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kylepoops <62238380+Kylepoops@users.noreply.github.com>
+Date: Sat, 26 Jun 2021 21:56:13 +0800
+Subject: [PATCH] fix compile
+
+
+diff --git a/src/main/java/gg/airplane/flare/ProfilingManager.java b/src/main/java/gg/airplane/flare/ProfilingManager.java
+index 68a9b09d6251accb31e5a44ed3132098b1960638..73dfcd59feb9f3698e52796478888084d3ff9047 100644
+--- a/src/main/java/gg/airplane/flare/ProfilingManager.java
++++ b/src/main/java/gg/airplane/flare/ProfilingManager.java
+@@ -28,7 +28,7 @@ public class ProfilingManager {
+         return Optional.of(AirplaneConfig.profileWebUrl + "/" + currentController.getId());
+     }
+ 
+-    public static synchronized boolean start(@Nullable ProfileType type, int interval) throws UserReportableException {
++    public static synchronized boolean start(@Nullable gg.airplane.flare.ProfileType type, int interval) throws UserReportableException { // Sugarcane - fix compile
+         if (isProfiling()) {
+             return false;
+         }
