@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kylepoops <62238380+Kylepoops@users.noreply.github.com>
+Date: Sat, 26 Jun 2021 21:40:47 +0800
+Subject: [PATCH] fix compile
+
+
+diff --git a/src/main/java/gg/airplane/flare/ProfilingManager.java b/src/main/java/gg/airplane/flare/ProfilingManager.java
+index 68a9b09d6251accb31e5a44ed3132098b1960638..e69ff9a205e6eae15de954da9593576a7fc35935 100644
+--- a/src/main/java/gg/airplane/flare/ProfilingManager.java
++++ b/src/main/java/gg/airplane/flare/ProfilingManager.java
+@@ -4,6 +4,7 @@ import gg.airplane.AirplaneConfig;
+ import gg.airplane.AirplaneLogger;
+ import gg.airplane.flare.exceptions.UserReportableException;
+ import gg.airplane.flare.profiling.ProfileController;
++import gg.airplane.flare.ProfileType; // Sugarcane - fix compile
+ import org.bukkit.Bukkit;
+ import org.bukkit.craftbukkit.scheduler.MinecraftInternalPlugin;
+ import org.bukkit.scheduler.BukkitTask;
