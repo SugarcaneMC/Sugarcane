@@ -3,6 +3,7 @@ From: tr7zw <tr7zw@live.de>
 Date: Fri, 31 Jul 2020 21:48:14 -0500
 Subject: [PATCH] Item stuck sleep config
 
+Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 index 2dac4bc346eb1dde1f8d92c3e5b9648b2c433617..c63e1093ebddff5fb2d5718879847832baea04f9 100644
