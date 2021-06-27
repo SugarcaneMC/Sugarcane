@@ -13,7 +13,7 @@ index e76973410c663234cef5e6709ff5b5bd24c5cddc..6afc36e5924d1bb90028ca7ac5eb7a9f
                      Properties properties = new Properties();
                      properties.setProperty("eula", "false");
 -                    properties.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).");  // Paper - fix lag; // Tuinity - Tacos are disgusting
-+                    properties.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula). Awooo");  // Paper - fix lag; // Tuinity - Tacos are disgusting
++                    properties.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula). Awooo"); // Sugarcane // Paper - fix lag; // Tuinity - Tacos are disgusting
                  } catch (Throwable var5) {
                      if (outputStream != null) {
                          try {
