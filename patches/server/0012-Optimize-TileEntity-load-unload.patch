@@ -3,7 +3,7 @@ From: tr7zw <tr7zw@live.de>
 Date: Wed, 5 Aug 2020 08:08:44 -0500
 Subject: [PATCH] Optimize TileEntity load/unload
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
 index 5635b1049f950b8520f527b015c9404c80f5d86c..e4479c153f11fe70eed76e9b160538865a273a65 100644

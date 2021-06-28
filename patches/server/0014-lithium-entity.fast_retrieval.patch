@@ -4,6 +4,8 @@ Date: Fri, 18 Jun 2021 17:23:19 -0400
 Subject: [PATCH] lithium: entity.fast_retrieval
 
 From Yatopia
+Original code by JellySquid, licensed under GNU Lesser General Public License v3.0
+you can find the original code on https://github.com/CaffeineMC/lithium-fabric/ (Yarn mappings)
 
 diff --git a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java b/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
 index 24552500307c42f9f3dc5c4d9ba73a84a787423a..48a16dd572f73d9803e05036b263073ae321f18c 100644

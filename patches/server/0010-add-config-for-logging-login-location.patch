@@ -3,7 +3,7 @@ From: Simon Gardling <titaniumtown@gmail.com>
 Date: Wed, 20 Jan 2021 16:36:48 -0500
 Subject: [PATCH] add config for logging login location
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
 index cd756f78643285a71943acf54a83c3f30f6be68c..4543bf2b045f8787883ded4f1032e3d1fece4790 100644
