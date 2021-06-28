@@ -5,6 +5,7 @@ Subject: [PATCH] New nbt cache
 
 The goal of this patch is to reduce I/O operations from the main thread while saving player data and also to avoid too many I/O operations while reading NBT Player file by using a cache (Which start to delete the oldest data when there is too much player compared to the map size)
 
+Original code by Yatopia, licensed under MIT License
 Co-authored-by: ishland <ishlandmc@yeah.net>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
