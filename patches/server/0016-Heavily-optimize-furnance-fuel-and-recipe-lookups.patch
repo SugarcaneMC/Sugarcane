@@ -8,7 +8,7 @@ Co-authored-by: Mykyta Komarn <nkomarn@hotmail.com>
 Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
-index c559ec5041474e585e4d95a664c84e1fa895cf16..0dc25a12bc487895bb9a8d08acedb247d318c912 100644
+index 348e485897c34cca19113cc35f055a58778ca38b..db3d7d173dbb275c653e47c36842028058f434ed 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/AbstractFurnaceBlockEntity.java
 @@ -322,7 +322,11 @@ public abstract class AbstractFurnaceBlockEntity extends BaseContainerBlockEntit
@@ -18,7 +18,7 @@ index c559ec5041474e585e4d95a664c84e1fa895cf16..0dc25a12bc487895bb9a8d08acedb247
 -            Recipe<?> irecipe = (Recipe) world.getRecipeManager().getRecipeFor((RecipeType<AbstractCookingRecipe>) blockEntity.recipeType, blockEntity, world).orElse(null); // CraftBukkit - decompile error // Eclipse fail
 +            // Recipe<?> irecipe = (Recipe) world.getRecipeManager().getRecipeFor((RecipeType<AbstractCookingRecipe>) blockEntity.recipeType, blockEntity, world).orElse(null); // CraftBukkit - decompile error // Eclipse fail // Sugarcane - use cached recipe if possible, otherwise look up
 +            // Sugarcane start - use cached recipe if possible, otherwise look up
-+            Recipe<?> irecipe = blockEntity.getCurrentRecipe();
++            Recipe<?> irecipe = getCurrentRecipe();
 +            if (irecipe == null) irecipe = (Recipe) world.getRecipeManager().getRecipeFor((RecipeType<AbstractCookingRecipe>) blockEntity.recipeType, blockEntity, world).orElse(null); // CraftBukkit - decompile error // Eclipse fail // Sugarcane - use cached recipe if possible, otherwise look up
 +            // Sugarcane end
              int i = blockEntity.getMaxStackSize();
