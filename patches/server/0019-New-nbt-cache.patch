@@ -9,7 +9,7 @@ Original code by Yatopia, licensed under MIT License
 Co-authored-by: ishland <ishlandmc@yeah.net>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index e8dc7f21c709ecc70050e863cf91b6adca5d871e..7d7e4a7c2fbb45d54b7b1bf81f988991f741e1e9 100644
+index 174f2d8e97718986437493640bd01f39cc0059f1..b9cd3d1f155772205bd6d4fda855d3de17ae93fa 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1072,7 +1072,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
