@@ -1,3 +1,8 @@
+# You can use this file to import files from vanilla into the project
+# both fully qualified and a file based syntax are accepted here:
+# minecraft net.minecraft.world.level.entity.LevelEntityGetterAdapter
+# minecraft net/minecraft/world/level/entity/LevelEntityGetter.java
+#
 # You can use this file to import files from minecraft libraries into the project
 # format:
 #     <artifactId> <fileName>
@@ -5,4 +10,5 @@
 # authlib com/mojang/authlib/yggdrasil/YggdrasilGameProfileRepository.java
 # datafixerupper com.mojang.datafixers.DataFixerBuilder
 # datafixerupper com/mojang/datafixers/util/Either.java
-authlib com/mojang/authlib/GameProfile.java
+
+#authlib com/mojang/authlib/GameProfile.java
