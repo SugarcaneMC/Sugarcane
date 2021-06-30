@@ -1,5 +1,6 @@
 name: Bug Report
 description: Report bugs or problems related to behavior.
+labels: bug
 body:
   - type: markdown
     attributes:
