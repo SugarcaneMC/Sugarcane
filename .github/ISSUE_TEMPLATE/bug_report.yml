@@ -1,0 +1,53 @@
+name: Bug Report
+description: Report bugs or problems related to behavior.
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before reporting an issue, please make sure you are on the latest version of Sugarcane.
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual behavior
+      description: What actually happened.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Cite any steps you did to reproduce the bug. You can also cite videos, schematics, maps...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Plugin list
+      description: All plugins running on the server. You can get this by running /plugins.
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Agreements
+      description: Please agree to the following.
+      options:
+        - label: I am running the latest version of Sugarcane.
+          required: true
+        - label: I have searched for and ensured there isn't already an open issue regarding this.
+          required: true
+        - label: My version of Minecraft is supported by Sugarcane.
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Other
+      description: |
+        Please include other helpful information below.
+        The more information we receive, the quicker and more effective we can be at finding the solution to the issue.
+    validations:
+      required: false
