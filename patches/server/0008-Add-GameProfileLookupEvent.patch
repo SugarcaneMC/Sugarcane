@@ -6,7 +6,7 @@ Subject: [PATCH] Add GameProfileLookupEvent
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java b/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
-index ef6aab69daa7ab952408b573bff6c6996cbc349a..3dad03061b77648d443bcadb1ba89a439159063a 100644
+index ef6aab69daa7ab952408b573bff6c6996cbc349a..f585b8f79b8649a3224b04d6540fb1f38eb30dd1 100644
 --- a/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
 +++ b/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
 @@ -189,9 +189,17 @@ public class CraftPlayerProfile implements PlayerProfile {
@@ -31,10 +31,10 @@ index ef6aab69daa7ab952408b573bff6c6996cbc349a..3dad03061b77648d443bcadb1ba89a43
              if (this.profile.isComplete()) {
                  server.getProfileCache().add(this.profile);
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-index f0192a009f6a21d1781ce709624a9187048d9a08..cb7f92e6bb0d92377c61a04f381ba7eab67b0b26 100644
+index 705d5ebb3d7b40745b318617ea39a7ea785b9504..54ef8e85148ca3dad38e93a1654fd0d0e6ff051d 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-@@ -149,7 +149,15 @@ public class SkullBlockEntity extends BlockEntity {
+@@ -152,7 +152,15 @@ public class SkullBlockEntity extends BlockEntity {
                  Property property = (Property) Iterables.getFirst(gameprofile1.getProperties().get("textures"), (Object) null);
  
                  if (property == null) {
@@ -50,4 +50,4 @@ index f0192a009f6a21d1781ce709624a9187048d9a08..cb7f92e6bb0d92377c61a04f381ba7ea
 +                    }
                  }
  
-                 SkullBlockEntity.profileCache.add(gameprofile1);
+                 GameProfile finalGameprofile = gameprofile1;

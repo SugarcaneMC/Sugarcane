@@ -10,10 +10,10 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index bfb9daee37f2ff9507729fc3fa1cae9570e41397..1e547cba9e8e1f7a1fa29f25859285db9d5f0c4d 100644
+index dc18c6919b82ed47f0e98c762fcf381c002331ba..c39976fb0d460e51778057d05d17958b9494b407 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -47,6 +47,7 @@ dependencies {
+@@ -53,6 +53,7 @@ dependencies {
      implementation("org.apache.logging.log4j:log4j-iostreams:2.14.1") // Paper
      implementation("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      implementation("org.ow2.asm:asm:9.1")
@@ -23,7 +23,7 @@ index bfb9daee37f2ff9507729fc3fa1cae9570e41397..1e547cba9e8e1f7a1fa29f25859285db
          isTransitive = false
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/Constants.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/Constants.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b9a6b473a84f4310379f443c117a05108633d21c
+index 0000000000000000000000000000000000000000..4604b03ecf495e4b1c0c5e3746ed1d09482f9a48
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/Constants.java
 @@ -0,0 +1,7 @@
@@ -36,7 +36,7 @@ index 0000000000000000000000000000000000000000..b9a6b473a84f4310379f443c117a0510
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/FastRandom.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/FastRandom.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2fa4f77632a37ebb1b1ab0b74f136de4447e27f5
+index 0000000000000000000000000000000000000000..e23d6f872c09b6516cd0671169d5b14b062f4d11
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/FastRandom.java
 @@ -0,0 +1,64 @@
@@ -106,7 +106,7 @@ index 0000000000000000000000000000000000000000..2fa4f77632a37ebb1b1ab0b74f136de4
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/TimeUtils.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/TimeUtils.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..96ff0318198b88fb34d06149bc338f1403aed57a
+index 0000000000000000000000000000000000000000..7c734eb67c2e6bf4ed4467a855f26ef40ffa6d8c
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/TimeUtils.java
 @@ -0,0 +1,27 @@

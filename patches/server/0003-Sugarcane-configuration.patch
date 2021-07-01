@@ -41,7 +41,7 @@ index b737d50547c1b0e396facc6c2aa38201e208ed84..828b0dfcaf2a04f1ae10546f8380608c
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index d65ca67bb0d46ecd8a4003e44cfec71661679480..cd756f78643285a71943acf54a83c3f30f6be68c 100644
+index 570cea8ee6a442b2dc3c6ef849294ef0c02027ca..7b1ed0c41bcc9fdc66d6f4b9322e979c09a9b9ed 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -267,7 +267,7 @@ public abstract class PlayerList {
@@ -94,7 +94,7 @@ index f59aabf306c3ffed4a5f34dcb434750abe7b461a..1649a4ee2a7653a0ca6157249ed29fa4
          if (this.fireImmune() || this.level.isClientSide) {
              this.clearFire();
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index e04642698effbfcf8bc69a128a3f5d1c45dcb46a..f0f363b5e28c4d448fb640997851ba4de7ad3d15 100644
+index 1c7e5bf6e228d046f6ce8695e8fba0808d510702..974cbea20d4000b553544c60c02a1159db1a3721 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -871,6 +871,7 @@ public final class CraftServer implements Server {
@@ -105,7 +105,7 @@ index e04642698effbfcf8bc69a128a3f5d1c45dcb46a..f0f363b5e28c4d448fb640997851ba4d
          }
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
-@@ -2384,6 +2385,13 @@ public final class CraftServer implements Server {
+@@ -2394,6 +2395,13 @@ public final class CraftServer implements Server {
              org.spigotmc.RestartCommand.restart();
          }
  
@@ -120,7 +120,7 @@ index e04642698effbfcf8bc69a128a3f5d1c45dcb46a..f0f363b5e28c4d448fb640997851ba4d
          public void broadcast(BaseComponent component) {
              for (Player player : CraftServer.this.getOnlinePlayers()) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 332c33c95cc450d76f512e58dd6d4b61ea2de431..e955fabb657a5e199e2efc8ed52b143f4060f564 100644
+index c59deadcfbfd5afbf951a167979a4eceb0c63579..aa03c70f0e78866840154ecb6d2c3e4830802f06 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -154,6 +154,14 @@ public class Main {
