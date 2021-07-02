@@ -42,6 +42,33 @@ body:
           required: true
         - label: My version of Minecraft is supported by Sugarcane.
           required: true
+    - type: textarea
+    attributes:
+      label: Sugarcane version
+      description: |
+        Run `/version` on your server and **paste** the full, unmodified output here.
+        "latest" is *not* a version; we require the output of `/version` so we can adequately track down the issue.
+        Additionally, do NOT provide a screenshot, you MUST paste the entire output.
+        <details>
+        <summary>Example</summary>
+
+        ```
+        > version
+        [07:56:31 INFO]: This server is running Sugarcane version git-Sugarcane-"0af4854" (MC: 1.17) (Implementing API version 1.17-R0.1-SNAPSHOT) (Git: 0af4854 on 1.17/purpur)
+        Previous version: git-Sugarcane-"7a5f1f6" (MC: 1.17)
+        ```
+
+        </details>
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Logs
+      description: |
+        Please include your server logs below.
+        Please use a pasting service like Pastebin, Hastebin or Github Gist..
+    validations:
+      required: true
 
   - type: textarea
     attributes:
