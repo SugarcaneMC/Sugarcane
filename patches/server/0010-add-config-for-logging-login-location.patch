@@ -6,7 +6,7 @@ Subject: [PATCH] add config for logging login location
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index cd756f78643285a71943acf54a83c3f30f6be68c..4543bf2b045f8787883ded4f1032e3d1fece4790 100644
+index 2f529c25ffcd6c9d0e9f8ffbea3dbb9f76ad8017..43235fd01bd52c7de8a17076b964ea1ad778b700 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -482,7 +482,14 @@ public abstract class PlayerList {
@@ -16,7 +16,7 @@ index cd756f78643285a71943acf54a83c3f30f6be68c..4543bf2b045f8787883ded4f1032e3d1
 -        PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
 +
 +        // Sugarcane start - configurable logging of player login location
-+        if (org.sugarcanemc.sugarcane.server.SugarcaneConfig.logPlayerLoginLoc) {
++        if (org.sugarcanemc.sugarcane.config.SugarcaneConfig.logPlayerLoginLoc) {
 +            PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
 +        } else {
 +            PlayerList.LOGGER.info("{}[{}] logged in with entity id {}", player.getName().getString(), s1, player.getId());
@@ -25,10 +25,10 @@ index cd756f78643285a71943acf54a83c3f30f6be68c..4543bf2b045f8787883ded4f1032e3d1
      }
  
      public void updateEntireScoreboard(ServerScoreboard scoreboard, ServerPlayer player) {
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-index b19a07ad3641c4c4d06ef7cc3867018c7dc1c857..ab9898feda54854b178fd6e2f91e16b7d0ba7421 100644
---- a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 197a5f5aaf2adfab79005d1acc6d26039f7239bb..dc2f698ea72cb32bf4714d95b3e31f8b76c2dae0 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -170,6 +170,10 @@ public class SugarcaneConfig {
  		return config.getString(path, config.getString(path));
  }

@@ -6,21 +6,21 @@ Subject: [PATCH] Preload ProtocolLib EnumWrappers
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index src/main/java/net/minecraft/server/MinecraftServer.java..685220edb6690d2d560a7153d5eb9877238b57c0 100644
+index 79fdb207662b03451ee63ecbf228c44cbbe52cc5..e8b7187a6f166192d9db88a66e24a3f57b1b1e3c 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1206,6 +1206,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                  LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
                  // Paper end
  
-+                if (org.sugarcanemc.sugarcane.server.SugarcaneConfig.fixProtocolLib) org.sugarcanemc.sugarcane.server.util.SugarcanePreloadProtocolLib.run(); // Sugarcane - Preload ProtocolLib's Enum Wrappers
++                if (org.sugarcanemc.sugarcane.config.SugarcaneConfig.fixProtocolLib) org.sugarcanemc.sugarcane.util.SugarcanePreloadProtocolLib.run(); // Sugarcane - Preload ProtocolLib's Enum Wrappers
                  com.tuinity.tuinity.config.TuinityConfig.createWorldSections = false; // Tuinity - don't let plugin created worlds fill our config
                  org.spigotmc.WatchdogThread.tick(); // Paper
                  org.spigotmc.WatchdogThread.hasStarted = true; // Paper
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-index eb6786fa040ede035b649d3f9c2c117afe390406..538c98c0a237503eeadcf6c783e377249f0ba4a1 100644
---- a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 1c759480cefb206e1acb3df8f9199cabd21fcee0..197a5f5aaf2adfab79005d1acc6d26039f7239bb 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -108,18 +108,11 @@ public class SugarcaneConfig {
  			num = 0D;
  		}
@@ -57,13 +57,13 @@ index eb6786fa040ede035b649d3f9c2c117afe390406..538c98c0a237503eeadcf6c783e37724
  	public static boolean disableEntityStuckChecks = false;
  private static void disableEntityStuckChecks() {
  	disableEntityStuckChecks = getBoolean("settings.disableEntityStuckChecks", false);
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/SugarcanePreloadProtocolLib.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/SugarcanePreloadProtocolLib.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java b/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..85906aa00163a4626b16190e2e48385bc5eba801
+index 0000000000000000000000000000000000000000..c797be64814c6a81bdb7e6c9087d00bc7f872004
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/SugarcanePreloadProtocolLib.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java
 @@ -0,0 +1,28 @@
-+package org.sugarcanemc.sugarcane.server.util;
++package org.sugarcanemc.sugarcane.util;
 +
 +import net.minecraft.server.MinecraftServer;
 +import org.bukkit.Bukkit;

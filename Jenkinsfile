@@ -11,8 +11,6 @@ pipeline {
                 scmSkip(deleteBuild: true, skipPattern:'.*\\[CI-SKIP\\].*')
                 sh 'git config --global gc.auto 0'
                 sh 'rm -rf ./target'
-                sh 'rm -rf ./Sugarcane-API ./Sugarcane-Server'
-                sh 'rm -rf .gradle'
                 sh 'chmod +x ./gradlew'
                 sh './gradlew clean'
             }
@@ -35,7 +33,7 @@ pipeline {
             }
             steps {
                         sh'''
-                        ./gradlew build paperclip publish
+                        ./gradlew build paperclipJar :Sugarcane-API:publishMavenPublicationToMavenRepository
                         mkdir -p "./target"
                         cp -v "sugarcane-paperclip.jar" "./target/sugarcane-paperclip-b$BUILD_NUMBER.jar"
                         '''

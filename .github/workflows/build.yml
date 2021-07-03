@@ -25,10 +25,9 @@ jobs:
         run: chmod +x gradlew
       - name: Apply patches
         run: ./gradlew applyPatches --stacktrace
-      - name: Build Sugarcane
+      - name: Build Paperclip
         run: |
-            ./gradlew build --stacktrace
-            ./gradlew paperclip --stacktrace
+            ./gradlew build paperclipJar --stacktrace
       - name: Upload Sugarcane Paperclip
         uses: actions/upload-artifact@v2
         with:

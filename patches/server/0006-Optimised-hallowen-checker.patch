@@ -6,19 +6,19 @@ Subject: [PATCH] Optimised hallowen checker
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index d02c397a7de57d4b9885304cc42437331d85a488..320a3eb5b637cd87e40df7725ab3da2b1c29cbf3 100644
+index 10d56b2c646b58a56dc1b2cf2dac47e9f484e011..d73eff50a928932cd12f6c5948db596de09cb888 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1516,6 +1516,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Paper end
  
-+        org.sugarcanemc.sugarcane.server.util.entity.HalloweenChecker.tick(); // Sugarcane
++        org.sugarcanemc.sugarcane.util.entity.HalloweenChecker.tick(); // Sugarcane
          com.tuinity.tuinity.util.CachedLists.reset(); // Tuinity
          // Paper start
          long endTime = System.nanoTime();
 diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..f33ff5efe406c596d79c6fc31f0263bf6e0af83f 100644
+index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..72519ae321aad3d506d6c7a85473dba84864b6e3 100644
 --- a/src/main/java/net/minecraft/world/entity/ambient/Bat.java
 +++ b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
 @@ -255,10 +255,12 @@ public class Bat extends AmbientCreature {
@@ -42,13 +42,13 @@ index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..f33ff5efe406c596d79c6fc31f0263bf
          }
          return isSpookySeason;
 +         */
-+        return org.sugarcanemc.sugarcane.server.util.entity.HalloweenChecker.isHalloweenSeason();
++        return org.sugarcanemc.sugarcane.util.entity.HalloweenChecker.isHalloweenSeason();
 +        // Sugarcane end
      }
      // Airplane end
  
 diff --git a/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java b/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
-index c54a37516ef1d8a76f7161917bf448127cd98603..87e23a3ea27949d8f6b6259f6d744ac3399853ab 100644
+index cd75f895b6818fbb7ed4b0ef3df873f264bb2d1b..870168da00ed35f0074de732c0a26a7c8da12f9b 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
 @@ -156,11 +156,16 @@ public abstract class AbstractSkeleton extends Monster implements RangedAttackMo
@@ -63,13 +63,13 @@ index c54a37516ef1d8a76f7161917bf448127cd98603..87e23a3ea27949d8f6b6259f6d744ac3
  
              if (j == 10 && i == 31 && this.random.nextFloat() < 0.25F) {
 +             */
-+            if (org.sugarcanemc.sugarcane.server.util.entity.HalloweenChecker.isHalloweenDay() && this.random.nextFloat() < 0.25F) {
++            if (org.sugarcanemc.sugarcane.util.entity.HalloweenChecker.isHalloweenDay() && this.random.nextFloat() < 0.25F) {
 +                // Sugarcane end
                  this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(this.random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN));
                  this.armorDropChances[EquipmentSlot.HEAD.getIndex()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Zombie.java b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-index bb3b932c57fd1e5b1517940c7602c7f4aeeaf17e..49bce95ec40c8477d70810cee1678dfdf1cc9dbf 100644
+index bb3b932c57fd1e5b1517940c7602c7f4aeeaf17e..1cbd0fde793df7a94021551691a37afaca019839 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 @@ -534,11 +534,16 @@ public class Zombie extends Monster {
@@ -84,18 +84,18 @@ index bb3b932c57fd1e5b1517940c7602c7f4aeeaf17e..49bce95ec40c8477d70810cee1678dfd
  
              if (j == 10 && i == 31 && this.random.nextFloat() < 0.25F) {
 +             */
-+            if (org.sugarcanemc.sugarcane.server.util.entity.HalloweenChecker.isHalloweenDay() && this.random.nextFloat() < 0.25F) {
++            if (org.sugarcanemc.sugarcane.util.entity.HalloweenChecker.isHalloweenDay() && this.random.nextFloat() < 0.25F) {
 +                // Sugarcane end
                  this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(this.random.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN));
                  this.armorDropChances[EquipmentSlot.HEAD.getIndex()] = 0.0F;
              }
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/entity/HalloweenChecker.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/entity/HalloweenChecker.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/entity/HalloweenChecker.java b/src/main/java/org/sugarcanemc/sugarcane/util/entity/HalloweenChecker.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c4fc90aa523b062c1860b4d679707e0b65bd70dc
+index 0000000000000000000000000000000000000000..239779bfd8a200b3bed6715a89573312c6505aca
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/entity/HalloweenChecker.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/entity/HalloweenChecker.java
 @@ -0,0 +1,59 @@
-+package org.sugarcanemc.sugarcane.server.util.entity;
++package org.sugarcanemc.sugarcane.util.entity;
 +
 +import java.time.LocalDate;
 +import java.time.temporal.ChronoField;

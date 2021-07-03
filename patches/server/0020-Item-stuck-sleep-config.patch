@@ -6,7 +6,7 @@ Subject: [PATCH] Item stuck sleep config
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index 2dac4bc346eb1dde1f8d92c3e5b9648b2c433617..c63e1093ebddff5fb2d5718879847832baea04f9 100644
+index 2dac4bc346eb1dde1f8d92c3e5b9648b2c433617..2c54bfaf7a2991cf05c99f8bc52f939e8fb83cf7 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -126,7 +126,7 @@ public class ItemEntity extends Entity {
@@ -14,15 +14,15 @@ index 2dac4bc346eb1dde1f8d92c3e5b9648b2c433617..c63e1093ebddff5fb2d5718879847832
              if (this.level.isClientSide) {
                  this.noPhysics = false;
 -            } else {
-+            } else if (!this.onGround || this.noPhysics || this.tickCount % org.sugarcanemc.sugarcane.server.SugarcaneConfig.itemStuckSleepTicks == 0) { // Sugarcane - Item stuck sleep config
++            } else if (!this.onGround || this.noPhysics || this.tickCount % org.sugarcanemc.sugarcane.config.SugarcaneConfig.itemStuckSleepTicks == 0) { // Sugarcane - Item stuck sleep config
                  this.noPhysics = !this.level.noCollision((Entity) this, this.getBoundingBox().deflate(1.0E-7D), (entity) -> {
                      return true;
                  });
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-index 2408f2e9b68c1fc2e6da558d14dde9c5734568b8..949c9438008acb849472d94ddd3deadb9114f9ae 100644
---- a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
-@@ -210,4 +210,9 @@ private static void brandName() {
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 62e092df7b3fec588dcb7ac83b578db6f2d15255..49cbc5d29882b14b3f590cbf2530afd08b950e4f 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -211,4 +211,9 @@ private static void brandName() {
          checkFlying = getBoolean("settings.checks.flight", checkFlying);
          checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
      }

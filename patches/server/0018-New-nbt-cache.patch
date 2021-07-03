@@ -9,7 +9,7 @@ Original code by Yatopia, licensed under MIT License
 Co-authored-by: ishland <ishlandmc@yeah.net>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 174f2d8e97718986437493640bd01f39cc0059f1..b9cd3d1f155772205bd6d4fda855d3de17ae93fa 100644
+index e8b7187a6f166192d9db88a66e24a3f57b1b1e3c..dc2fb3516e94e7be859bd49504806e8a016600d5 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1072,7 +1072,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -23,7 +23,7 @@ index 174f2d8e97718986437493640bd01f39cc0059f1..b9cd3d1f155772205bd6d4fda855d3de
          if (org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) {
              MinecraftServer.LOGGER.info("Saving usercache.json");
 diff --git a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
-index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..a8eb3f0e5dcf78955a76b93d6f268a6b65930511 100644
+index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..63a6c513eaf215f4b71b45ecc5cbff498e3e8d71 100644
 --- a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 +++ b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 @@ -24,6 +24,10 @@ public class PlayerDataStorage {
@@ -31,7 +31,7 @@ index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..a8eb3f0e5dcf78955a76b93d6f268a6b
      private final File playerDir;
      protected final DataFixer fixerUpper;
 +    // Sugarcane start - NBT Cache system
-+    private final org.sugarcanemc.sugarcane.server.cache.NBTCache dataCache = new org.sugarcanemc.sugarcane.server.cache.NBTCache();
++    private final org.sugarcanemc.sugarcane.cache.NBTCache dataCache = new org.sugarcanemc.sugarcane.cache.NBTCache();
 +    public final java.util.concurrent.ExecutorService executorService = java.util.concurrent.Executors.newSingleThreadExecutor(new com.google.common.util.concurrent.ThreadFactoryBuilder().setDaemon(true).setPriority(Thread.NORM_PRIORITY - 1).build());
 +    // Sugarcane end
  
@@ -104,13 +104,13 @@ index 10e4985e2eb09e6d736c0ac976ef8009907c0f6a..a8eb3f0e5dcf78955a76b93d6f268a6b
              // Spigot Start
              if ( usingWrongFile )
              {
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/cache/NBTCache.java b/src/main/java/org/sugarcanemc/sugarcane/server/cache/NBTCache.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/cache/NBTCache.java b/src/main/java/org/sugarcanemc/sugarcane/cache/NBTCache.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7426d8b9dbf745f78b7d774c6ed358a5c7abdf04
+index 0000000000000000000000000000000000000000..a1db826de6fd53787c7e3f0d8dd8365d452f4ac0
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/cache/NBTCache.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/cache/NBTCache.java
 @@ -0,0 +1,32 @@
-+package org.sugarcanemc.sugarcane.server.cache;
++package org.sugarcanemc.sugarcane.cache;
 +
 +import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap;
 +import net.minecraft.server.MinecraftServer;

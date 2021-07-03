@@ -90,7 +90,7 @@ index d8757cce8218490bf6b4b37a5a230be00f2e0c30..1c7e5bf6e228d046f6ce8695e8fba080
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..7e8596341414f47b2555dfc1e74771408b8abbd9 100644
+index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..89d6fafc4626adcb9f363b7887500416661eb114 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -395,7 +395,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
@@ -98,7 +98,7 @@ index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..7e8596341414f47b2555dfc1e7477140
      @Override
      public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
 -        return new com.destroystokyo.paper.PaperVersionFetcher();
-+        return new org.sugarcanemc.sugarcane.server.util.VersionFetcher.SugarcaneVersionFetcher(); // Sugarcane
++        return new org.sugarcanemc.sugarcane.util.VersionFetcher.SugarcaneVersionFetcher(); // Sugarcane
      }
  
      @Override
@@ -115,13 +115,13 @@ index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a
          Properties properties = new Properties();
  
          if (stream != null) {
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f2dafd719e3fb9c7257cbac8efc261acf94f4db4
+index 0000000000000000000000000000000000000000..f4ba9265a95a0dd1fc9a4a1017d3e9a4dc6b9d42
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 @@ -0,0 +1,132 @@
-+package org.sugarcanemc.sugarcane.server.util.VersionFetcher;
++package org.sugarcanemc.sugarcane.util.VersionFetcher;
 +
 +import com.destroystokyo.paper.VersionHistoryManager;
 +import com.google.common.base.Charsets;
@@ -165,7 +165,7 @@ index 0000000000000000000000000000000000000000..f2dafd719e3fb9c7257cbac8efc261ac
 +    public Component getVersionMessage(@Nonnull String serverVersion) {
 +        if (serverVersion.equals("null")) return Component.text("Custom build");
 +        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
-+        String branch = "ver/1.17"; //String branch = String.join("-", Arrays.copyOfRange(parts, 0, parts.length - 3)); // add back when main branch
++        String branch = String.join("-", Arrays.copyOfRange(parts, 0, parts.length - 3));
 +        String version = parts[parts.length - 3];
 +        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, version);
 +        final Component history = getHistory();
