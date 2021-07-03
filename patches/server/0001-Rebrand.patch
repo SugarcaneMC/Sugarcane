@@ -117,7 +117,7 @@ index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a
          if (stream != null) {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f4ba9265a95a0dd1fc9a4a1017d3e9a4dc6b9d42
+index 0000000000000000000000000000000000000000..36f0f7c55c7451140d5913994834f26e44d8496a
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 @@ -0,0 +1,132 @@
@@ -165,7 +165,7 @@ index 0000000000000000000000000000000000000000..f4ba9265a95a0dd1fc9a4a1017d3e9a4
 +    public Component getVersionMessage(@Nonnull String serverVersion) {
 +        if (serverVersion.equals("null")) return Component.text("Custom build");
 +        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
-+        String branch = String.join("-", Arrays.copyOfRange(parts, 0, parts.length - 3));
++        String branch = "1.17/dev" // String branch = String.join("-", Arrays.copyOfRange(parts, 0, parts.length - 3)); // version fetcher needs the branch to be hardcoded
 +        String version = parts[parts.length - 3];
 +        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, version);
 +        final Component history = getHistory();

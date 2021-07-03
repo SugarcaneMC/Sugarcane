@@ -7,7 +7,7 @@ From Yatopia
 also some basic settings that dont deserve a patch
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 9d920565ff65a84b1b9a2a4777fd8bc8f07e0153..524983853bf7aba4879fbc4ef3d122e1856f55e9 100644
+index 9d920565ff65a84b1b9a2a4777fd8bc8f07e0153..a13619d648c2484236b3006a4d363b3de8a39b01 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -229,7 +229,8 @@ public class TimingsExport extends Thread {
@@ -16,12 +16,12 @@ index 9d920565ff65a84b1b9a2a4777fd8bc8f07e0153..524983853bf7aba4879fbc4ef3d122e1
              pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Tuinity - add config to timings report
 -            pair("tuinity", mapAsJSON(Bukkit.spigot().getTuinityConfig(), null)) // Tuinity - add config to timings report
 +            pair("tuinity", mapAsJSON(Bukkit.spigot().getTuinityConfig(), null)), // Tuinity - add config to timings report
-+            pair("Sugarcane", mapAsJSON(Bukkit.spigot().getSugarcaneConfig(), null)) // Sugarcane - add config to timings report
++            pair("sugarcane", mapAsJSON(Bukkit.spigot().getSugarcaneConfig(), null)) // Sugarcane - add config to timings report
          ));
  
          new TimingsExport(listeners, parent, history).start();
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index b737d50547c1b0e396facc6c2aa38201e208ed84..74f3b9cc03be46398c2246f27c610508a488463b 100644
+index b737d50547c1b0e396facc6c2aa38201e208ed84..3e04ae5db9bf63485403a0cabb738c3fad9f2683 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -225,7 +225,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -31,7 +31,7 @@ index b737d50547c1b0e396facc6c2aa38201e208ed84..74f3b9cc03be46398c2246f27c610508
 -
 +        // Sugarcane start
 +        try {
-+            org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((java.io.File) options.valueOf("Sugarcane-settings"));
++            org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((java.io.File) options.valueOf("sugarcane-settings"));
 +        } catch (Exception e) {
 +            DedicatedServer.LOGGER.error("Unable to load server configuration", e);
 +            return false;
@@ -94,7 +94,7 @@ index f59aabf306c3ffed4a5f34dcb434750abe7b461a..aa9dcae4c5b4be0ba5008168cc6b136d
          if (this.fireImmune() || this.level.isClientSide) {
              this.clearFire();
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 1c7e5bf6e228d046f6ce8695e8fba0808d510702..d895210504c287781098bccf45727f82bbcff1fa 100644
+index e7ad65f2337a2c60a5e43b8481931d50b6922eac..66c219228dcf0ea171a1baca5cf7ad90a32c3e1c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -871,6 +871,7 @@ public final class CraftServer implements Server {
