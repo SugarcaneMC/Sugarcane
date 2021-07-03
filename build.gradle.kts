@@ -23,6 +23,7 @@ dependencies {
 
 subprojects {
     apply(plugin = "java")
+    apply(plugin = "maven-publish")
 
     java {
         toolchain {
