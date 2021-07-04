@@ -42,7 +42,7 @@ body:
           required: true
         - label: My version of Minecraft is supported by Sugarcane.
           required: true
-    - type: textarea
+  - type: textarea
     attributes:
       label: Sugarcane version
       description: |
