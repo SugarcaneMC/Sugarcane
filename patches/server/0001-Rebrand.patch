@@ -197,7 +197,7 @@ index 0000000000000000000000000000000000000000..a10853c2489c9a286545a16cc1b505c1
 +    // modified from PurpurVersionFetcher
 +    private static int fetchDistanceFromJenkins(String branch, int jenkinsBuild) {
 +        try {
-+            try (BufferedReader reader = Resources.asCharSource(new URL("https://jenkins.sugarcanemc.org/job/SugarcaneMC/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
++            try (BufferedReader reader = Resources.asCharSource(new URL("https://jenkins.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
 +                return Integer.decode(reader.readLine()) - jenkinsBuild;
 +            } catch (NumberFormatException ex) {
 +                ex.printStackTrace();
