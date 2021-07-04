@@ -2,6 +2,10 @@ pipeline {
     agent { label 'slave' }
     options { timestamps() }
 
+   environment {
+        discord_webhook1 = credentials('discord_webhook')
+    }
+    
     stages {
         stage('Cleanup') {
             tools {
