@@ -31,10 +31,10 @@ index ef6aab69daa7ab952408b573bff6c6996cbc349a..c99f860c2f205c5487431ef95d5a4bec
              if (this.profile.isComplete()) {
                  server.getProfileCache().add(this.profile);
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-index 705d5ebb3d7b40745b318617ea39a7ea785b9504..b8497558342f74633a2b043f3b23151e20052be4 100644
+index 96863338e1642105f71e681ec2b32c882b3ea342..948c58d20405ec7628dee6fdcd0a06f9757dc484 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-@@ -152,7 +152,15 @@ public class SkullBlockEntity extends BlockEntity {
+@@ -156,7 +156,15 @@ public class SkullBlockEntity extends BlockEntity {
                  Property property = (Property) Iterables.getFirst(gameprofile1.getProperties().get("textures"), (Object) null);
  
                  if (property == null) {
