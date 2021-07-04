@@ -15,15 +15,18 @@ jobs:
           git config --global user.email "ci@github.com"
           git config --global user.name "Github Actions"
    
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Apply patches
-        run: ./gradlew applyPatches --stacktrace
-      - name: Build Paperclip
-        run: |
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Apply patches
+      run: ./gradlew applyPatches --stacktrace
+      
+    - name: Build Paperclip
+      run: |
             ./gradlew build paperclipJar --stacktrace
-      - name: Upload Sugarcane Paperclip
-        uses: actions/upload-artifact@v2
-        with:
+      
+    - name: Upload Sugarcane Paperclip
+      uses: actions/upload-artifact@v2
+      with:
           name: Sugarcane
           path: sugarcane-paperclip.jar
