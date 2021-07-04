@@ -44,6 +44,15 @@ pipeline {
             steps {
                 archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
             }
+        }
+        
+     
+        stage('Discord Webhook') {
+            steps {
+                script {
+                    discordSend description: "Sugarcane Jenkins Build", footer: "Sugarcane", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: discord_webhook1
+                }
+            }   
          post {
               always {
                    cleanWs()
