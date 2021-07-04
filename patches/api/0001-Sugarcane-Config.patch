@@ -6,10 +6,10 @@ Subject: [PATCH] Sugarcane Config
 From Yatopia
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index f55ae8275c297c4c86215fba8d7197ffe9715879..78e6bd4a1dbde5a72fa15c9889b74ca57d8d0e25 100644
+index 8482c4a664a02614fd59f74a4f9dd6d2e32003f5..51284a18cb79995f817012ad63d2ad404c90cf7c 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1614,6 +1614,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1634,6 +1634,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
          // Tuinity end - add config to timings report
  

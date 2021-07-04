@@ -8,14 +8,14 @@ Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de>
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index e8414592b3afeb1e5db2b817b8fb7c13e073b9aa..2b9bcd008030a496244f5cfc1e0503f7e50ea479 100644
+index 001d6e4f6d9d91c6929ae84c53dbd23c6c8112c9..c62cb301a260a0d703f7ca97b54defec0d45b46b 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -1940,6 +1940,16 @@ public final class Bukkit {
+@@ -1983,6 +1983,16 @@ public final class Bukkit {
          return server.isStopping();
      }
  
-+    // Yatopia start
++    // Sugarcane start
 +    @Deprecated
 +    public static long getLastTickMs() {
 +        return server.getLastTickMs();
@@ -23,20 +23,20 @@ index e8414592b3afeb1e5db2b817b8fb7c13e073b9aa..2b9bcd008030a496244f5cfc1e0503f7
 +    @NotNull public static java.time.Duration getLastTickTime() {
 +        return server.getLastTickTime();
 +    }
-+    // Yatopia end
++    // Sugarcane end
 +
      /**
       * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager
       *
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 78e6bd4a1dbde5a72fa15c9889b74ca57d8d0e25..7e8fb6a693aa6826c83b263dc07eda4c5eea0f9c 100644
+index 51284a18cb79995f817012ad63d2ad404c90cf7c..3d5601a8a327ecc7806aa3568d78f342b69a5fbb 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1718,6 +1718,26 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1738,6 +1738,26 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      boolean isStopping();
  
-+    // Yatopia start
++    // Sugarcane start
 +    /**
 +     * Returns the time the last tick took in milliseconds.
 +     *
@@ -54,7 +54,7 @@ index 78e6bd4a1dbde5a72fa15c9889b74ca57d8d0e25..7e8fb6a693aa6826c83b263dc07eda4c
 +     */
 +    @NotNull
 +    java.time.Duration getLastTickTime();
-+    // Yatopia end
++    // Sugarcane end
 +
      /**
       * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager

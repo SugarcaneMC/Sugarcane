@@ -25,6 +25,79 @@ We **HIGHLY RECOMMEND TO NOT USE the development builds for any kind of producti
 
 If you find any issue or have some suggestion, feel free to [open a issue](https://github.com/SugarcaneMC/Sugarcane/issues/new).
 
+## How To (Plugin developers)
+
+<details><summary>Gradle</summary>
+<p>
+
+> ##### Groovy DSL
+
+First, add the SugarcaneMC repository
+
+```groovy
+repositories {
+    maven {
+        url 'https://mvn.sugarcanemc.org/repository/maven-public/'
+    }
+}
+```
+Then, add the Sugarcane-API dependency:
+
+```groovy
+dependencies {
+    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.17-R0.1-SNAPSHOT"
+}
+ ```
+ 
+> #### Kotlin DSL
+
+First, add the SugarcaneMC repository
+
+```kotlin
+repositories {
+    maven("https://mvn.sugarcanemc.org/repository/maven-public/")
+}
+```
+
+Then, add the Sugarcane-API dependency:
+
+```kotlin
+dependencies {
+    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.17-R0.1-SNAPSHOT")
+}
+```
+
+</p>
+</details>
+
+<details><summary>Maven</summary>
+<p>
+    
+First, add the SugarcaneMC repository
+
+```xml
+<repositories>
+    <repository>
+        <id>sugarcanemc-repo</id>
+        <url>https://mvn.sugarcanemc.org/repository/maven-public/</url>
+    </repository>
+</repositories>
+```
+
+And then add the Sugarcane-API dependency:
+
+```xml
+<dependency>
+    <groupId>org.sugarcanemc.sugarcane</groupId>
+    <artifactId>sugarcane-api</artifactId>
+    <version>1.17-R0.1-SNAPSHOT</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+</p>
+</details>
+
 ## We also have a [Discord Server](https://sugarcanemc.org/discord) for support
 
 # Try it for yourself

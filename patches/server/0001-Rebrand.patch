@@ -5,10 +5,10 @@ Subject: [PATCH] Rebrand
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 0a864557a7648c7dc98e91b6d398fbd07ca120b7..bfb9daee37f2ff9507729fc3fa1cae9570e41397 100644
+index 6b3f922bc4b9f8045bf9b41cc922afd3496dd4df..dc18c6919b82ed47f0e98c762fcf381c002331ba 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -30,7 +30,7 @@ repositories {
+@@ -36,7 +36,7 @@ repositories {
  }
  
  dependencies {
@@ -17,19 +17,39 @@ index 0a864557a7648c7dc98e91b6d398fbd07ca120b7..bfb9daee37f2ff9507729fc3fa1cae95
      implementation("com.destroystokyo.paper:paper-mojangapi:1.16.5-R0.1-SNAPSHOT") // Tuinity
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.12.1")
-@@ -80,10 +80,11 @@ tasks.jar {
-     manifest {
-         val git = Git(rootProject.layout.projectDirectory.path)
-         val gitHash = git("rev-parse", "HEAD").getText().substring(0, 7)
-+        val implementationVersion = System.getenv("BUILD_NUMBER") ?: "\"$gitHash\"" // Sugarcane
+@@ -91,7 +91,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
--            "Implementation-Version" to "git-Airplane-\"$gitHash\"", // Airplane // Tuinity
+-            "Implementation-Version" to "git-Airplane-$implementationVersion", // Airplane // Tuinity
 +            "Implementation-Version" to "git-Sugarcane-$implementationVersion", // Sugarcane // Airplane // Tuinity
              "Implementation-Vendor" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Date()), // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
+diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
+index f5d01bce4d5547b4aeca96b7962b2090f47ea541..8f24d0c3fc2aeee085143176535001f5de9159f6 100644
+--- a/src/main/java/com/destroystokyo/paper/Metrics.java
++++ b/src/main/java/com/destroystokyo/paper/Metrics.java
+@@ -593,7 +593,7 @@ public class Metrics {
+             boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
+             // Only start Metrics, if it's enabled in the config
+             if (config.getBoolean("enabled", true)) {
+-                Metrics metrics = new Metrics("Airplane", serverUUID, logFailedRequests, Bukkit.getLogger()); // Tuinity - we have our own bstats page // Airplane
++                Metrics metrics = new Metrics("Sugarcane", serverUUID, logFailedRequests, Bukkit.getLogger()); // Tuinity - we have our own bstats page // Airplane
+ 
+                 metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+                     String minecraftVersion = Bukkit.getVersion();
+@@ -602,8 +602,8 @@ public class Metrics {
+                 }));
+ 
+                 metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+-                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : "offline"));
+-                metrics.addCustomChart(new Metrics.SimplePie("airplane_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Tuinity - we have our own bstats page // Airplane
++                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () ->  Bukkit.getOnlineMode() ? "online" : (PaperConfig.isProxyOnlineMode() ? "bungee" : "offline"))); // Sugarcane
++                metrics.addCustomChart(new Metrics.SimplePie("sugarcane_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Tuinity - we have our own bstats page // Airplane // Sugarcane
+ 
+                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+                     Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 index e0b1f0671d16ddddcb6725acd25a1d1d69e42701..2e34821a9ae568e2a7291db666f06b52fa361ca6 100644
 --- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
@@ -44,7 +64,7 @@ index e0b1f0671d16ddddcb6725acd25a1d1d69e42701..2e34821a9ae568e2a7291db666f06b52
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index d1167eba7449d15b874751187b1fd4679f4fbf2c..03a32575ddd28b1ce7b8bc865ba61758ae293716 100644
+index 4696a6bb393f75a3915f6ecc2d36c22a77e0f907..8cb7aa3dd7e46933407b3500e5ee5b1b513b9869 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1714,7 +1714,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -52,12 +72,12 @@ index d1167eba7449d15b874751187b1fd4679f4fbf2c..03a32575ddd28b1ce7b8bc865ba61758
      @DontObfuscate
      public String getServerModName() {
 -        return "Airplane"; // Airplane - Airplane > // Tuinity - Tuinity > //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
-+        return "Sugarcane"; // Sugarcane - Sugarcane > // Airplane - Airplane > // Tuinity - Tuinity > //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
++        return org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Sugarcane - Sugarcane > // Airplane - Airplane > // Tuinity - Tuinity > //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
      }
  
      public SystemReport fillSystemReport(SystemReport systemreport) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index a05ced9f9719ecbf20e74e5178063ce671dd804b..e04642698effbfcf8bc69a128a3f5d1c45dcb46a 100644
+index d8757cce8218490bf6b4b37a5a230be00f2e0c30..e7ad65f2337a2c60a5e43b8481931d50b6922eac 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
@@ -65,12 +85,12 @@ index a05ced9f9719ecbf20e74e5178063ce671dd804b..e04642698effbfcf8bc69a128a3f5d1c
  
  public final class CraftServer implements Server {
 -    private final String serverName = "Airplane"; // Airplane // Tuinity // Paper
-+    private final String serverName = "Sugarcane"; // Sugarcane // Airplane // Tuinity // Paper
++    private final String serverName = org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Sugarcane // Airplane // Tuinity // Paper
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..7e8596341414f47b2555dfc1e74771408b8abbd9 100644
+index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..89d6fafc4626adcb9f363b7887500416661eb114 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -395,7 +395,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
@@ -78,7 +98,7 @@ index edf7e8d65d7f67f2f34490fdb766eca7d3b17aee..7e8596341414f47b2555dfc1e7477140
      @Override
      public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
 -        return new com.destroystokyo.paper.PaperVersionFetcher();
-+        return new org.sugarcanemc.sugarcane.server.util.VersionFetcher.SugarcaneVersionFetcher(); // Sugarcane
++        return new org.sugarcanemc.sugarcane.util.VersionFetcher.SugarcaneVersionFetcher(); // Sugarcane
      }
  
      @Override
@@ -95,13 +115,13 @@ index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a
          Properties properties = new Properties();
  
          if (stream != null) {
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f2dafd719e3fb9c7257cbac8efc261acf94f4db4
+index 0000000000000000000000000000000000000000..a10853c2489c9a286545a16cc1b505c1f79c4e6b
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/VersionFetcher/SugarcaneVersionFetcher.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 @@ -0,0 +1,132 @@
-+package org.sugarcanemc.sugarcane.server.util.VersionFetcher;
++package org.sugarcanemc.sugarcane.util.VersionFetcher;
 +
 +import com.destroystokyo.paper.VersionHistoryManager;
 +import com.google.common.base.Charsets;
@@ -145,7 +165,7 @@ index 0000000000000000000000000000000000000000..f2dafd719e3fb9c7257cbac8efc261ac
 +    public Component getVersionMessage(@Nonnull String serverVersion) {
 +        if (serverVersion.equals("null")) return Component.text("Custom build");
 +        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
-+        String branch = "ver/1.17"; //String branch = String.join("-", Arrays.copyOfRange(parts, 0, parts.length - 3)); // add back when main branch
++        String branch = "1.17/dev"; // String branch = String.join("-", Arrays.copyOfRange(parts, 0, parts.length - 3)); // version fetcher needs the branch to be hardcoded
 +        String version = parts[parts.length - 3];
 +        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, version);
 +        final Component history = getHistory();

@@ -2,10 +2,10 @@ pipeline {
     agent { label 'slave' }
     options { timestamps() }
 
-    environment {
+   environment {
         discord_webhook1 = credentials('discord_webhook')
     }
-
+    
     stages {
         stage('Cleanup') {
             tools {
@@ -15,10 +15,8 @@ pipeline {
                 scmSkip(deleteBuild: true, skipPattern:'.*\\[CI-SKIP\\].*')
                 sh 'git config --global gc.auto 0'
                 sh 'rm -rf ./target'
-                sh 'rm -rf ./Sugarcane-API ./Sugarcane-Server'
-                sh 'rm -rf .gradle'
                 sh 'chmod +x ./gradlew'
-                sh './gradlew clean -DXms1G -DXmx2G'
+                sh './gradlew clean'
             }
         }
         stage('Decompile & apply patches') {
@@ -27,9 +25,9 @@ pipeline {
             }
             steps {
                     sh '''
-                    git config --global user.email "jenkins@sugarcanemc.org"
-                    git config --global user.name "Jenkins"
-                    ./gradlew applyPatches -DXms1G -DXmx2G
+                    git config user.email "jenkins@sugarcanemc.org"
+                    git config user.name "Jenkins"
+                    ./gradlew applyPatches
                     '''
                 }
             }
@@ -39,8 +37,7 @@ pipeline {
             }
             steps {
                         sh'''
-                        ./gradlew build publish -DXms1G -DXmx2G
-                        ./gradlew paperclip -DXms1G -DXmx2G
+                        ./gradlew build paperclipJar :Sugarcane-API:publishMavenPublicationToMavenRepository
                         mkdir -p "./target"
                         cp -v "sugarcane-paperclip.jar" "./target/sugarcane-paperclip-b$BUILD_NUMBER.jar"
                         '''
@@ -51,17 +48,18 @@ pipeline {
             steps {
                 archiveArtifacts(artifacts: 'target/*.jar', fingerprint: true)
             }
-    }
-
+        }
+        
+     
         stage('Discord Webhook') {
             steps {
                 script {
                     discordSend description: "Sugarcane Jenkins Build", footer: "Sugarcane", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: discord_webhook1
                 }
-            }
-           post {
-                always {
-                    cleanWs()
+            }   
+         post {
+              always {
+                   cleanWs()
                 }
             }
         }

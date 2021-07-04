@@ -23,6 +23,7 @@ dependencies {
 
 subprojects {
     apply(plugin = "java")
+    apply(plugin = "maven-publish")
 
     java {
         toolchain {
@@ -49,6 +50,13 @@ subprojects {
         maven("https://repo.md-5.net/content/repositories/releases/")
         maven("https://hub.spigotmc.org/nexus/content/groups/public/")
         maven("https://jitpack.io")
+    }
+    configure<PublishingExtension> {
+        repositories.maven {
+            name = "maven"
+            url = uri("https://mvn.sugarcanemc.org/repository/maven-snapshots/")
+            credentials(PasswordCredentials::class)
+        }
     }
 }
 

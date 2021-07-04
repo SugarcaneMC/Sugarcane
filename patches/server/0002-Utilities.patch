@@ -10,10 +10,10 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index bfb9daee37f2ff9507729fc3fa1cae9570e41397..1e547cba9e8e1f7a1fa29f25859285db9d5f0c4d 100644
+index dc18c6919b82ed47f0e98c762fcf381c002331ba..c39976fb0d460e51778057d05d17958b9494b407 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -47,6 +47,7 @@ dependencies {
+@@ -53,6 +53,7 @@ dependencies {
      implementation("org.apache.logging.log4j:log4j-iostreams:2.14.1") // Paper
      implementation("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      implementation("org.ow2.asm:asm:9.1")
@@ -21,26 +21,26 @@ index bfb9daee37f2ff9507729fc3fa1cae9570e41397..1e547cba9e8e1f7a1fa29f25859285db
      implementation("com.googlecode.json-simple:json-simple:1.1.1") {
          // This includes junit transitively for whatever reason
          isTransitive = false
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/Constants.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/Constants.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java b/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b9a6b473a84f4310379f443c117a05108633d21c
+index 0000000000000000000000000000000000000000..0b398b7c73a22718516c14b6bba38969555ef6e1
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/Constants.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java
 @@ -0,0 +1,7 @@
-+package org.sugarcanemc.sugarcane.server.util;
++package org.sugarcanemc.sugarcane.util;
 +
 +public class Constants {
 +
 +    public static final int[] EMPTY_ARRAY = new int[0];
 +    public static final int[] ZERO_ARRAY = new int[]{0};
 +}
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/FastRandom.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/FastRandom.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java b/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2fa4f77632a37ebb1b1ab0b74f136de4447e27f5
+index 0000000000000000000000000000000000000000..08231e36b47fd0998e8578675e290fc34aba5fce
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/FastRandom.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java
 @@ -0,0 +1,64 @@
-+package org.sugarcanemc.sugarcane.server.util;
++package org.sugarcanemc.sugarcane.util;
 +
 +import org.apache.commons.rng.core.source64.XoRoShiRo128PlusPlus;
 +
@@ -104,13 +104,13 @@ index 0000000000000000000000000000000000000000..2fa4f77632a37ebb1b1ab0b74f136de4
 +        return random.nextLong();
 +    }
 +}
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/util/TimeUtils.java b/src/main/java/org/sugarcanemc/sugarcane/server/util/TimeUtils.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..96ff0318198b88fb34d06149bc338f1403aed57a
+index 0000000000000000000000000000000000000000..703df46706f0d0345b1b70bea1dc376aa4c19eca
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/util/TimeUtils.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java
 @@ -0,0 +1,27 @@
-+package org.sugarcanemc.sugarcane.server.util;
++package org.sugarcanemc.sugarcane.util;
 +
 +import java.util.concurrent.TimeUnit;
 +

@@ -3,12 +3,12 @@ From: Ivan Pekov <ivan@mrivanplays.com>
 Date: Thu, 17 Jun 2021 15:44:13 +0200
 Subject: [PATCH] Add last tick time API
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 535a0628b0b7527084a63e10fecc1248e0cbeeac..2b8cc0203ce02d20378a468515bc69b147843634 100644
+index d73eff50a928932cd12f6c5948db596de09cb888..79fdb207662b03451ee63ecbf228c44cbbe52cc5 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1183,6 +1183,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -31,10 +31,10 @@ index 535a0628b0b7527084a63e10fecc1248e0cbeeac..2b8cc0203ce02d20378a468515bc69b1
                      this.mayHaveDelayedTasks = true;
                      this.delayedTasksMaxNextTickTime = Math.max(Util.getMillis() + 50L, this.nextTickTime);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index f0f363b5e28c4d448fb640997851ba4de7ad3d15..fa62f9747777df0453d72c9f3af9eb687b96b029 100644
+index d895210504c287781098bccf45727f82bbcff1fa..d93912b2e8239e30aef72684888ca730fdfb371e 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2541,4 +2541,6 @@ public final class CraftServer implements Server {
+@@ -2551,4 +2551,6 @@ public final class CraftServer implements Server {
      }
  
      // Paper end
@@ -42,7 +42,7 @@ index f0f363b5e28c4d448fb640997851ba4de7ad3d15..fa62f9747777df0453d72c9f3af9eb68
 +    @Override public java.time.Duration getLastTickTime() { return net.minecraft.server.MinecraftServer.lastTickTime; } // Sugarcane
  }
 diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
-index 9bede6a26c08ede063c7a38f1149c811df14b258..08eb613513f0b3ebf31dfa5792ae6ebfe914f15f 100644
+index 9bede6a26c08ede063c7a38f1149c811df14b258..cd2e3a25de1c554d553be7c274648feb01012e52 100644
 --- a/src/main/java/org/spigotmc/TicksPerSecondCommand.java
 +++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
 @@ -32,6 +32,10 @@ public class TicksPerSecondCommand extends Command
@@ -69,7 +69,7 @@ index 9bede6a26c08ede063c7a38f1149c811df14b258..08eb613513f0b3ebf31dfa5792ae6ebf
 +        long toAskedUnit = unit.convert( nanos, nanosUnit );
 +        long ms = nanosUnit.toMillis( nanos );
 +        ChatColor startingColor = ms < 40 ? ChatColor.GREEN : ( ms < 50 ) ? ChatColor.YELLOW : ChatColor.RED;
-+        return startingColor.toString() + toAskedUnit + ChatColor.GOLD + org.sugarcanemc.sugarcane.server.util.TimeUtils.getFriendlyName( unit );
++        return startingColor.toString() + toAskedUnit + ChatColor.GOLD + org.sugarcanemc.sugarcane.util.TimeUtils.getFriendlyName( unit );
 +    }
 +    // Sugarcane end
  }
