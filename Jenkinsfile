@@ -15,6 +15,8 @@ pipeline {
                 scmSkip(deleteBuild: true, skipPattern:'.*\\[CI-SKIP\\].*')
                 sh 'git config --global gc.auto 0'
                 sh 'rm -rf ./target'
+                sh 'rm -rf Sugarcane-Server'
+                sh 'rm -rf Sugarcane-API'
                 sh 'chmod +x ./gradlew'
                 sh './gradlew clean'
             }
