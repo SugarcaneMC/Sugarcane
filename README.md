@@ -14,6 +14,7 @@
 
 * [Paper](https://github.com/PaperMC/Paper)
 * [Tuinity](https://github.com/Tuinity/Tuinity)
+* [Airplane](https://github.com/TECHNOVE/Airplane)
 * [Purpur](https://github.com/pl3xgaming/Purpur) - Its patches are used in a separate branch.
 * NOTE: We also borrow some patches from [Yatopia.](https://github.com/YatopiaMC/Yatopia)
 
