@@ -22,7 +22,7 @@ index 33263af33b4355e5079fadfcfae77d038aebd2c4..832ebb16b775149486d06807dd0b5764
  
          new TimingsExport(listeners, parent, history).start();
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 0cd39af26ef7f15c66cc41040da24b87d2c72b9f..59a401b890ecb954bf93613562b1ff4abe93c7df 100644
+index b58fc5c39d5cf3b88c61c0bfc55d2e98385bdaeb..39e0e33cdd125e87688d2e82c1c20306aab72bbe 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -234,7 +234,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -32,7 +32,7 @@ index 0cd39af26ef7f15c66cc41040da24b87d2c72b9f..59a401b890ecb954bf93613562b1ff4a
 -
 +        // Sugarcane start
 +        try {
-+            org.sugarcanemc.sugarcane.server.SugarcaneConfig.init((java.io.File) options.valueOf("sugarcane-settings"));
++            org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((java.io.File) options.valueOf("sugarcane-settings"));
 +        } catch (Exception e) {
 +            DedicatedServer.LOGGER.error("Unable to load server configuration", e);
 +            return false;
@@ -42,7 +42,7 @@ index 0cd39af26ef7f15c66cc41040da24b87d2c72b9f..59a401b890ecb954bf93613562b1ff4a
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 340297eaa566480997aba5537c73134ec8b5111c..3a1d428642e1e79e8259bbde007907ea7955405e 100644
+index 75ea35574ad999fd7f6cce4b794017ebc9d0f218..6b78b1d6ac2ede431cbef107ee7e322296051cd2 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -267,7 +267,7 @@ public abstract class PlayerList {
@@ -50,12 +50,12 @@ index 340297eaa566480997aba5537c73134ec8b5111c..3a1d428642e1e79e8259bbde007907ea
          playerconnection.send(new ClientboundLoginPacket(player.getId(), player.gameMode.getGameModeForPlayer(), player.gameMode.getPreviousGameModeForPlayer(), BiomeManager.obfuscateSeed(worldserver1.getSeed()), worlddata.isHardcore(), this.server.levelKeys(), this.registryHolder, worldserver1.dimensionType(), worldserver1.dimension(), this.getMaxPlayers(), worldserver1.getChunkSource().chunkMap.playerChunkManager.getLoadDistance(), flag1, !flag, worldserver1.isDebug(), worldserver1.isFlat())); // Paper - no-tick view distance // Tuinity - replace old player chunk management
          player.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
 -        playerconnection.send(new ClientboundCustomPayloadPacket(ClientboundCustomPayloadPacket.BRAND, (new FriendlyByteBuf(Unpooled.buffer())).writeUtf(this.getServer().getServerModName())));
-+        playerconnection.send(new ClientboundCustomPayloadPacket(ClientboundCustomPayloadPacket.BRAND, (new FriendlyByteBuf(Unpooled.buffer())).writeUtf((org.sugarcanemc.sugarcane.server.SugarcaneConfig.brandName)))); // Sugarcane)));
++        playerconnection.send(new ClientboundCustomPayloadPacket(ClientboundCustomPayloadPacket.BRAND, (new FriendlyByteBuf(Unpooled.buffer())).writeUtf((org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName)))); // Sugarcane)));
          playerconnection.send(new ClientboundChangeDifficultyPacket(worlddata.getDifficulty(), worlddata.isDifficultyLocked()));
          playerconnection.send(new ClientboundPlayerAbilitiesPacket(player.getAbilities()));
          playerconnection.send(new ClientboundSetCarriedItemPacket(player.getInventory().selected));
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index ee4fa43be982b686d5ba84989793def5c0d27dd2..b8a4a357758c8e0f1db537a8c08fce693b44fc92 100644
+index ee4fa43be982b686d5ba84989793def5c0d27dd2..1ebe7da8dfdd7771ec78da80eea51d3c287d50e0 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -398,22 +398,24 @@ public abstract class LivingEntity extends Entity {
@@ -74,7 +74,7 @@ index ee4fa43be982b686d5ba84989793def5c0d27dd2..b8a4a357758c8e0f1db537a8c08fce69
 -                    if (d1 > 0.0D) {
 -                        if (level.purpurConfig.teleportIfOutsideBorder && this instanceof ServerPlayer) { ((ServerPlayer) this).teleport(MCUtil.toLocation(level, level.getSharedSpawnPos())); return; } // Purpur
 -                        this.hurt(DamageSource.IN_WALL, (float) Math.max(1, Mth.floor(-d0 * d1)));
-+        if (!org.sugarcanemc.sugarcane.server.SugarcaneConfig.disableEntityStuckChecks) { // Sugarcane
++        if (!org.sugarcanemc.sugarcane.config.SugarcaneConfig.disableEntityStuckChecks) { // Sugarcane
 +            if (this.isAlive()) {
 +                if (this.isInWall()) {
 +                    this.hurt(DamageSource.IN_WALL, 1.0F);
@@ -97,25 +97,25 @@ index ee4fa43be982b686d5ba84989793def5c0d27dd2..b8a4a357758c8e0f1db537a8c08fce69
          if (this.fireImmune() || this.level.isClientSide) {
              this.clearFire();
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 558c10fb0aaa9b72ced68fd5fb4f94cd1483bb0d..6e401347df60e43eddd2e39e90e77c8ac3c60bd2 100644
+index 70b272120a2c283e9fe809b4b2389caaffce3d02..e8551dbb714019d20fb0a9b087690f3127861374 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -871,6 +871,7 @@ public final class CraftServer implements Server {
              this.playerList.getBans().load();
          } catch (IOException ex) {
              this.logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
-+            org.sugarcanemc.sugarcane.server.SugarcaneConfig.init((File) console.options.valueOf("sugarcane-settings")); // Sugarcane
++            org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((File) console.options.valueOf("sugarcane-settings")); // Sugarcane
          }
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
-@@ -2400,6 +2401,13 @@ public final class CraftServer implements Server {
+@@ -2410,6 +2411,13 @@ public final class CraftServer implements Server {
              org.spigotmc.RestartCommand.restart();
          }
  
 +        // Sugarcane start
 +        @Override
 +        public YamlConfiguration getSugarcaneConfig() {
-+            return org.sugarcanemc.sugarcane.server.SugarcaneConfig.config;
++            return org.sugarcanemc.sugarcane.config.SugarcaneConfig.config;
 +        }
 +        // Sugarcane end
 +
@@ -123,7 +123,7 @@ index 558c10fb0aaa9b72ced68fd5fb4f94cd1483bb0d..6e401347df60e43eddd2e39e90e77c8a
          public void broadcast(BaseComponent component) {
              for (Player player : CraftServer.this.getOnlinePlayers()) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 2ac68e87ae16622bf1828b3a1c71b6a13c52bea4..e274f31f1bb36370a61bcf97d67b7192edfa9ebe 100644
+index 01ca38ee35f2c1e5031ea4b8aca09a2a59c4a475..32d661358b955fd37cb2a5313eb4f2c4aedc477d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -162,6 +162,14 @@ public class Main {
@@ -141,13 +141,13 @@ index 2ac68e87ae16622bf1828b3a1c71b6a13c52bea4..e274f31f1bb36370a61bcf97d67b7192
                  // Paper start
                  acceptsAll(asList("server-name"), "Name of the server")
                          .withRequiredArg()
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..bc8a4a9f70d494bdb6e7ee737475c29b4eb31136
+index 0000000000000000000000000000000000000000..1c759480cefb206e1acb3df8f9199cabd21fcee0
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -0,0 +1,189 @@
-+package org.sugarcanemc.sugarcane.server;
++package org.sugarcanemc.sugarcane.config;
 +
 +import com.google.common.base.Throwables;
 +import java.io.File;

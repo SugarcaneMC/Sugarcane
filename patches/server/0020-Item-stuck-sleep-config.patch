@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: tr7zw <tr7zw@live.de>
+Date: Fri, 31 Jul 2020 21:48:14 -0500
+Subject: [PATCH] Item stuck sleep config
+
+Original code by Yatopia, licensed under MIT License
+
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index f6b9f56076bd6aa2d912deacef0dff75a5ac01f4..908ec2bc4f6dfe359077d09b7355b26c9752a683 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -145,7 +145,7 @@ public class ItemEntity extends Entity {
+ 
+             if (this.level.isClientSide) {
+                 this.noPhysics = false;
+-            } else {
++            } else if (!this.onGround || this.noPhysics || this.tickCount % org.sugarcanemc.sugarcane.config.SugarcaneConfig.itemStuckSleepTicks == 0) { // Sugarcane - Item stuck sleep config
+                 this.noPhysics = !this.level.noCollision((Entity) this, this.getBoundingBox().deflate(1.0E-7D), (entity) -> {
+                     return true;
+                 });
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 7ec593a8223543ea589aa8268228bebf508be876..604b1fa59c6228971c75b1e5988789655df47946 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -211,4 +211,9 @@ private static void brandName() {
+         checkFlying = getBoolean("settings.checks.flight", checkFlying);
+         checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
+     }
++
++    public static int itemStuckSleepTicks = 1;
++    private static void itemStuckSleepTicks() {
++        itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
++    }
+ }
+\ No newline at end of file

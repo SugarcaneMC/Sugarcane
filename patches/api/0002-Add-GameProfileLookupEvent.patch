@@ -17,13 +17,13 @@ index 407bf7c09304c76ef1dbec43bb5d665f02ce4840..fb86517f4396858ddd05dd047c73e80c
  
      compileOnly("org.apache.maven:maven-resolver-provider:3.8.1")
      compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.7.0")
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/server/events/GameProfileLookupEvent.java b/src/main/java/org/sugarcanemc/sugarcane/server/events/GameProfileLookupEvent.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/events/GameProfileLookupEvent.java b/src/main/java/org/sugarcanemc/sugarcane/events/GameProfileLookupEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..190b77eacba848033cdcb0874c26952028243fde
+index 0000000000000000000000000000000000000000..116e9055accce14ab6d04ffc9296c172c100ed0b
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/server/events/GameProfileLookupEvent.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/events/GameProfileLookupEvent.java
 @@ -0,0 +1,51 @@
-+package org.sugarcanemc.sugarcane.server.events;
++package org.sugarcanemc.sugarcane.events;
 +
 +import com.mojang.authlib.GameProfile;
 +import java.util.UUID;

@@ -17,7 +17,7 @@ Our changes are the following:
 Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index fc4f8a37bf976819c3deb87ddcd8be38d083856d..97c520ce98dcef0589ea76177bcde73ba755957b 100644
+index e13fe23d60d196733f5acb82aafee11644a9fc1f..c6d5cafd1e60992f81e25b76f4bdb02d0226631f 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -742,14 +742,20 @@ public abstract class PlayerList {
