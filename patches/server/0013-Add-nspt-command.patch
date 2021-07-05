@@ -111,7 +111,6 @@ index dc2f698ea72cb32bf4714d95b3e31f8b76c2dae0..15eb829f7eb5a270cd3347f8b6183505
  import org.bukkit.Bukkit;
 +import org.sugarcanemc.sugarcane.command.NSPTCommand;
 +import org.bukkit.command.Command;
-+import org.sugarcanemc.sugarcane.command.NSPTCommand;
  import org.bukkit.configuration.InvalidConfigurationException;
  import org.bukkit.configuration.file.YamlConfiguration;
  public class SugarcaneConfig {
