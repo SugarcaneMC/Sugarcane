@@ -8,12 +8,8 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/") {
-        content { onlyForConfigurations(Constants.PAPERCLIP_CONFIG) }
-    }
-    maven("https://maven.quiltmc.org/repository/release/") {
-        content { onlyForConfigurations(Constants.REMAPPER_CONFIG) }
-    }
+    maven("https://papermc.io/repo/repository/maven-public/") { content { onlyForConfigurations(Constants.PAPERCLIP_CONFIG) } }
+    maven("https://maven.quiltmc.org/repository/release/") { content { onlyForConfigurations(Constants.REMAPPER_CONFIG) } }
 }
 
 dependencies {
@@ -25,19 +21,11 @@ subprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
 
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(16))
-        }
-    }
+    java { toolchain { languageVersion.set(JavaLanguageVersion.of(16)) } }
 
-    tasks.withType<JavaCompile> {
-        options.encoding = Charsets.UTF_8.name()
-        options.release.set(16)
-    }
-    tasks.withType<Javadoc> {
-        options.encoding = Charsets.UTF_8.name()
-    }
+    tasks.withType<JavaCompile> { options.encoding = Charsets.UTF_8.name(); options.release.set(16) }
+
+    tasks.withType<Javadoc> { options.encoding = Charsets.UTF_8.name() }
 
     repositories {
         mavenCentral()
@@ -51,6 +39,7 @@ subprojects {
         maven("https://hub.spigotmc.org/nexus/content/groups/public/")
         maven("https://jitpack.io")
     }
+
     configure<PublishingExtension> {
         repositories.maven {
             name = "maven"
