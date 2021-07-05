@@ -12,7 +12,7 @@ pipeline {
                 jdk "JDK 16"
             }
             steps {
-                //scmSkip(deleteBuild: true, skipPattern:'^\\[CI-SKIP\\]')
+                scmSkip(deleteBuild: true, skipPattern:'^\\[CI-SKIP\\]')
                 sh 'git config --global gc.auto 0'
                 sh 'rm -rf ./target'
                 sh 'rm -rf Sugarcane-Server'
