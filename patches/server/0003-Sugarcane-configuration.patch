@@ -7,24 +7,25 @@ From Yatopia
 also some basic settings that dont deserve a patch
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 9d920565ff65a84b1b9a2a4777fd8bc8f07e0153..a13619d648c2484236b3006a4d363b3de8a39b01 100644
+index 33263af33b4355e5079fadfcfae77d038aebd2c4..832ebb16b775149486d06807dd0b576475dd7c15 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -229,7 +229,8 @@ public class TimingsExport extends Thread {
-             pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
+@@ -233,8 +233,9 @@ public class TimingsExport extends Thread {
              pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
              pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Tuinity - add config to timings report
--            pair("tuinity", mapAsJSON(Bukkit.spigot().getTuinityConfig(), null)) // Tuinity - add config to timings report
-+            pair("tuinity", mapAsJSON(Bukkit.spigot().getTuinityConfig(), null)), // Tuinity - add config to timings report
+             pair("tuinity", mapAsJSON(Bukkit.spigot().getTuinityConfig(), null)), // Tuinity - add config to timings report
+-            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null))
++            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null)),
+             // Purpur end
 +            pair("sugarcane", mapAsJSON(Bukkit.spigot().getSugarcaneConfig(), null)) // Sugarcane - add config to timings report
          ));
  
          new TimingsExport(listeners, parent, history).start();
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index b737d50547c1b0e396facc6c2aa38201e208ed84..3e04ae5db9bf63485403a0cabb738c3fad9f2683 100644
+index b58fc5c39d5cf3b88c61c0bfc55d2e98385bdaeb..39e0e33cdd125e87688d2e82c1c20306aab72bbe 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -225,7 +225,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -234,7 +234,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          com.tuinity.tuinity.config.TuinityConfig.init((java.io.File) options.valueOf("tuinity-settings")); // Tuinity - Server Config
          gg.airplane.AirplaneConfig.load(); // Airplane - config
          gg.airplane.commands.AirplaneCommands.init(); // Airplane - command
@@ -41,7 +42,7 @@ index b737d50547c1b0e396facc6c2aa38201e208ed84..3e04ae5db9bf63485403a0cabb738c3f
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 570cea8ee6a442b2dc3c6ef849294ef0c02027ca..2f529c25ffcd6c9d0e9f8ffbea3dbb9f76ad8017 100644
+index 75ea35574ad999fd7f6cce4b794017ebc9d0f218..6b78b1d6ac2ede431cbef107ee7e322296051cd2 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -267,7 +267,7 @@ public abstract class PlayerList {
@@ -54,10 +55,10 @@ index 570cea8ee6a442b2dc3c6ef849294ef0c02027ca..2f529c25ffcd6c9d0e9f8ffbea3dbb9f
          playerconnection.send(new ClientboundPlayerAbilitiesPacket(player.getAbilities()));
          playerconnection.send(new ClientboundSetCarriedItemPacket(player.getInventory().selected));
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index f59aabf306c3ffed4a5f34dcb434750abe7b461a..aa9dcae4c5b4be0ba5008168cc6b136d5a901262 100644
+index ee4fa43be982b686d5ba84989793def5c0d27dd2..1ebe7da8dfdd7771ec78da80eea51d3c287d50e0 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -392,21 +392,23 @@ public abstract class LivingEntity extends Entity {
+@@ -398,22 +398,24 @@ public abstract class LivingEntity extends Entity {
          this.level.getProfiler().push("livingEntityBaseTick");
          boolean flag = this instanceof net.minecraft.world.entity.player.Player;
  
@@ -71,6 +72,7 @@ index f59aabf306c3ffed4a5f34dcb434750abe7b461a..aa9dcae4c5b4be0ba5008168cc6b136d
 -                    double d1 = this.level.getWorldBorder().getDamagePerBlock();
 -
 -                    if (d1 > 0.0D) {
+-                        if (level.purpurConfig.teleportIfOutsideBorder && this instanceof ServerPlayer) { ((ServerPlayer) this).teleport(MCUtil.toLocation(level, level.getSharedSpawnPos())); return; } // Purpur
 -                        this.hurt(DamageSource.IN_WALL, (float) Math.max(1, Mth.floor(-d0 * d1)));
 +        if (!org.sugarcanemc.sugarcane.config.SugarcaneConfig.disableEntityStuckChecks) { // Sugarcane
 +            if (this.isAlive()) {
@@ -83,6 +85,7 @@ index f59aabf306c3ffed4a5f34dcb434750abe7b461a..aa9dcae4c5b4be0ba5008168cc6b136d
 +                        double d1 = this.level.getWorldBorder().getDamagePerBlock();
 +
 +                        if (d1 > 0.0D) {
++                            if (level.purpurConfig.teleportIfOutsideBorder && this instanceof ServerPlayer) { ((ServerPlayer) this).teleport(MCUtil.toLocation(level, level.getSharedSpawnPos())); return; } // Purpur
 +                            this.hurt(DamageSource.IN_WALL, (float) Math.max(1, Mth.floor(-d0 * d1)));
 +                        }
                      }
@@ -94,18 +97,18 @@ index f59aabf306c3ffed4a5f34dcb434750abe7b461a..aa9dcae4c5b4be0ba5008168cc6b136d
          if (this.fireImmune() || this.level.isClientSide) {
              this.clearFire();
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index e7ad65f2337a2c60a5e43b8481931d50b6922eac..66c219228dcf0ea171a1baca5cf7ad90a32c3e1c 100644
+index 70b272120a2c283e9fe809b4b2389caaffce3d02..e8551dbb714019d20fb0a9b087690f3127861374 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -871,6 +871,7 @@ public final class CraftServer implements Server {
              this.playerList.getBans().load();
          } catch (IOException ex) {
              this.logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
-+            org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((File) console.options.valueOf("Sugarcane-settings")); // Sugarcane
++            org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((File) console.options.valueOf("sugarcane-settings")); // Sugarcane
          }
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
-@@ -2394,6 +2395,13 @@ public final class CraftServer implements Server {
+@@ -2410,6 +2411,13 @@ public final class CraftServer implements Server {
              org.spigotmc.RestartCommand.restart();
          }
  
@@ -120,12 +123,12 @@ index e7ad65f2337a2c60a5e43b8481931d50b6922eac..66c219228dcf0ea171a1baca5cf7ad90
          public void broadcast(BaseComponent component) {
              for (Player player : CraftServer.this.getOnlinePlayers()) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index c59deadcfbfd5afbf951a167979a4eceb0c63579..35f2e2ec7e87c7bb44574192e455438110f447df 100644
+index 01ca38ee35f2c1e5031ea4b8aca09a2a59c4a475..32d661358b955fd37cb2a5313eb4f2c4aedc477d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -154,6 +154,14 @@ public class Main {
-                         .describedAs("Yml file");
-                 // Tuinity end - Server Config
+@@ -162,6 +162,14 @@ public class Main {
+                     .describedAs("Yml file");
+                 // Purpur end
  
 +                // Sugarcane start
 +                acceptsAll(asList("sugarcane", "sugarcane-settings"), "File for Sugarcane settings")

@@ -6,10 +6,10 @@ Subject: [PATCH] Optimised hallowen checker
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 10d56b2c646b58a56dc1b2cf2dac47e9f484e011..d73eff50a928932cd12f6c5948db596de09cb888 100644
+index 99b1a10eb7cbe12c0551fefc4095d027d1900521..6edba859cc23afb837b0826331592370476a2c72 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1516,6 +1516,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1531,6 +1531,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Paper end
  
@@ -18,10 +18,10 @@ index 10d56b2c646b58a56dc1b2cf2dac47e9f484e011..d73eff50a928932cd12f6c5948db596d
          // Paper start
          long endTime = System.nanoTime();
 diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..72519ae321aad3d506d6c7a85473dba84864b6e3 100644
+index e749f0f3a35783cada224e4b0c12f294c3245210..0931abb82a70758ea9bbace703b2d5dbf66817c4 100644
 --- a/src/main/java/net/minecraft/world/entity/ambient/Bat.java
 +++ b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-@@ -255,10 +255,12 @@ public class Bat extends AmbientCreature {
+@@ -315,10 +315,12 @@ public class Bat extends AmbientCreature {
      }
  
      // Airplane start - only check for spooky season once an hour
@@ -37,7 +37,7 @@ index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..72519ae321aad3d506d6c7a85473dba8
          if (net.minecraft.server.MinecraftServer.currentTick - lastSpookyCheck > ONE_HOUR) {
          LocalDate localdate = LocalDate.now();
          int i = localdate.get(ChronoField.DAY_OF_MONTH);
-@@ -268,6 +270,9 @@ public class Bat extends AmbientCreature {
+@@ -328,6 +330,9 @@ public class Bat extends AmbientCreature {
          lastSpookyCheck = net.minecraft.server.MinecraftServer.currentTick;
          }
          return isSpookySeason;
@@ -48,10 +48,10 @@ index 1d415a91b9c90603e8f738dbafe7a5ea57ef14cc..72519ae321aad3d506d6c7a85473dba8
      // Airplane end
  
 diff --git a/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java b/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
-index cd75f895b6818fbb7ed4b0ef3df873f264bb2d1b..870168da00ed35f0074de732c0a26a7c8da12f9b 100644
+index 5b19d8db09867791782c899d41d314c511f6c8a2..b087230c8aea614c12970b9d27bc604947946c97 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/AbstractSkeleton.java
-@@ -156,11 +156,16 @@ public abstract class AbstractSkeleton extends Monster implements RangedAttackMo
+@@ -138,11 +138,16 @@ public abstract class AbstractSkeleton extends Monster implements RangedAttackMo
          this.reassessWeaponGoal();
          this.setCanPickUpLoot(this.level.paperConfig.skeletonsAlwaysCanPickUpLoot || this.random.nextFloat() < 0.55F * difficulty.getSpecialMultiplier()); // Paper
          if (this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {
@@ -69,10 +69,10 @@ index cd75f895b6818fbb7ed4b0ef3df873f264bb2d1b..870168da00ed35f0074de732c0a26a7c
                  this.armorDropChances[EquipmentSlot.HEAD.getIndex()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Zombie.java b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-index bb3b932c57fd1e5b1517940c7602c7f4aeeaf17e..1cbd0fde793df7a94021551691a37afaca019839 100644
+index 5adef472e37b422c9b83ac00221be3fb8558d225..38f1b95762381bad5296b5c98afe123bd0a41918 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-@@ -534,11 +534,16 @@ public class Zombie extends Monster {
+@@ -558,11 +558,16 @@ public class Zombie extends Monster {
          }
  
          if (this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {

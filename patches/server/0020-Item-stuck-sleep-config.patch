@@ -6,10 +6,10 @@ Subject: [PATCH] Item stuck sleep config
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index 2dac4bc346eb1dde1f8d92c3e5b9648b2c433617..2c54bfaf7a2991cf05c99f8bc52f939e8fb83cf7 100644
+index f6b9f56076bd6aa2d912deacef0dff75a5ac01f4..908ec2bc4f6dfe359077d09b7355b26c9752a683 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-@@ -126,7 +126,7 @@ public class ItemEntity extends Entity {
+@@ -145,7 +145,7 @@ public class ItemEntity extends Entity {
  
              if (this.level.isClientSide) {
                  this.noPhysics = false;
@@ -19,7 +19,7 @@ index 2dac4bc346eb1dde1f8d92c3e5b9648b2c433617..2c54bfaf7a2991cf05c99f8bc52f939e
                      return true;
                  });
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 62e092df7b3fec588dcb7ac83b578db6f2d15255..49cbc5d29882b14b3f590cbf2530afd08b950e4f 100644
+index 7ec593a8223543ea589aa8268228bebf508be876..604b1fa59c6228971c75b1e5988789655df47946 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -211,4 +211,9 @@ private static void brandName() {

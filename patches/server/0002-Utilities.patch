@@ -10,7 +10,7 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index dc18c6919b82ed47f0e98c762fcf381c002331ba..c39976fb0d460e51778057d05d17958b9494b407 100644
+index ec0e2ac919522df0f3442b8db49c90fad022213a..9cfa68b860b8baf3234790b3d34ed812be4767cd 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -53,6 +53,7 @@ dependencies {
