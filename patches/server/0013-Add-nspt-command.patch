@@ -6,26 +6,26 @@ Subject: [PATCH] Add nspt command
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 39e0e33cdd125e87688d2e82c1c20306aab72bbe..8db5afab8828180b4ff1a708f8c20604f003653b 100644
+index 24e3865d6d7d712dd8484df225f69774bae08a38..73c717d46694a45a22f23593e9ccc95b0fd1232d 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -227,6 +227,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -228,6 +228,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          }
          net.pl3x.purpur.PurpurConfig.registerCommands();
          // Purpur end
-+        org.sugarcanemc.sugarcane.config.SugarcaneConfig.registerCommands(); // Sugarcane
++        org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager.registerCommands(); // Sugarcane
          com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
          io.papermc.paper.util.StacktraceDeobfuscator.INSTANCE.getClass(); // load mappings for stacktrace deobf
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index c3b833f6b3a38892766e88ee7576fb6a5499ff79..774700f55483e9bab8cb4170ce2fb12b1bfba3ee 100644
+index 8e1e467d1a0cee5b7c9be470206760dc46569d3d..9ef4263ca84b5ad722ca957c69bec06ee0b7b8e7 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -929,6 +929,7 @@ public final class CraftServer implements Server {
          this.reloadData();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          com.destroystokyo.paper.PaperConfig.registerCommands(); // Paper
-+        org.sugarcanemc.sugarcane.config.SugarcaneConfig.registerCommands(); // Sugarcane
++        org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager.registerCommands(); // Sugarcane
          net.pl3x.purpur.PurpurConfig.registerCommands(); // Purpur
          this.overrideAllCommandBlockCommands = this.commandsConfiguration.getStringList("command-block-overrides").contains("*");
          this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
@@ -94,51 +94,28 @@ index 0000000000000000000000000000000000000000..e81be2fe730c98c79e5e9c3f529e9cad
 +        return ChatColor.COLOR_CHAR + (avg >= 5E+7 ? "c" : avg >= (4E+7) ? "e" : "a") + avg;
 +    }
 +}
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index dc2f698ea72cb32bf4714d95b3e31f8b76c2dae0..15eb829f7eb5a270cd3347f8b6183505ad67cfe4 100644
---- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-+++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -6,11 +6,15 @@ import java.io.IOException;
- import java.lang.reflect.InvocationTargetException;
- import java.lang.reflect.Method;
- import java.lang.reflect.Modifier;
-+import java.util.HashMap;
- import java.util.List;
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..069ed5f6f457340add1822177d95c6f0e70aa029
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+@@ -0,0 +1,19 @@
++package org.sugarcanemc.sugarcane.command;
++
 +import java.util.Map;
- import java.util.concurrent.TimeUnit;
- import java.util.logging.Level;
- import java.util.regex.Pattern;
- import org.bukkit.Bukkit;
-+import org.sugarcanemc.sugarcane.command.NSPTCommand;
++import java.util.HashMap;
 +import org.bukkit.command.Command;
- import org.bukkit.configuration.InvalidConfigurationException;
- import org.bukkit.configuration.file.YamlConfiguration;
- public class SugarcaneConfig {
-@@ -22,8 +26,14 @@ public class SugarcaneConfig {
- 	public static YamlConfiguration config;
-     public static int version; // since we're remapping sidestreams' configs we need this public
-     public static boolean verbose; // since we're remapping sidestreams' configs we need this public
++import net.minecraft.server.MinecraftServer;
++
++public class SugarcaneCommandsManager {
 +	private static Map<String, Command> commands;
-     /*========================================================================*/
- 
++
 +	static {
 +		commands = new HashMap<>();
 +		commands.put("nspt", new NSPTCommand("nspt"));
 +	}
 +
- 	public static void init(File configFile) {
- 		CONFIG_FILE = configFile;
- 		config = new YamlConfiguration();
-@@ -43,6 +53,12 @@ public class SugarcaneConfig {
- 		readConfig(SugarcaneConfig.class, null);
- 	}
- 
 +	public static void registerCommands() {
-+		for (Map.Entry<String, Command> entry : commands.entrySet()) {
-+			net.minecraft.server.MinecraftServer.getServer().server.getCommandMap().register(entry.getKey(), "Sugarcane", entry.getValue());
-+		}
++			MinecraftServer.getServer().server.getCommandMap().register("nspt", "Sugarcane", new NSPTCommand("nspt"));
 +	}
-+
- 	private static void removeLeftovers() {
- 		// this method is only to remove non-used values in the config
- 
++}

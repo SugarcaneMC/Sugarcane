@@ -6,10 +6,10 @@ Subject: [PATCH] Item stuck sleep config
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index f6b9f56076bd6aa2d912deacef0dff75a5ac01f4..908ec2bc4f6dfe359077d09b7355b26c9752a683 100644
+index 9ec17c9b469dd058cf382164027f0392a92b2c29..6c4e661cfb4c556c07222d1ac4d3ccc40157c108 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-@@ -145,7 +145,7 @@ public class ItemEntity extends Entity {
+@@ -132,7 +132,7 @@ public class ItemEntity extends Entity {
  
              if (this.level.isClientSide) {
                  this.noPhysics = false;
@@ -19,10 +19,10 @@ index f6b9f56076bd6aa2d912deacef0dff75a5ac01f4..908ec2bc4f6dfe359077d09b7355b26c
                      return true;
                  });
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 7ec593a8223543ea589aa8268228bebf508be876..604b1fa59c6228971c75b1e5988789655df47946 100644
+index 59aeb2545bf283974b7cc4333f00025e3d84950f..2749fdf41742effee615ff78b78fa339e8366331 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -211,4 +211,9 @@ private static void brandName() {
+@@ -196,4 +196,9 @@ private static void brandName() {
          checkFlying = getBoolean("settings.checks.flight", checkFlying);
          checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
      }

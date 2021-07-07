@@ -5,10 +5,10 @@ Subject: [PATCH] Rebrand
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 5e455f4dbe3125b7ed248448ccb3cccc3b550912..ec0e2ac919522df0f3442b8db49c90fad022213a 100644
+index 9414a05bdd2581b6cd21805958f58ddb0d130046..4367fd55eabd4aaf6e3350da7b6f87001d6c0bea 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -36,7 +36,7 @@ repositories {
+@@ -35,7 +35,7 @@ repositories {
  }
  
  dependencies {
@@ -17,7 +17,7 @@ index 5e455f4dbe3125b7ed248448ccb3cccc3b550912..ec0e2ac919522df0f3442b8db49c90fa
      implementation("com.destroystokyo.paper:paper-mojangapi:1.16.5-R0.1-SNAPSHOT") // Tuinity
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.12.1")
-@@ -92,7 +92,7 @@ tasks.jar {
+@@ -91,7 +91,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
@@ -64,10 +64,10 @@ index 8c3c68465197fafc14849dc38a572e309931e2a2..8e1ca69049c50f242b8198d47302bf9f
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 69b298a85770b9e6caac374e521cf25a7a14bbd2..99b1a10eb7cbe12c0551fefc4095d027d1900521 100644
+index 0fafc2d6967cad3574f79b8eab1cfad093b564b9..216d0efa734eb0fd7b95ad1ad40c94b1a727e0b6 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1731,7 +1731,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1733,7 +1733,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      @DontObfuscate
      public String getServerModName() {
          String purpurName = net.pl3x.purpur.PurpurConfig.serverModName;
@@ -75,9 +75,9 @@ index 69b298a85770b9e6caac374e521cf25a7a14bbd2..99b1a10eb7cbe12c0551fefc4095d027
 +        return org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Sugarcane // Airplane // Purpur // Tuinity // Paper // Spigot // CraftBukkit
      }
  
-     public SystemReport fillSystemReport(SystemReport systemreport) {
+     public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index ab3be61337a0579ee725b37c17f9ee61331c6a9c..70b272120a2c283e9fe809b4b2389caaffce3d02 100644
+index 93413e7c4a59b87393c80621c7709d10540588a6..706dcbb278fb45722e8aecfd2e870943c4e51cbf 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
@@ -90,7 +90,7 @@ index ab3be61337a0579ee725b37c17f9ee61331c6a9c..70b272120a2c283e9fe809b4b2389caa
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index 75c5cb1a0b95f319eb32da618df7fa75ccefccbd..186a7c7d4ca47c075972d4d096113e8abb4c8901 100644
+index a84d3f474711a87897fdc29a2ec1569306562941..a9862e454271bd606a0f2d7f103f519dc76fd568 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 @@ -395,7 +395,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
@@ -117,7 +117,7 @@ index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a
          if (stream != null) {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..348e490f5b54fc92a6632e887c6029d9caae7d0a
+index 0000000000000000000000000000000000000000..09fc7bd1b7e1ee695f121ac529ed3c4df2495a16
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 @@ -0,0 +1,132 @@

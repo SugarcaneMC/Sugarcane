@@ -15,7 +15,7 @@
 * [Paper](https://github.com/PaperMC/Paper)
 * [Tuinity](https://github.com/Tuinity/Tuinity)
 * [Airplane](https://github.com/TECHNOVE/Airplane)
-* [Purpur](https://github.com/pl3xgaming/Purpur) - Its patches are used in a separate branch.
+* [Purpur](https://github.com/pl3xgaming/Purpur)
 * NOTE: We also borrow some patches from [Yatopia.](https://github.com/YatopiaMC/Yatopia)
 
 # ❗ Reminder
@@ -45,7 +45,7 @@ Then, add the Sugarcane-API dependency:
 
 ```groovy
 dependencies {
-    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.17-R0.1-SNAPSHOT"
+    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.17.1-R0.1-SNAPSHOT"
 }
  ```
  
@@ -63,7 +63,7 @@ Then, add the Sugarcane-API dependency:
 
 ```kotlin
 dependencies {
-    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.17-R0.1-SNAPSHOT")
+    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.17.1-R0.1-SNAPSHOT")
 }
 ```
 
@@ -90,7 +90,7 @@ And then add the Sugarcane-API dependency:
 <dependency>
     <groupId>org.sugarcanemc.sugarcane</groupId>
     <artifactId>sugarcane-api</artifactId>
-    <version>1.17-R0.1-SNAPSHOT</version>
+    <version>1.17.1-R0.1-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -103,7 +103,6 @@ And then add the Sugarcane-API dependency:
 # Try it for yourself
 
 * **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3Aver%2F1.17)** - Download latest developmemt build for Minecraft 1.17 (**not for production**).
-* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3A1.17%2Fpurpur++)** - Download latest development build with Purpur Patches for Minecraft 1.17 (**not for production**).
 
 # Contributing
 

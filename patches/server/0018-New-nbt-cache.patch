@@ -9,10 +9,10 @@ Original code by Yatopia, licensed under MIT License
 Co-authored-by: ishland <ishlandmc@yeah.net>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index d336a6b0106ae3ce441c2be1486cd29daf009b6e..1e251593e7d946d813de80d2ed26463e2bc1bc91 100644
+index adcc8e2e9af73f22855c5f232c7ffd6d5d5a3738..fa1d78e00447a8c2a5d8b7fa531e133b12dbe083 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1074,7 +1074,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1082,7 +1082,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Spigot start
          MCUtil.asyncExecutor.shutdown(); // Paper

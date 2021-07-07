@@ -6,10 +6,10 @@ Subject: [PATCH] Add GameProfileLookupEvent
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java b/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
-index ef6aab69daa7ab952408b573bff6c6996cbc349a..c99f860c2f205c5487431ef95d5a4bec2aba7454 100644
+index 84551164b76bc8f064a3a0c030c3a1b47f567b6f..468460f292a80e77cd7abebc2de59282679b83fb 100644
 --- a/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
 +++ b/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
-@@ -189,9 +189,17 @@ public class CraftPlayerProfile implements PlayerProfile {
+@@ -188,9 +188,17 @@ public class CraftPlayerProfile implements PlayerProfile {
  
          boolean isCompleteFromCache = this.completeFromCache(true, onlineMode);
          if (onlineMode && (!isCompleteFromCache || textures && !hasTextures())) {
@@ -31,23 +31,23 @@ index ef6aab69daa7ab952408b573bff6c6996cbc349a..c99f860c2f205c5487431ef95d5a4bec
              if (this.profile.isComplete()) {
                  server.getProfileCache().add(this.profile);
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-index 96863338e1642105f71e681ec2b32c882b3ea342..948c58d20405ec7628dee6fdcd0a06f9757dc484 100644
+index 6381544b0038de9a09c01238638e4e127e4eddc6..1e96e4401b97553bfe48d69d9b2a2e48177ba351 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-@@ -156,7 +156,15 @@ public class SkullBlockEntity extends BlockEntity {
-                 Property property = (Property) Iterables.getFirst(gameprofile1.getProperties().get("textures"), (Object) null);
- 
-                 if (property == null) {
--                    gameprofile1 = SkullBlockEntity.sessionService.fillProfileProperties(gameprofile1, true);
+@@ -154,7 +154,15 @@ public class SkullBlockEntity extends BlockEntity {
+                     Util.ifElse(profile, (profilex) -> {
+                         Property property = Iterables.getFirst(profilex.getProperties().get("textures"), (Property)null);
+                         if (property == null) {
+-                            profilex = sessionService.fillProfileProperties(profilex, true);
 +                    // Sugarcane start
-+                    org.sugarcanemc.sugarcane.events.GameProfileLookupEvent event = new org.sugarcanemc.sugarcane.events.GameProfileLookupEvent(!org.bukkit.Bukkit.isPrimaryThread(), gameprofile1.getId(), gameprofile1.getName());
++                    org.sugarcanemc.sugarcane.events.GameProfileLookupEvent event = new org.sugarcanemc.sugarcane.events.GameProfileLookupEvent(!org.bukkit.Bukkit.isPrimaryThread(), profilex.getId(), profilex.getName());
 +                    org.bukkit.Bukkit.getPluginManager().callEvent(event);
 +                    GameProfile eventProfile = event.getGameProfile();
 +                    if (eventProfile != null) {
-+                        gameprofile1 = eventProfile;
++                        profilex = eventProfile;
 +                    } else {
-+                        gameprofile1 = SkullBlockEntity.sessionService.fillProfileProperties(gameprofile1, true);
++                        profilex = sessionService.fillProfileProperties(profilex, true);
 +                    }
-                 }
+                         }
  
-                 GameProfile finalGameprofile = gameprofile1;
+                         GameProfile gameProfile = profilex;

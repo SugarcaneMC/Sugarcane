@@ -6,10 +6,10 @@ Subject: [PATCH] Configurable flight checks
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 304b354b66d2be5465c7a006d74b2a974c906101..963a76583ce4c136116c921d60a6b37bc2f4d927 100644
+index 8581edaa5512c6b85229308761d5930aeafc3386..253e7c9526d731417e78d94b1c1407a6377cfe3d 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -320,7 +320,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+@@ -319,7 +319,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
          ++this.tickCount;
          this.knownMovePacketCount = this.receivedMovePacketCount;
          if (this.clientIsFloating && !this.player.isSleeping()) {
@@ -18,7 +18,7 @@ index 304b354b66d2be5465c7a006d74b2a974c906101..963a76583ce4c136116c921d60a6b37b
                  ServerGamePacketListenerImpl.LOGGER.warn("{} was kicked for floating too long!", this.player.getName().getString());
                  this.disconnect(com.destroystokyo.paper.PaperConfig.flyingKickPlayerMessage, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_PLAYER); // Paper - use configurable kick message & kick event cause
                  return;
-@@ -339,7 +339,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+@@ -338,7 +338,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
              this.vehicleLastGoodY = this.lastVehicle.getY();
              this.vehicleLastGoodZ = this.lastVehicle.getZ();
              if (this.clientVehicleIsFloating && this.player.getRootVehicle().getControllingPassenger() == this.player) {
@@ -28,10 +28,10 @@ index 304b354b66d2be5465c7a006d74b2a974c906101..963a76583ce4c136116c921d60a6b37b
                      this.disconnect(com.destroystokyo.paper.PaperConfig.flyingKickVehicleMessage, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_VEHICLE); // Paper - use configurable kick message & kick event cause
                      return;
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 15eb829f7eb5a270cd3347f8b6183505ad67cfe4..7ec593a8223543ea589aa8268228bebf508be876 100644
+index c10f930391b2cd16cd91d175479e09ed68b6c053..59aeb2545bf283974b7cc4333f00025e3d84950f 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -204,4 +204,11 @@ private static void disableEntityStuckChecks() {
+@@ -189,4 +189,11 @@ private static void disableEntityStuckChecks() {
  private static void brandName() {
  	brandName = getString("brand-name", brandName);
      }

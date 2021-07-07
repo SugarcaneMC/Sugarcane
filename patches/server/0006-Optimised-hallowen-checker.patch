@@ -6,10 +6,10 @@ Subject: [PATCH] Optimised hallowen checker
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 99b1a10eb7cbe12c0551fefc4095d027d1900521..6edba859cc23afb837b0826331592370476a2c72 100644
+index 216d0efa734eb0fd7b95ad1ad40c94b1a727e0b6..45343a9ba316a30596c147781d5000c623e6eed0 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1531,6 +1531,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1533,6 +1533,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Paper end
  
@@ -69,10 +69,10 @@ index 5b19d8db09867791782c899d41d314c511f6c8a2..b087230c8aea614c12970b9d27bc6049
                  this.armorDropChances[EquipmentSlot.HEAD.getIndex()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Zombie.java b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-index 5adef472e37b422c9b83ac00221be3fb8558d225..38f1b95762381bad5296b5c98afe123bd0a41918 100644
+index 40f2fd62b1d36843c5539932d2fb2496009fee21..3094784a4b7bc3b052493d16fcc3b1c2e92e6295 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-@@ -558,11 +558,16 @@ public class Zombie extends Monster {
+@@ -563,11 +563,16 @@ public class Zombie extends Monster {
          }
  
          if (this.getItemBySlot(EquipmentSlot.HEAD).isEmpty()) {

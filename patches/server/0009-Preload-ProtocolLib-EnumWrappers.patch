@@ -6,10 +6,10 @@ Subject: [PATCH] Preload ProtocolLib EnumWrappers
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 6ae2c73bb60ffa2c4c77dee06e0a701077139ffc..d336a6b0106ae3ce441c2be1486cd29daf009b6e 100644
+index 8a24b44725b9a7038a83ef42bc3b97effdf73741..adcc8e2e9af73f22855c5f232c7ffd6d5d5a3738 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1210,6 +1210,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1218,6 +1218,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                  LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
                  // Paper end
  
@@ -18,10 +18,10 @@ index 6ae2c73bb60ffa2c4c77dee06e0a701077139ffc..d336a6b0106ae3ce441c2be1486cd29d
                  org.spigotmc.WatchdogThread.tick(); // Paper
                  org.spigotmc.WatchdogThread.hasStarted = true; // Paper
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 1c759480cefb206e1acb3df8f9199cabd21fcee0..197a5f5aaf2adfab79005d1acc6d26039f7239bb 100644
+index 5e2198ffad7d81ee25a717d0f111b332b3f9c95c..87f06b075f7b33032c1acda3a4157c5cb6ec7818 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -108,18 +108,11 @@ public class SugarcaneConfig {
+@@ -109,18 +109,11 @@ public class SugarcaneConfig {
  			num = 0D;
  		}
  		switch (unit) {
@@ -45,7 +45,7 @@ index 1c759480cefb206e1acb3df8f9199cabd21fcee0..197a5f5aaf2adfab79005d1acc6d2603
  		}
  		return (int) num;
  }
-@@ -177,6 +170,11 @@ public class SugarcaneConfig {
+@@ -178,6 +171,11 @@ public class SugarcaneConfig {
  		return config.getString(path, config.getString(path));
  }
  

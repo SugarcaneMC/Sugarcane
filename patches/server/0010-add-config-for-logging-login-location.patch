@@ -6,10 +6,10 @@ Subject: [PATCH] add config for logging login location
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 6b78b1d6ac2ede431cbef107ee7e322296051cd2..e13fe23d60d196733f5acb82aafee11644a9fc1f 100644
+index 420a0011ef222169ea5b356d761164bd4debcc5a..7182f45f368b8e31345b3824876a00da2f48be81 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -482,7 +482,14 @@ public abstract class PlayerList {
+@@ -484,7 +484,14 @@ public abstract class PlayerList {
          }
          // Paper end
          // CraftBukkit - Moved from above, added world
@@ -26,10 +26,10 @@ index 6b78b1d6ac2ede431cbef107ee7e322296051cd2..e13fe23d60d196733f5acb82aafee116
  
      public void updateEntireScoreboard(ServerScoreboard scoreboard, ServerPlayer player) {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 197a5f5aaf2adfab79005d1acc6d26039f7239bb..dc2f698ea72cb32bf4714d95b3e31f8b76c2dae0 100644
+index 87f06b075f7b33032c1acda3a4157c5cb6ec7818..c10f930391b2cd16cd91d175479e09ed68b6c053 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -170,6 +170,10 @@ public class SugarcaneConfig {
+@@ -171,6 +171,10 @@ public class SugarcaneConfig {
  		return config.getString(path, config.getString(path));
  }
  

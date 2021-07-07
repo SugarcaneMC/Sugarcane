@@ -6,10 +6,10 @@ Subject: [PATCH] Add GameProfileLookupEvent
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 407bf7c09304c76ef1dbec43bb5d665f02ce4840..fb86517f4396858ddd05dd047c73e80c51b75963 100644
+index 309d201b7d551efd4a5903e6d990b0e718af6a78..a10a2a6581c9be8b4c6d8f468f4a8955ce163af4 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -28,6 +28,7 @@ dependencies {
+@@ -30,6 +30,7 @@ dependencies {
      api("org.ow2.asm:asm-commons:9.0")
      api("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") // Purpur

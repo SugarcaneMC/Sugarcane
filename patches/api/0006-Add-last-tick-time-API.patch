@@ -8,7 +8,7 @@ Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de>
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 82978d66cc7d6214cf84f566918bfaf6bcbe1118..a2a915cded523aa891745127b26b9dc6b7ea1e0d 100644
+index c6b3bf5b16c26f652c0649c7a2c41f700ac2c01e..d07e71e3681cd78ce05bcea1bd5d4511c438c46f 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
 @@ -1983,6 +1983,16 @@ public final class Bukkit {
@@ -29,7 +29,7 @@ index 82978d66cc7d6214cf84f566918bfaf6bcbe1118..a2a915cded523aa891745127b26b9dc6
       * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager
       *
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 84d41cbaa149503fee69296c333b70dd8969b880..7dda3f33719563e45512f7881f6c932ae23677fc 100644
+index 5973e78a0afaa959113f1eee9376ccc73b7cd08b..6fa68a7e1878261a236f9c6ad2163350bbfcc4f0 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
 @@ -1753,6 +1753,26 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
