@@ -165,7 +165,7 @@ index 0000000000000000000000000000000000000000..09fc7bd1b7e1ee695f121ac529ed3c4d
 +    public Component getVersionMessage(@Nonnull String serverVersion) {
 +        if (serverVersion.equals("null")) return Component.text("Custom build");
 +        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
-+        String branch = "1.17/dev";
++        String branch = "1.17.1/dev";
 +        String version = parts[parts.length - 3];
 +        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, version);
 +        final Component history = getHistory();
