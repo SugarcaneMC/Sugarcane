@@ -104,7 +104,7 @@ And then add the Sugarcane-API dependency:
 ## We also have a [Discord Server](https://sugarcanemc.org/discord) for support
 
 # Try it for yourself
-* **[Jenkins](https://jenkins.thearcanebrony.net/job/Sugarcane/job/1.17.1%252Fdev/)** - Download latest developmemt build for Minecraft 1.17.1 (**not for production**).
+* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/job/1.17.1%252Fdev/)** - Download latest developmemt build for Minecraft 1.17.1 (**not for production**).
 * **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%31.17%2Fdev)** - Download latest developmemt build for Minecraft 1.17 (**not supported and not for production**).
 
 # Contributing
