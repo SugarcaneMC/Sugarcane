@@ -69,3 +69,9 @@ tasks.paperclipJar {
     destinationDirectory.set(rootProject.layout.projectDirectory)
     archiveFileName.set("sugarcane-paperclip.jar")
 }
+
+// copy git hooks task
+tasks.register<Copy>("installGitHooks") {
+    from(layout.projectDirectory.dir("hooks"))
+    into(layout.projectDirectory.dir(".git/hooks"))
+}
