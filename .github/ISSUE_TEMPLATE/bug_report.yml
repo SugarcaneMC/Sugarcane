@@ -30,7 +30,7 @@ body:
       label: Plugin list
       description: All plugins running on the server. You can get this by running /plugins.
     validations:
-      required: true
+      required: false
   - type: checkboxes
     attributes:
       label: Agreements
