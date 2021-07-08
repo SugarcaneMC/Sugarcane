@@ -9,7 +9,7 @@
         <img alt="Website" src="https://img.shields.io/website?style=for-the-badge&up_color=red&up_message=SugarcaneMC&url=https%3A%2F%2Fsugarcanemc.org%2F">
     </a>
     <a href="https://jenkins.thearcanebrony.net/job/Sugarcane">
-        <img alt="Jenkins" src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.thearcanebrony.net%2Fjob%2FSugarcane%2Fjob%2F1.17%25252Frc%2F&label=Jenkins%20build&logo=jenkins&logoColor=orange&style=for-the-badge">
+        <img alt="Jenkins" src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.thearcanebrony.net%2Fjob%2FSugarcane%2Fjob%2F1.17.1%25252Fdev%2F&label=Jenkins%20build&logo=jenkins&logoColor=orange&style=for-the-badge">
     </a>
 </div>
 
