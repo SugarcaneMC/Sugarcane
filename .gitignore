@@ -34,3 +34,6 @@ Sugarcane-API
 *clip.jar
 
 .idea/
+
+# run folder (gradlew runDev)
+run/

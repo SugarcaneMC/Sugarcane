@@ -1,0 +1,139 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Mon, 5 Jul 2021 18:52:12 +0200
+Subject: [PATCH] Implement merge behaviors
+
+
+diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
+index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f170d82c0e0 100644
+--- a/src/main/java/net/minecraft/network/FriendlyByteBuf.java
++++ b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
+@@ -491,7 +491,7 @@ public class FriendlyByteBuf extends ByteBuf {
+             Item item = stack.getItem();
+ 
+             this.writeVarInt(Item.getId(item));
+-            this.writeByte(stack.getCount());
++            this.writeByte(Math.min(stack.getCount(),127)); // Sugarcane - limit stack size to 127
+             CompoundTag nbttagcompound = null;
+ 
+             if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..962d9bfb923099b5119595172251295c048fec8d 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
+ import org.bukkit.event.player.PlayerPickupItemEvent;
+ // CraftBukkit end
+ import org.bukkit.event.player.PlayerAttemptPickupItemEvent; // Paper
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig; // Sugarcane
+ 
+ public class ItemEntity extends Entity {
+ 
+@@ -108,6 +109,20 @@ public class ItemEntity extends Entity {
+             this.discard();
+         } else {
+             super.tick();
++            // Sugarcane start - Item drop behavior
++            if(SugarcaneConfig.SplitItems && this.getItem().getCount() > 1){
++                for (int i = 0; i < this.getItem().getCount(); i++) {
++                    //spawn item
++                    Vec3 pos = this.getEyePosition();
++                    ItemEntity a = this.spawnAtLocation(new ItemStack(this.getItem().getItem(), 1));
++                    if(this.getDeltaMovement().normalize().length() == 0)
++                        a.setDeltaMovement((Math.random()*2-1)/10, Math.random(), (Math.random()*2-1)/10);
++                    else a.setDeltaMovement(this.getDeltaMovement().multiply(1+(Math.random())/10, Math.random(), 1+(Math.random())/10));
++                    a.setPickUpDelay(this.pickupDelay);
++                }
++                this.discard();
++            }
++            // Sugarcane end
+             // CraftBukkit start - Use wall time for pickup and despawn timers
+             int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
+             if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
+@@ -233,7 +248,7 @@ public class ItemEntity extends Entity {
+         if (this.isMergable()) {
+             // Paper start - avoid item merge if stack size above max stack size
+             ItemStack stack = getItem();
+-            if (stack.getCount() >= stack.getMaxStackSize()) return;
++            if (stack.getCount() >= stack.getMaxStackSize() && SugarcaneConfig.ItemMergeBehavior != 0) return; // Sugarcane - add exception for infinite stacking mode
+             // Paper end
+             // Spigot start
+             double radius = level.spigotConfig.itemMerge;
+@@ -273,8 +288,13 @@ public class ItemEntity extends Entity {
+ 
+     private boolean isMergable() {
+         ItemStack itemstack = this.getItem();
+-
+-        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < 6000 && itemstack.getCount() < itemstack.getMaxStackSize();
++        // Sugarcane - add merge behavior
++ 
++        if(SugarcaneConfig.ItemMergeBehavior == -1) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < 6000 && itemstack.getCount() < itemstack.getMaxStackSize();
++        // Sugarcane - merge items infinitely
++        else if(SugarcaneConfig.ItemMergeBehavior == 0) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < 6000;
++        // Sugarcane - limit to 1 item per stack
++        else return false; // Sugarcane - handled during tick
+     }
+ 
+     private void tryToMerge(ItemEntity other) {
+@@ -292,11 +312,15 @@ public class ItemEntity extends Entity {
+     }
+ 
+     public static boolean areMergable(ItemStack stack1, ItemStack stack2) {
+-        return !stack2.is(stack1.getItem()) ? false : (stack2.getCount() + stack1.getCount() > stack2.getMaxStackSize() ? false : (stack2.hasTag() ^ stack1.hasTag() ? false : !stack2.hasTag() || stack2.getTag().equals(stack1.getTag())));
++        // Sugarcane - item drop behavior - infinite merging
++        if(SugarcaneConfig.ItemMergeBehavior == 0) return !stack2.is(stack1.getItem()) ? false : (stack2.hasTag() ^ stack1.hasTag() ? false : !stack2.hasTag() || stack2.getTag().equals(stack1.getTag()));
++        else return !stack2.is(stack1.getItem()) ? false : (stack2.getCount() + stack1.getCount() > stack2.getMaxStackSize() ? false : (stack2.hasTag() ^ stack1.hasTag() ? false : !stack2.hasTag() || stack2.getTag().equals(stack1.getTag())));
+     }
+ 
+     public static ItemStack merge(ItemStack stack1, ItemStack stack2, int maxCount) {
+-        int j = Math.min(Math.min(stack1.getMaxStackSize(), maxCount) - stack1.getCount(), stack2.getCount());
++        // Sugarcane - item drop behavior - infinite merging
++        if(SugarcaneConfig.ItemMergeBehavior == 0) maxCount = Integer.MAX_VALUE;
++        int j = Math.min(maxCount - stack1.getCount(), stack2.getCount());
+         ItemStack itemstack2 = stack1.copy();
+ 
+         itemstack2.grow(j);
+@@ -305,8 +329,12 @@ public class ItemEntity extends Entity {
+     }
+ 
+     private static void merge(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
+-        ItemStack itemstack2 = ItemEntity.merge(stack1, stack2, 64);
+-
++        int max = 64;
++        if(SugarcaneConfig.ItemMergeBehavior == 0) max = Integer.MAX_VALUE;
++        ItemStack itemstack2 = ItemEntity.merge(stack1, stack2, max);
++        if(SugarcaneConfig.verbose) {
++            System.out.println(String.format("Item merged: %s + %s -> %s/%s", stack1.getCount(), stack2.getCount(), itemstack2.getCount(), max));
++        }
+         if (!itemstack2.isEmpty()) targetEntity.setItem(itemstack2); // CraftBukkit - don't set empty stacks
+     }
+ 
+@@ -376,6 +404,14 @@ public class ItemEntity extends Entity {
+         }
+ 
+         if (!this.getItem().isEmpty()) {
++            // Sugarcane start
++            while(this.getItem().getCount() > this.getItem().getMaxStackSize()){
++                ItemStack e = this.getItem().copy();
++                e.setCount(this.getItem().getMaxStackSize());
++                this.spawnAtLocation(e).save(new CompoundTag());
++                this.getItem().shrink(this.getItem().getMaxStackSize());
++            }
++            // Sugarcane end
+             nbt.put("Item", this.getItem().save(new CompoundTag()));
+         }
+ 
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 2749fdf41742effee615ff78b78fa339e8366331..c9d44d58a7e54d46473e634f5a947fa547777b57 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -201,4 +201,8 @@ private static void brandName() {
+     private static void itemStuckSleepTicks() {
+         itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
+     }
++
++    public static int ItemMergeBehavior = -1;
++    public static boolean SplitItems = false;
++    private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
+ }
+\ No newline at end of file
