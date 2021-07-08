@@ -8,7 +8,7 @@
     <a href="https://sugarcanemc.org">
         <img alt="Website" src="https://img.shields.io/website?style=for-the-badge&up_color=red&up_message=SugarcaneMC&url=https%3A%2F%2Fsugarcanemc.org%2F">
     </a>
-    <a href="https://ci.sugarcanemc.org/job/Sugarcane/">
+    <a href="https://ci.sugarcanemc.org/job/Sugarcane">
         <img alt="Jenkins" src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.sugarcanemc.org%2Fjob%2FSugarcane%2Fjob%2F1.17.1%25252Fdev%2F&label=Jenkins%20build&logo=jenkins&logoColor=orange&style=for-the-badge">
     </a>
 </div>
@@ -104,8 +104,8 @@ And then add the Sugarcane-API dependency:
 ## We also have a [Discord Server](https://sugarcanemc.org/discord) for support
 
 # Try it for yourself
-* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/job/1.17.1%252Fdev/)** - Download latest developmemt build for Minecraft 1.17.1 (**not for production**).
-* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3A1.17%2Fdev++)** - Download latest developmemt build for Minecraft 1.17 (**not supported and not for production**).
+* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/job/1.17.1%252Fdev/)** - Download latest developmemt build for Minecraft 1.17.1 (**Not for production**).
+* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3A1.17%2Fdev++)** - Download latest developmemt build for Minecraft 1.17 (**Not supported/Not for production**).
 
 # Contributing
 
