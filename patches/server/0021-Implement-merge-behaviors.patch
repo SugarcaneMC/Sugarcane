@@ -18,7 +18,7 @@ index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f17
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..962d9bfb923099b5119595172251295c048fec8d 100644
+index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..f8a6fab63f31fc55156e6c9f0573f63fa832dbf2 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -122,6 +122,148 @@ index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..962d9bfb923099b5119595172251295c
 +            // Sugarcane end
              nbt.put("Item", this.getItem().save(new CompoundTag()));
          }
+ 
+@@ -405,92 +441,73 @@ public class ItemEntity extends Entity {
+         }
+ 
+     }
+-
++    //sugarcane - rewrite function playerTouch (what a mess...)
+     @Override
+     public void playerTouch(Player player) {
+         if (!this.level.isClientSide) {
+             ItemStack itemstack = this.getItem();
+-            Item item = itemstack.getItem();
+-            int i = itemstack.getCount();
++            int count = itemstack.getCount();
+ 
+             // CraftBukkit start - fire PlayerPickupItemEvent
+             int canHold = player.getInventory().canHold(itemstack);
+-            int remaining = i - canHold;
++            int remaining = Math.max(count - canHold, 0);
+             boolean flyAtPlayer = false; // Paper
+-
+-            // Paper start
+-            if (this.pickupDelay <= 0) {
++            if(pickupDelay <= 0) {
++                // Sugarcane - Move paper event here
+                 PlayerAttemptPickupItemEvent attemptEvent = new PlayerAttemptPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
+                 this.level.getCraftServer().getPluginManager().callEvent(attemptEvent);
+ 
+-                flyAtPlayer = attemptEvent.getFlyAtPlayer();
+-                if (attemptEvent.isCancelled()) {
+-                    if (flyAtPlayer) {
+-                        player.take(this, i);
++                if (canHold > 0) {
++                    itemstack.setCount(canHold);
++                    // Call legacy event
++                    PlayerPickupItemEvent playerEvent = new PlayerPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
++                    this.level.getCraftServer().getPluginManager().callEvent(playerEvent);
++                    // Call newer event afterwards
++                    EntityPickupItemEvent entityEvent = new EntityPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
++                    this.level.getCraftServer().getPluginManager().callEvent(entityEvent);
++
++                    if (playerEvent.isCancelled() || entityEvent.isCancelled() || attemptEvent.isCancelled()) {
++                        itemstack.setCount(count); // SPIGOT-5294 - restore count
++                        return;
+                     }
+ 
+-                    return;
+-                }
+-            }
+-            // Paper end
+ 
+-            if (this.pickupDelay <= 0 && canHold > 0) {
+-                itemstack.setCount(canHold);
+-                // Call legacy event
+-                PlayerPickupItemEvent playerEvent = new PlayerPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
+-                playerEvent.setCancelled(!playerEvent.getPlayer().getCanPickupItems());
+-                this.level.getCraftServer().getPluginManager().callEvent(playerEvent);
+-                flyAtPlayer = playerEvent.getFlyAtPlayer(); // Paper
+-                if (playerEvent.isCancelled()) {
+-                    itemstack.setCount(i); // SPIGOT-5294 - restore count
+-                    // Paper Start
+-                    if (flyAtPlayer) {
+-                        player.take(this, i);
++                    flyAtPlayer = playerEvent.getFlyAtPlayer(); // Paper
++                    // Update the ItemStack if it was changed in the event
++                    ItemStack current = this.getItem();
++                    if (!itemstack.equals(current)) {
++                        itemstack = current;
+                     }
+-                    // Paper End
+-                    return;
+-                }
+-
+-                // Call newer event afterwards
+-                EntityPickupItemEvent entityEvent = new EntityPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
+-                entityEvent.setCancelled(!entityEvent.getEntity().getCanPickupItems());
+-                this.level.getCraftServer().getPluginManager().callEvent(entityEvent);
+-                if (entityEvent.isCancelled()) {
+-                    itemstack.setCount(i); // SPIGOT-5294 - restore count
+-                    return;
+-                }
+-
+-                // Update the ItemStack if it was changed in the event
+-                ItemStack current = this.getItem();
+-                if (!itemstack.equals(current)) {
+-                    itemstack = current;
+-                } else {
+-                    itemstack.setCount(canHold + remaining); // = i
+-                }
+-
+-                // Possibly < 0; fix here so we do not have to modify code below
+-                this.pickupDelay = 0;
+-            } else if (this.pickupDelay == 0) {
+-                // ensure that the code below isn't triggered if canHold says we can't pick the items up
+-                this.pickupDelay = -1;
+-            }
+-            // CraftBukkit end
++                    boolean full = false;
++                    int added = 0;
++                    while(!full) {
++                        if (this.pickupDelay == 0 && (this.owner == null || this.owner.equals(player.getUUID()))) {
++                            if(player.getInventory().add(new ItemStack(this.getItem().getItem(), 1))) {
++                                // Paper Start
++                                if (flyAtPlayer) {
++                                    player.take(this, 1);
++                                    added++;
++                                }
++                                // Paper End
++                                if (itemstack.isEmpty()) {
++                                    this.discard();
++                                    itemstack.setCount(count);
++                                    player.awardStat(Stats.ITEM_PICKED_UP.get(itemstack.getItem()), added);
++                                    player.onItemPickup(this);
++                                    return;
++                                }
++
++                                itemstack.shrink(1);
++                            } else {
++                                full = true;
++                            }
+ 
+-            if (this.pickupDelay == 0 && (this.owner == null || this.owner.equals(player.getUUID())) && player.getInventory().add(itemstack)) {
+-                // Paper Start
+-                if (flyAtPlayer) {
+-                    player.take(this, i);
+-                }
+-                // Paper End
+-                if (itemstack.isEmpty()) {
+-                    this.discard();
+-                    itemstack.setCount(i);
++                        }
++                    }
++                    player.awardStat(Stats.ITEM_PICKED_UP.get(itemstack.getItem()), added);
++                    player.onItemPickup(this);
+                 }
+-
+-                player.awardStat(Stats.ITEM_PICKED_UP.get(item), i);
+-                player.onItemPickup(this);
+             }
+-
+         }
+     }
  
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 index 2749fdf41742effee615ff78b78fa339e8366331..c9d44d58a7e54d46473e634f5a947fa547777b57 100644
