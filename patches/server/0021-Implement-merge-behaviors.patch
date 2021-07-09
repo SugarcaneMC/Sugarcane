@@ -18,7 +18,7 @@ index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f17
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..f8a6fab63f31fc55156e6c9f0573f63fa832dbf2 100644
+index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..3ea87ede0ab251ef9bf8e502229bc17cffeab3db 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -123,7 +123,7 @@ index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..f8a6fab63f31fc55156e6c9f0573f63f
              nbt.put("Item", this.getItem().save(new CompoundTag()));
          }
  
-@@ -405,92 +441,73 @@ public class ItemEntity extends Entity {
+@@ -405,92 +441,76 @@ public class ItemEntity extends Entity {
          }
  
      }
@@ -223,7 +223,10 @@ index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..f8a6fab63f31fc55156e6c9f0573f63f
 +                    int added = 0;
 +                    while(!full) {
 +                        if (this.pickupDelay == 0 && (this.owner == null || this.owner.equals(player.getUUID()))) {
-+                            if(player.getInventory().add(new ItemStack(this.getItem().getItem(), 1))) {
++                            ItemStack is = new ItemStack(this.getItem().getItem(), 1);
++                            is.setTag(this.getItem().getTag());
++
++                            if(player.getInventory().add(is)) {
 +                                // Paper Start
 +                                if (flyAtPlayer) {
 +                                    player.take(this, 1);
