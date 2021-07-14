@@ -25,7 +25,7 @@ allprojects {
 
     tasks.withType<JavaCompile> { options.isFork = true; options.isIncremental = true; options.encoding = Charsets.UTF_8.name(); options.release.set(16) }
 
-    tasks.withType<Javadoc> { options.encoding = Charsets.UTF_8.name() }
+    tasks.withType<Javadoc> { options.encoding = Charsets.UTF_8.name(); options.addBooleanOption("html5", true) }
 
     tasks.withType<ProcessResources> { filteringCharset = Charsets.UTF_8.name() }
     
