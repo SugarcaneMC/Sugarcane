@@ -17,7 +17,7 @@ dependencies {
     paperclip("io.papermc:paperclip:2.0.1")
 }
 
-subprojects {
+allprojects {
     apply(plugin = "java")
     apply(plugin = "maven-publish")
 
