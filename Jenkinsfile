@@ -17,6 +17,7 @@ pipeline {
                 sh 'rm -rf ./target'
                 sh 'rm -rf Sugarcane-Server'
                 sh 'rm -rf Sugarcane-API'
+                sh 'chmod +x gradlew'
             }
         }
         stage('Decompile & apply patches') {
