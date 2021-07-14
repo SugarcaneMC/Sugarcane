@@ -23,10 +23,12 @@ subprojects {
 
     java { toolchain { languageVersion.set(JavaLanguageVersion.of(16)) } }
 
-    tasks.withType<JavaCompile> { options.encoding = Charsets.UTF_8.name(); options.release.set(16) }
+    tasks.withType<JavaCompile> { options.isFork = true; options.isIncremental = true; options.encoding = Charsets.UTF_8.name(); options.release.set(16) }
 
     tasks.withType<Javadoc> { options.encoding = Charsets.UTF_8.name() }
 
+    tasks.withType<ProcessResources> { filteringCharset = Charsets.UTF_8.name() }
+    
     repositories {
         mavenCentral()
         maven("https://libraries.minecraft.net/")
