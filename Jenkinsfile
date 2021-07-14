@@ -17,8 +17,6 @@ pipeline {
                 sh 'rm -rf ./target'
                 sh 'rm -rf Sugarcane-Server'
                 sh 'rm -rf Sugarcane-API'
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean'
             }
         }
         stage('Decompile & apply patches') {
@@ -59,11 +57,6 @@ pipeline {
                     discordSend description: "Sugarcane Jenkins Build", footer: "Sugarcane", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: discord_webhook1
                 }
             }   
-         post {
-              always {
-                   cleanWs()
-                }
-            }
         }
     }
 }
