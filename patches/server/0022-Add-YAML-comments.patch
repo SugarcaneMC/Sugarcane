@@ -1,8 +1,8 @@
-commit 0bdc200871b4a1a00b4fa07ed04d189a8cbfba41 (HEAD -> master)
-Author: The Arcane Brony <myrainbowdash949@gmail.com>
-Date:   Wed Jul 14 21:39:55 2021 +0200
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Mon, 15 Jul 2021 18:52:12 +0200
+Subject: [PATCH] Add YAML comments
 
-    Add YAML comments
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 index c9d44d58a..af423f9a8 100644
