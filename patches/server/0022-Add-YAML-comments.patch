@@ -1,14 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: The Arcane Brony <myrainbowdash949@gmail.com>
-Date: Mon, 15 Jul 2021 18:52:12 +0200
+Date: Thu, 15 Jul 2021 18:52:12 +0200
 Subject: [PATCH] Add YAML comments
 
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index c9d44d58a..af423f9a8 100644
+index c9d44d58a7e54d46473e634f5a947fa547777b57..fa02a1d8f9112ca59b602d523c64746103120aec 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -13,17 +13,20 @@ import java.util.regex.Pattern;
+@@ -13,17 +13,16 @@ import java.util.regex.Pattern;
  import org.bukkit.Bukkit;
  import org.bukkit.configuration.InvalidConfigurationException;
  import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,11 +16,10 @@ index c9d44d58a..af423f9a8 100644
 +
  public class SugarcaneConfig {
  	public static File CONFIG_FILE;
- 	private static final String HEADER = "This is the main configuration file for Sugarcane.\n"
- 			+ "Sugarcane contains many breaking changes and settings, so know what you are doing!\n"
- 			+ "You have been warned!\n"
+-	private static final String HEADER = "This is the main configuration file for Sugarcane.\n"
+-			+ "Sugarcane contains many breaking changes and settings, so know what you are doing!\n"
+-			+ "You have been warned!\n"
 -                       + "Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord\n";
-+			+ "Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord\n";
  	/*========================================================================*/
  	public static YamlConfiguration config;
 -    public static int version; // since we're remapping sidestreams' configs we need this public
@@ -33,10 +32,11 @@ index c9d44d58a..af423f9a8 100644
  
  	public static void init(File configFile) {
  		CONFIG_FILE = configFile;
-@@ -36,12 +39,18 @@ public class SugarcaneConfig {
+@@ -35,13 +34,36 @@ public class SugarcaneConfig {
+ 			Bukkit.getLogger().log(Level.SEVERE, "Could not load sugarcane.yml, please correct your syntax errors", ex);
  			throw Throwables.propagate(ex);
  		}
- 		config.options().header(HEADER);
+-		config.options().header(HEADER);
 +
  		config.options().copyDefaults(true);
  		verbose = getBoolean("verbose", false);
@@ -47,12 +47,30 @@ index c9d44d58a..af423f9a8 100644
 +		addComments();
 +	}
 +	private static void addComments() {
-+		c.addComment("verbose", "Enable verbose mode for sugarcane code!\nWarning: may increase log size and/or hurt performance!");
++		//add header
++		c.setHeader("""
++				This is the main configuration file for Sugarcane.
++				Sugarcane contains many breaking changes and settings, so know what you are doing!
++				You have been warned!
++				Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord""");
++		//add comments
++		c.addComment("debug", "Enable debug output for Sugarcane code!\nWarning: this WILL increase log size a lot!\nKeep in mind this is for output considered too spammy for verbose!");
++		c.addComment("verbose", "Enable verbose mode for Sugarcane code!\nWarning: may increase log size and/or hurt performance!");
 +		c.addComment("brand-name", "Set the software name the server reports to be using.");
++		c.addComment("ItemMergeBehavior",
++				"""
++						Changes how item merging works
++						Values:
++						- -1: Normal (use the vanilla item stacking)
++						-  0: Infinite (stack infinitely based on item type and metadata)
++						-  1: No stacking (every separate item is its own entity, only for fun!)""");
++		c.addComment("config-version", "Config version, do NOT modify this!");
++		c.addComment("settings.checks.flight", "Toggles flight checks for players");
++		c.addComment("settings.checks.vehicle-flight", "Toggles flight checks for players in vehicles");
  	}
  
  	private static void removeLeftovers() {
-@@ -90,16 +99,18 @@ public class SugarcaneConfig {
+@@ -90,16 +112,18 @@ public class SugarcaneConfig {
  
  		try {
  			config.save(CONFIG_FILE);
@@ -73,7 +91,7 @@ index c9d44d58a..af423f9a8 100644
  		final char unit = str.charAt(str.length() - 1);
  		str = NOT_NUMERIC.matcher(str).replaceAll("");
  		double num;
-@@ -116,10 +127,10 @@ public class SugarcaneConfig {
+@@ -116,10 +140,10 @@ public class SugarcaneConfig {
  			default: break;
  		}
  		return (int) num;
@@ -86,7 +104,7 @@ index c9d44d58a..af423f9a8 100644
  
  		if (seconds > 60 * 60 * 24) {
  			time += TimeUnit.SECONDS.toDays(seconds) + "d";
-@@ -135,43 +146,50 @@ public class SugarcaneConfig {
+@@ -135,43 +159,50 @@ public class SugarcaneConfig {
  			time += TimeUnit.SECONDS.toMinutes(seconds) + "m";
  		}
  		return time;
@@ -153,7 +171,7 @@ index c9d44d58a..af423f9a8 100644
  	private static void general() {
  		logPlayerLoginLoc = getBoolean("settings.log-player-login-location", logPlayerLoginLoc);
  	}
-@@ -181,28 +199,28 @@ public static boolean logPlayerLoginLoc = true;
+@@ -181,28 +212,28 @@ public static boolean logPlayerLoginLoc = true;
  	}
  
  	public static boolean disableEntityStuckChecks = false;
@@ -205,34 +223,52 @@ index c9d44d58a..af423f9a8 100644
 +	private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
  }
 \ No newline at end of file
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java b/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Util.java b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
 new file mode 100644
-index 000000000..a6233e41b
+index 0000000000000000000000000000000000000000..54eb3166c2a38363e8ad8c95448a4d807d09f0e7
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java
-@@ -0,0 +1,71 @@
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
+@@ -0,0 +1,15 @@
 +package org.sugarcanemc.sugarcane.util;
 +
 +import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
 +
++public class Util {
++    public static int getIndentation(String s){
++        if(!s.startsWith(" ")) return 0;
++        int i = 0;
++        while((s = s.replaceFirst(" ", "")).startsWith(" ")) i++;
++        return i+1;
++    }
++    public static void logDebug(String s){
++        if(SugarcaneConfig.debug) System.out.println(s);
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java b/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..4be48a0e88cd355599d8f4994d7f4e745a04847f
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java
+@@ -0,0 +1,59 @@
++package org.sugarcanemc.sugarcane.util;
++
 +import java.io.File;
++import java.io.FileWriter;
 +import java.io.IOException;
 +import java.nio.file.Files;
 +import java.util.ArrayList;
 +import java.util.HashMap;
-+import java.util.List;
 +import java.util.Map;
-+import java.util.regex.Matcher;
-+import java.util.regex.Pattern;
 +
 +public class YamlCommenter {
-+    private static final Pattern pattern = Pattern.compile("^\\s*", Pattern.MULTILINE);
-+    private static boolean verbose;
-+    private HashMap<String, String> comments = new HashMap<>();
++    private final HashMap<String, String> comments = new HashMap<>();
++    private String Header = "";
++
 +    /**
-+     * Add comment to a config option.
++     * Add comment to a config option.<br>
 +     * Supports multiline comments!
-+     * @param path Config path to add comment to
++     *
++     * @param path    Config path to add comment to
 +     * @param comment Comment to add
 +     */
 +    public void addComment(String path, String comment) {
@@ -240,46 +276,71 @@ index 000000000..a6233e41b
 +    }
 +
 +    /**
++     * Set the header for this config file
++     *
++     * @param header Header to add
++     */
++    public void setHeader(String header) {
++        Header = header;
++    }
++
++    /**
 +     * Saves comments to config file
++     *
 +     * @param file File to save to
 +     * @throws IOException
 +     */
 +    public void saveComments(File file) throws IOException {
-+        verbose = SugarcaneConfig.debug;
-+        System.out.println("Verbose: " + verbose);
 +        ArrayList<String> lines = (ArrayList<String>) Files.readAllLines(file.toPath());
-+        for (Map.Entry<String, String> _comment : comments.entrySet()){
-+            int line = findLine(lines, _comment.getKey());
-+            if(line>=0)
-+                lines.add(line, "# " + _comment.getValue().replace("\n", "\n# "));
++        lines.removeIf(s -> s.trim().startsWith("#") || s.trim().length() <= 4);
++        lines.add(0, "# " + Header.replace("\n", "\n# ") + "\n");
++        for (Map.Entry<String, String> _comment : comments.entrySet()) {
++            int line = YamlUtils.findKey(lines, _comment.getKey());
++            String prefix = " ".repeat(Util.getIndentation(lines.get(line))) + "# ";
++            boolean noNewline = Util.getIndentation(lines.get(line)) > Util.getIndentation(lines.get(line-1));
++            if (line >= 0)
++                lines.add(line, (noNewline ?"":"\n") + prefix + _comment.getValue().replace("\n", "\n" + prefix));
++            else System.out.printf("Failed to find key %s in %s!", _comment.getKey(), file);
 +        }
-+        System.out.println(String.join("\n", lines));
-+//        System.exit(0);
-+    }
-+    private int findLine(List<String> lines, String key){
-+        String[] parts = key.split(".");
-+        if(verbose) System.out.println("Looking for " + String.join(".", parts) + "...");
-+        int _line = 0;
-+        int _indent;
-+        List<String> _cpath = new ArrayList<>();
-+        for (String part : parts){
-+            _cpath.add(part);
-+
-+            if(verbose) System.out.println("Looking for " + String.join(".", _cpath) + "...");
-+            for (int i = _line; i < lines.size(); i++) {
-+                if(lines.get(i).trim().startsWith(part)) {
-+                    _line = i;
-+                    _indent = pattern.matcher(lines.get(i)).groupCount();
-+                    System.out.printf("Found key %s at line %d with %d indents (%s)%n", String.join(".", _cpath), i, _indent, lines.get(i));
-+                }
-+            }
-+        }
-+        if(_cpath.equals(parts)) return _line;
-+        else {
-+            System.out.println(String.format("Unable to find key %s!", String.join(".", _cpath)));
-+            System.exit(0);
-+            return -1;
-+        }
++        String text = String.join("\n", lines);
++        Util.logDebug(text);
++        FileWriter fw = new FileWriter(file);
++        fw.write(text);
++        fw.close();
 +    }
 +}
 \ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/YamlUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/YamlUtils.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..319aa175c1e04261c78345936b26514de6b76a5a
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/YamlUtils.java
+@@ -0,0 +1,28 @@
++package org.sugarcanemc.sugarcane.util;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class YamlUtils {
++    public static int findKey(List<String> lines, String key) {
++        String[] parts = key.split("\\.");
++        Util.logDebug("Starting to look for " + String.join(".", parts) + "...");
++        int _line = 0;
++        int indent = 0;
++        List<String> _cpath = new ArrayList<>();
++        for (String part : parts) {
++            _cpath.add(part);
++            Util.logDebug("Looking for " + String.join(".", _cpath) + "...");
++            for (int i = _line; i < lines.size(); i++) {
++                if (lines.get(i).trim().startsWith(part)) {
++                    _line = i;
++                    Util.logDebug(String.format("Found key %s at line %d with %d indents (%s)%n", String.join(".", _cpath), i, indent, lines.get(i)));
++                    if (String.join(".", _cpath).equals(key)) {
++                        return _line;
++                    }
++                }
++            }
++        }
++        return -1;
++    }
++}
