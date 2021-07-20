@@ -26,9 +26,9 @@ pipeline {
             steps {
                     sh '''
                     git reset --hard
-                    git fetch
-                    git pull
                     git checkout ${BRANCH_NAME}
+                    git fetch 
+                    git pull
                     git config user.email "jenkins@sugarcanemc.org"
                     git config user.name "Jenkins"
                     chmod +x gradlew
