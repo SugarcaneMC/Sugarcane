@@ -150,7 +150,7 @@ index 0000000000000000000000000000000000000000..24d251025dc67fa4f3a122e59bfdf007
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..10f014fb11f82618d5d552121f52b88aab76b537
+index 0000000000000000000000000000000000000000..02c7acd28befeeacc7d8f4507ca68d220709b351
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 @@ -0,0 +1,139 @@
@@ -205,21 +205,21 @@ index 0000000000000000000000000000000000000000..10f014fb11f82618d5d552121f52b88a
 +    public Component getVersionMessage(@Nonnull String serverVersion) {
 +        if (serverVersion.equals("null")) return Component.text("Custom build");
 +        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
-+        String branch = BranchReader.getBranch();
++        final String gitBranch = BranchReader.getBranch();
 +        String version = parts[parts.length - 3];
-+        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, version);
++        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", gitBranch, version);
 +        final Component history = getHistory();
 +
 +        return history != null ?  TextComponent.ofChildren(history, Component.newline(), updateMessage) : updateMessage;
 +    }
 +
-+    private Component getUpdateStatusMessage(String repo, String branch, String versionInfo) {
++    private Component getUpdateStatusMessage(String repo, String gitBranch, String versionInfo) {
 +        int distance;
 +        try {
 +            int jenkinsBuild = Integer.parseInt(versionInfo);
-+            distance = fetchDistanceFromJenkins(branch, jenkinsBuild);
++            distance = fetchDistanceFromJenkins(gitBranch, jenkinsBuild);
 +        } catch (NumberFormatException ignored) {
-+            distance = fetchDistanceFromGitHub(repo, branch, versionInfo.replace("\"", ""));
++            distance = fetchDistanceFromGitHub(repo, gitBranch, versionInfo.replace("\"", ""));
 +        }
 +
 +        switch (distance) {
@@ -235,9 +235,9 @@ index 0000000000000000000000000000000000000000..10f014fb11f82618d5d552121f52b88a
 +    }
 +
 +    // modified from PurpurVersionFetcher
-+    private static int fetchDistanceFromJenkins(String branch, int jenkinsBuild) {
++    private static int fetchDistanceFromJenkins(String gitBranch, int jenkinsBuild) {
 +        try {
-+            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
++            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(gitBranch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
 +                return Integer.decode(reader.readLine()) - jenkinsBuild;
 +            } catch (NumberFormatException ex) {
 +                ex.printStackTrace();
@@ -251,9 +251,9 @@ index 0000000000000000000000000000000000000000..10f014fb11f82618d5d552121f52b88a
 +
 +    // Contributed by Techcable <Techcable@outlook.com> in GH-65
 +    // from PaperVersionFetcher
-+    private static int fetchDistanceFromGitHub(@Nonnull String repo, @Nonnull String branch, @Nonnull String hash) {
++    private static int fetchDistanceFromGitHub(@Nonnull String repo, @Nonnull String gitBranch, @Nonnull String hash) {
 +        try {
-+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/" + repo + "/compare/" + branch + "..." + hash).openConnection();
++            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/" + repo + "/compare/" + gitBranch + "..." + hash).openConnection();
 +            connection.connect();
 +            if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) return -2; // Unknown commit
 +            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charsets.UTF_8))) {
