@@ -25,8 +25,8 @@ pipeline {
             }
             steps {
                     sh '''
-                    git reset --hard
                     git checkout ${BRANCH_NAME}
+                    git reset --hard
                     git fetch 
                     git pull
                     git config user.email "jenkins@sugarcanemc.org"
