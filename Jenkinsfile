@@ -17,7 +17,6 @@ pipeline {
                 sh 'rm -rf ./target'
                 sh 'rm -rf Sugarcane-Server'
                 sh 'rm -rf Sugarcane-API'
-                sh 'chmod +x gradlew'
             }
         }
         stage('Decompile & apply patches') {
@@ -32,6 +31,7 @@ pipeline {
                     git checkout ${BRANCH_NAME}
                     git config user.email "jenkins@sugarcanemc.org"
                     git config user.name "Jenkins"
+                    chmod +x gradlew
                     ./gradlew applyPatches
                     '''
                 }
