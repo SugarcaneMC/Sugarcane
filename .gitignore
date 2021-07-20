@@ -29,6 +29,7 @@ build/
 */build/
 
 # Sugarcane
+Sugarcane-MojangAPI
 Sugarcane-Server
 Sugarcane-API
 *clip.jar

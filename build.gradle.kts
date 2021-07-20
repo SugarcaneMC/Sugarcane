@@ -60,6 +60,8 @@ allprojects {
     }
 }
 
+val paperDir = layout.projectDirectory.dir(".gradle/caches/paperweight/upstreams/Paper")
+
 paperweight {
     serverProject.set(project(":Sugarcane-Server"))
 
@@ -73,6 +75,24 @@ paperweight {
             apiOutputDir.set(layout.projectDirectory.dir("Sugarcane-API"))
             serverOutputDir.set(layout.projectDirectory.dir("Sugarcane-Server"))
         }
+        
+        patchTasks {
+            register("mojangApi") {
+                isBareDirectory.set(true)
+                upstreamDirPath.set("$paperDir/Paper-MojangAPI")
+                patchDir.set(layout.projectDirectory.dir("patches/mojangapi"))
+                outputDir.set(layout.projectDirectory.dir("Sugarcane-MojangAPI"))
+            }
+        }
+
+        reobfPackagesToFix.addAll(
+            "org.sugarcanemc.sugarcane",
+            "gg.airplane",
+            "net.pl3x.purpur",
+            "com.tuinity.tuinity",
+            "ca.spottedleaf",
+            "me.jellysquid.mods"
+        )
     }
 }
 

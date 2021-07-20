@@ -40,19 +40,6 @@ index 127e211548675155e8f3c11cf15775406c9f44bc..24e3865d6d7d712dd8484df225f69774
          this.setPvpAllowed(dedicatedserverproperties.pvp);
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
-diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 602b96d5dfbeb9a24072a8c80db3547a2af2ae6f..420a0011ef222169ea5b356d761164bd4debcc5a 100644
---- a/src/main/java/net/minecraft/server/players/PlayerList.java
-+++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -269,7 +269,7 @@ public abstract class PlayerList {
-         // Spigot - view distance
-         playerconnection.send(new ClientboundLoginPacket(player.getId(), player.gameMode.getGameModeForPlayer(), player.gameMode.getPreviousGameModeForPlayer(), BiomeManager.obfuscateSeed(worldserver1.getSeed()), worlddata.isHardcore(), this.server.levelKeys(), this.registryHolder, worldserver1.dimensionType(), worldserver1.dimension(), this.getMaxPlayers(), worldserver1.getChunkSource().chunkMap.playerChunkManager.getLoadDistance(), flag1, !flag, worldserver1.isDebug(), worldserver1.isFlat())); // Paper - no-tick view distance // Tuinity - replace old player chunk management
-         player.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
--        playerconnection.send(new ClientboundCustomPayloadPacket(ClientboundCustomPayloadPacket.BRAND, (new FriendlyByteBuf(Unpooled.buffer())).writeUtf(this.getServer().getServerModName())));
-+        playerconnection.send(new ClientboundCustomPayloadPacket(ClientboundCustomPayloadPacket.BRAND, (new FriendlyByteBuf(Unpooled.buffer())).writeUtf((org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName)))); // Sugarcane)));
-         playerconnection.send(new ClientboundChangeDifficultyPacket(worlddata.getDifficulty(), worlddata.isDifficultyLocked()));
-         playerconnection.send(new ClientboundPlayerAbilitiesPacket(player.getAbilities()));
-         playerconnection.send(new ClientboundSetCarriedItemPacket(player.getInventory().selected));
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 index d087131d8f5bc5fef10d41ca63daf4e2d9082c0d..a3250ec6f675bdd3b38096eb71f40f4b0f2de8cf 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java

@@ -1,5 +1,5 @@
 rootProject.name = "Sugarcane"
-include("Sugarcane-API", "Sugarcane-Server")
+include("Sugarcane-API", "Sugarcane-MojangAPI", "Sugarcane-Server")
 
 pluginManagement {
     repositories {
