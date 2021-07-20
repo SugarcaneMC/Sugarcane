@@ -117,12 +117,43 @@ index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a
          Properties properties = new Properties();
  
          if (stream != null) {
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..24d251025dc67fa4f3a122e59bfdf0072c48b4e8
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java
+@@ -0,0 +1,25 @@
++package org.sugarcanemc.sugarcane.util.VersionFetcher;
++
++import java.io.IOException;
++import java.io.InputStream;
++import java.util.Properties;
++import java.util.logging.Level;
++import java.util.logging.Logger;
++import org.bukkit.Bukkit;
++
++public final class BranchReader {
++	public static String getBranch() {
++		String branch = "null";
++		InputStream branchStream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
++		Properties properties = new Properties();
++		if (branchStream != null) {
++			try {
++				properties.load(branchStream);
++				branch = properties.getProperty("Git-Branch");
++			} catch (IOException ex) {
++				Logger.getLogger(SugarcaneVersionFetcher.class.getName()).log(Level.SEVERE, "Could not get branch info from MANIFEST.MF!", ex);
++			}
++		}
++		return branch;
++	}
++}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..dbb6bbfce9cbe414670bacd27b71fefd09ff5286
+index 0000000000000000000000000000000000000000..10f014fb11f82618d5d552121f52b88aab76b537
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
-@@ -0,0 +1,152 @@
+@@ -0,0 +1,139 @@
 +package org.sugarcanemc.sugarcane.util.VersionFetcher;
 +
 +import com.destroystokyo.paper.VersionHistoryManager;
@@ -160,6 +191,8 @@ index 0000000000000000000000000000000000000000..dbb6bbfce9cbe414670bacd27b71fefd
 +
 +import org.bukkit.Bukkit;
 +
++import org.sugarcanemc.sugarcane.util.VersionFetcher.BranchReader;
++
 +public class SugarcaneVersionFetcher implements VersionFetcher {
 +
 +    @Override
@@ -172,22 +205,7 @@ index 0000000000000000000000000000000000000000..dbb6bbfce9cbe414670bacd27b71fefd
 +    public Component getVersionMessage(@Nonnull String serverVersion) {
 +        if (serverVersion.equals("null")) return Component.text("Custom build");
 +        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
-+        // Sugarcane start - read branch from MANIFEST.MF
-+        String branch = "null";
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
-+        Properties properties = new Properties();
-+        if (stream != null) {
-+            try {
-+                properties.load(stream);
-+
-+                branch = properties.getProperty("Git-Branch");
-+            } catch (IOException ex) {
-+                Logger.getLogger(Versioning.class.getName()).log(Level.SEVERE, "Could not get branch info from MANIFEST.MF!", ex);
-+            }
-+        }
-+
-+        return branch;
-+        // Sugarcane end
++        String branch = BranchReader.getBranch();
 +        String version = parts[parts.length - 3];
 +        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, version);
 +        final Component history = getHistory();
