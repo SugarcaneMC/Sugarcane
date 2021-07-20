@@ -119,10 +119,10 @@ index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a
          if (stream != null) {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..7ab74497684f3e88865e45225d3b785fe968514f
+index 0000000000000000000000000000000000000000..dbb6bbfce9cbe414670bacd27b71fefd09ff5286
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
-@@ -0,0 +1,151 @@
+@@ -0,0 +1,152 @@
 +package org.sugarcanemc.sugarcane.util.VersionFetcher;
 +
 +import com.destroystokyo.paper.VersionHistoryManager;
@@ -182,10 +182,11 @@ index 0000000000000000000000000000000000000000..7ab74497684f3e88865e45225d3b785f
 +
 +                branch = properties.getProperty("Git-Branch");
 +            } catch (IOException ex) {
-+                Logger.getLogger(SugarcaneVersionFetcher.class.getName()).log(Level.SEVERE, "Could not get branch info from MANIFEST.MF!", ex);
++                Logger.getLogger(Versioning.class.getName()).log(Level.SEVERE, "Could not get branch info from MANIFEST.MF!", ex);
 +            }
 +        }
 +
++        return branch;
 +        // Sugarcane end
 +        String version = parts[parts.length - 3];
 +        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, version);
@@ -218,7 +219,7 @@ index 0000000000000000000000000000000000000000..7ab74497684f3e88865e45225d3b785f
 +    // modified from PurpurVersionFetcher
 +    private static int fetchDistanceFromJenkins(String branch, int jenkinsBuild) {
 +        try {
-+            try (BufferedReader reader = Resources.asCharSource(new URL("https://jenkins.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
++            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
 +                return Integer.decode(reader.readLine()) - jenkinsBuild;
 +            } catch (NumberFormatException ex) {
 +                ex.printStackTrace();
