@@ -60,7 +60,7 @@ allprojects {
     }
 }
 
-val paperDir = layout.projectDirectory.dir(".gradle/caches/paperweight/upstreams/Paper")
+val paperDir = layout.projectDirectory.dir(".gradle/caches/paperweight/upstreams/paper")
 
 paperweight {
     serverProject.set(project(":Sugarcane-Server"))
