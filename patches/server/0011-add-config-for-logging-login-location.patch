@@ -6,12 +6,12 @@ Subject: [PATCH] add config for logging login location
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 420a0011ef222169ea5b356d761164bd4debcc5a..7182f45f368b8e31345b3824876a00da2f48be81 100644
+index bea7b50888462b89c82da756d0a72226a0cdb3fc..ebd794983c7271860a542dcc9d682ddd2e91c9d9 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -484,7 +484,14 @@ public abstract class PlayerList {
-         }
+@@ -485,7 +485,14 @@ public abstract class PlayerList {
          // Paper end
+         if (player.tpsBar()) net.pl3x.purpur.task.TPSBarTask.addPlayer(player.getBukkitEntity()); // Purpur
          // CraftBukkit - Moved from above, added world
 -        PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
 +

@@ -6,7 +6,7 @@ Subject: [PATCH] Optimize TileEntity load/unload
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 5635b1049f950b8520f527b015c9404c80f5d86c..e4479c153f11fe70eed76e9b160538865a273a65 100644
+index 27674fb28825b48eee86b93d6bbd1e7af94c0fe0..0833473b085d073fc6f1499785f8f024a86aae75 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
 @@ -115,8 +115,10 @@ public abstract class Level implements LevelAccessor, AutoCloseable {

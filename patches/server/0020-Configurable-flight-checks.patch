@@ -6,7 +6,7 @@ Subject: [PATCH] Configurable flight checks
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 8581edaa5512c6b85229308761d5930aeafc3386..253e7c9526d731417e78d94b1c1407a6377cfe3d 100644
+index 69834b75a81491dcd3133d95cf81cc3cc91bb782..d4c11e1e66549fa1f117a1b935c2aaa2de023913 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -319,7 +319,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser

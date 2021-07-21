@@ -6,7 +6,7 @@ Subject: [PATCH] Optimised hallowen checker
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 216d0efa734eb0fd7b95ad1ad40c94b1a727e0b6..45343a9ba316a30596c147781d5000c623e6eed0 100644
+index c9f23d568855f8826d93e174003f22f32666c13e..726d805d9cac489d051bbf9d8152dfaf5f0b1458 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1533,6 +1533,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
