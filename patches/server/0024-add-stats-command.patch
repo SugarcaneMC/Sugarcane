@@ -1,10 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: The Arcane Brony <myrainbowdash949@gmail.com>
 Date: Thu, 15 Jul 2021 18:52:12 +0200
-Subject: [PATCH] Make command manager dynamic, add stats command
+Subject: [PATCH] add stats command
+
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 9ef4263ca..451c58676 100644
+index d7114b5073541741530a20fade2ee7ee52d36082..68fe01cceef86a389ac1a05024ab2b37c9400bde 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -166,6 +166,7 @@ import org.bukkit.craftbukkit.metadata.PlayerMetadataStore;
@@ -27,7 +28,7 @@ index 9ef4263ca..451c58676 100644
              getLogger().log(Level.SEVERE, String.format(
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java
 new file mode 100644
-index 000000000..7fdb45671
+index 0000000000000000000000000000000000000000..7fdb45671be44b2ba9d5d18c3d956d3fe41c2c02
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java
 @@ -0,0 +1,212 @@
@@ -243,22 +244,3 @@ index 000000000..7fdb45671
 +                .orElse(0.0);
 +    }
 +}
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
-index 069ed5f6f..9f0f831be 100644
---- a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
-+++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
-@@ -11,9 +11,13 @@ public class SugarcaneCommandsManager {
- 	static {
- 		commands = new HashMap<>();
- 		commands.put("nspt", new NSPTCommand("nspt"));
-+		commands.put("stats", new StatsCommand("stats"));
- 	}
- 
- 	public static void registerCommands() {
--			MinecraftServer.getServer().server.getCommandMap().register("nspt", "Sugarcane", new NSPTCommand("nspt"));
-+		if(commands != null)
-+			for(var command : commands.entrySet()){
-+				MinecraftServer.getServer().server.getCommandMap().register(command.getKey(), "Sugarcane", command.getValue());
-+			}
- 	}
- }
