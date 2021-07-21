@@ -38,11 +38,6 @@ allprojects {
         filteringCharset = Charsets.UTF_8.name()
     }
     
-    tasks.withType<AbstractArchiveTask>().configureEach {
-        isPreserveFileTimestamps = false
-        isReproducibleFileOrder = true
-    }
-
     repositories {
         mavenCentral()
         maven("https://libraries.minecraft.net/")
