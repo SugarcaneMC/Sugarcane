@@ -246,10 +246,10 @@ index 0000000000000000000000000000000000000000..54eb3166c2a38363e8ad8c95448a4d80
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b1c7ef8a12a8ddeb654d27bf9c4679ea0d2edde5
+index 0000000000000000000000000000000000000000..8f30dae59cd8027e027948fbba62626b378c32dd
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
-@@ -0,0 +1,59 @@
+@@ -0,0 +1,60 @@
 +package org.sugarcanemc.sugarcane.util.yaml;
 +
 +import java.io.File;
@@ -259,6 +259,7 @@ index 0000000000000000000000000000000000000000..b1c7ef8a12a8ddeb654d27bf9c4679ea
 +import java.util.ArrayList;
 +import java.util.HashMap;
 +import java.util.Map;
++import org.sugarcanemc.sugarcane.util.Util;
 +
 +public class YamlCommenter {
 +    private final HashMap<String, String> comments = new HashMap<>();
@@ -312,14 +313,15 @@ index 0000000000000000000000000000000000000000..b1c7ef8a12a8ddeb654d27bf9c4679ea
 \ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..8da85a428219bd4866762992921f23c1fc22d422
+index 0000000000000000000000000000000000000000..5d8e30a955dcf9305bfa6ec2d83f0c4d13656436
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
-@@ -0,0 +1,28 @@
+@@ -0,0 +1,29 @@
 +package org.sugarcanemc.sugarcane.util.yaml;
 +
 +import java.util.ArrayList;
 +import java.util.List;
++import org.sugarcanemc.sugarcane.util.Util;
 +
 +public class YamlUtils {
 +    public static int findKey(List<String> lines, String key) {
