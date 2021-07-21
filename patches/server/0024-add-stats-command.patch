@@ -244,3 +244,15 @@ index 0000000000000000000000000000000000000000..7fdb45671be44b2ba9d5d18c3d956d3f
 +                .orElse(0.0);
 +    }
 +}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+index 41267bfa19a0b5f848815c758d77f70bf9634e38..e4fcc7f24f448b60a13231bc6819721cb88830c1 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+@@ -11,6 +11,7 @@ public class SugarcaneCommandsManager {
+ 	static {
+ 		commands = new HashMap<>();
+ 		commands.put("nspt", new NSPTCommand("nspt"));
++		commands.put("stats", new StatsCommand("stats"));
+ 	}
+ 
+ 	public static void registerCommands() {
