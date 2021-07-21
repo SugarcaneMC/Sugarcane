@@ -41,7 +41,7 @@ index 127e211548675155e8f3c11cf15775406c9f44bc..24e3865d6d7d712dd8484df225f69774
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index d087131d8f5bc5fef10d41ca63daf4e2d9082c0d..a3250ec6f675bdd3b38096eb71f40f4b0f2de8cf 100644
+index 74358ddddaab9658cbc56ce948c29da294950f17..da5dc2ef61e2b388f16e10240274a800ede79571 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -398,22 +398,24 @@ public abstract class LivingEntity extends Entity {
@@ -83,7 +83,7 @@ index d087131d8f5bc5fef10d41ca63daf4e2d9082c0d..a3250ec6f675bdd3b38096eb71f40f4b
          if (this.fireImmune() || this.level.isClientSide) {
              this.clearFire();
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 706dcbb278fb45722e8aecfd2e870943c4e51cbf..7a0885984846a2fcd13e715699b20605d88c23c3 100644
+index 331dc4350f3b8262c33d6cb3c41601137d81f3ab..e007e9b3eef13c647475bb00cf46bfa2b10a2bd5 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -871,6 +871,7 @@ public final class CraftServer implements Server {
@@ -109,7 +109,7 @@ index 706dcbb278fb45722e8aecfd2e870943c4e51cbf..7a0885984846a2fcd13e715699b20605
          public void broadcast(BaseComponent component) {
              for (Player player : CraftServer.this.getOnlinePlayers()) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 01ca38ee35f2c1e5031ea4b8aca09a2a59c4a475..32d661358b955fd37cb2a5313eb4f2c4aedc477d 100644
+index 35518427857c77dfa0737f1684a0a427ddb90048..0dc9b788cffd16633675d52613687a0ca0fc98e9 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
 @@ -162,6 +162,14 @@ public class Main {

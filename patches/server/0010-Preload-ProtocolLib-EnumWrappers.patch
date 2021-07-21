@@ -6,7 +6,7 @@ Subject: [PATCH] Preload ProtocolLib EnumWrappers
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 8a24b44725b9a7038a83ef42bc3b97effdf73741..adcc8e2e9af73f22855c5f232c7ffd6d5d5a3738 100644
+index 59770d703dc463b316889c0d6c386d4f4548ff29..db2608278369b2b55864196a011ac9a3b2cec1e6 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1218,6 +1218,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa

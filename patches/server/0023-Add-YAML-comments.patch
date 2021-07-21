@@ -5,14 +5,14 @@ Subject: [PATCH] Add YAML comments
 
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index c9d44d58a7e54d46473e634f5a947fa547777b57..fa02a1d8f9112ca59b602d523c64746103120aec 100644
+index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd2d3057e1 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -13,17 +13,16 @@ import java.util.regex.Pattern;
  import org.bukkit.Bukkit;
  import org.bukkit.configuration.InvalidConfigurationException;
  import org.bukkit.configuration.file.YamlConfiguration;
-+import org.sugarcanemc.sugarcane.util.YamlCommenter;
++import org.sugarcanemc.sugarcane.util.yaml.YamlCommenter;
 +
  public class SugarcaneConfig {
  	public static File CONFIG_FILE;
@@ -244,13 +244,13 @@ index 0000000000000000000000000000000000000000..54eb3166c2a38363e8ad8c95448a4d80
 +        if(SugarcaneConfig.debug) System.out.println(s);
 +    }
 +}
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java b/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..4be48a0e88cd355599d8f4994d7f4e745a04847f
+index 0000000000000000000000000000000000000000..b1c7ef8a12a8ddeb654d27bf9c4679ea0d2edde5
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/util/YamlCommenter.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
 @@ -0,0 +1,59 @@
-+package org.sugarcanemc.sugarcane.util;
++package org.sugarcanemc.sugarcane.util.yaml;
 +
 +import java.io.File;
 +import java.io.FileWriter;
@@ -310,13 +310,13 @@ index 0000000000000000000000000000000000000000..4be48a0e88cd355599d8f4994d7f4e74
 +    }
 +}
 \ No newline at end of file
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/YamlUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/YamlUtils.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..319aa175c1e04261c78345936b26514de6b76a5a
+index 0000000000000000000000000000000000000000..8da85a428219bd4866762992921f23c1fc22d422
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/util/YamlUtils.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
 @@ -0,0 +1,28 @@
-+package org.sugarcanemc.sugarcane.util;
++package org.sugarcanemc.sugarcane.util.yaml;
 +
 +import java.util.ArrayList;
 +import java.util.List;
