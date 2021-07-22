@@ -6,7 +6,7 @@ Subject: [PATCH] Sugarcane configuration
 also some basic settings that dont deserve a patch from Yatopia
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 69d85e5a0a5ab9ffb682d8565aa08a4a567b68da..eb69dcc8d704b96879a72f633f4fdea7860bee78 100644
+index 69d85e5a0a5ab9ffb682d8565aa08a4a567b68da..83df7d92421b5f71359839ee2b915642046909ec 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -232,8 +232,9 @@ public class TimingsExport extends Thread {
@@ -20,6 +20,15 @@ index 69d85e5a0a5ab9ffb682d8565aa08a4a567b68da..eb69dcc8d704b96879a72f633f4fdea7
          ));
  
          new TimingsExport(listeners, parent, history).start();
+@@ -323,7 +324,7 @@ public class TimingsExport extends Thread {
+         String response = null;
+         String timingsURL = null;
+         try {
+-            HttpURLConnection con = (HttpURLConnection) new URL(net.pl3x.purpur.PurpurConfig.timingsUrl + "/post").openConnection(); // Purpur
++            HttpURLConnection con = (HttpURLConnection) new URL(org.sugarcanemc.sugarcane.config.SugarcaneConfig.timingsUrl + "/post").openConnection(); // Sugarcane // Purpur
+             con.setDoOutput(true);
+             String hostName = "BrokenHost";
+             try {
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 index 127e211548675155e8f3c11cf15775406c9f44bc..24e3865d6d7d712dd8484df225f69774bae08a38 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
@@ -129,10 +138,10 @@ index 35518427857c77dfa0737f1684a0a427ddb90048..0dc9b788cffd16633675d52613687a0c
                          .withRequiredArg()
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..5e2198ffad7d81ee25a717d0f111b332b3f9c95c
+index 0000000000000000000000000000000000000000..0d75b0266088cee6e9b3896c2fcf7d333d69d998
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -0,0 +1,190 @@
+@@ -0,0 +1,195 @@
 +package org.sugarcanemc.sugarcane.config;
 +
 +import com.google.common.base.Throwables;
@@ -322,5 +331,10 @@ index 0000000000000000000000000000000000000000..5e2198ffad7d81ee25a717d0f111b332
 +private static void brandName() {
 +	brandName = getString("brand-name", brandName);
 +    }
++
++	public static String timingsUrl = "https://timin.gs";
++	private static void timingsUrl() {
++		timingsUrl = getString("settings.timings.timings-url", timingsUrl);
++	}
 +}
 \ No newline at end of file

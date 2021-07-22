@@ -269,10 +269,10 @@ index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..3ea87ede0ab251ef9bf8e502229bc17c
      }
  
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 2749fdf41742effee615ff78b78fa339e8366331..c9d44d58a7e54d46473e634f5a947fa547777b57 100644
+index 6131e70c3a202288c0b015a139e6438eecfd1c75..9ecb44c4b0a2183aef40eed4c27b032ca8722457 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -201,4 +201,8 @@ private static void brandName() {
+@@ -206,4 +206,8 @@ private static void brandName() {
      private static void itemStuckSleepTicks() {
          itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
      }

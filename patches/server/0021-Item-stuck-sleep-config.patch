@@ -19,10 +19,10 @@ index 9ec17c9b469dd058cf382164027f0392a92b2c29..6c4e661cfb4c556c07222d1ac4d3ccc4
                      return true;
                  });
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 59aeb2545bf283974b7cc4333f00025e3d84950f..2749fdf41742effee615ff78b78fa339e8366331 100644
+index ba3294b921c86637275b3543b5b65c7fc628993b..6131e70c3a202288c0b015a139e6438eecfd1c75 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -196,4 +196,9 @@ private static void brandName() {
+@@ -201,4 +201,9 @@ private static void brandName() {
          checkFlying = getBoolean("settings.checks.flight", checkFlying);
          checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
      }

@@ -4,8 +4,18 @@ Date: Wed, 16 Jun 2021 15:04:11 +0100
 Subject: [PATCH] Rebrand
 
 
+diff --git a/.gitignore b/.gitignore
+index 3e05459f27c4c5697ae65da504d67a6a2f617b57..571d8f5c70bff2edb5cd5ac40e0a0d491eacea88 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -40,3 +40,4 @@ dependency-reduced-pom.xml
+ 
+ /src/main/resources/achievement
+ /src/main/resources/lang
++/src/main/resources/branch-info.properties
+\ No newline at end of file
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 887bbcdc4ed121b17bbb22f3df9de1db19351aee..a04ab6e7ca8838a53ee777310efdc71641ea3d85 100644
+index 887bbcdc4ed121b17bbb22f3df9de1db19351aee..89088615953d546c474da8a1bf826659c8c34673 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -37,8 +37,8 @@ repositories {
@@ -28,6 +38,18 @@ index 887bbcdc4ed121b17bbb22f3df9de1db19351aee..a04ab6e7ca8838a53ee777310efdc716
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
+@@ -105,6 +105,11 @@ tasks.jar {
+             attributes("$tld/bukkit", "Sealed" to true)
+         }
+     }
++    val git = Git(rootProject.layout.projectDirectory.path)
++    val branchInfo = git("rev-parse", "--abbrev-ref", "HEAD").getText().trim()
++    File("Sugarcane-Server/src/main/resources/branch-info.properties").bufferedWriter().use { out ->
++    out.write("branch=$branchInfo")
++  }
+ }
+ 
+ publishing {
 diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
 index f5d01bce4d5547b4aeca96b7962b2090f47ea541..8f24d0c3fc2aeee085143176535001f5de9159f6 100644
 --- a/src/main/java/com/destroystokyo/paper/Metrics.java
@@ -119,7 +141,7 @@ index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a
          if (stream != null) {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..24d251025dc67fa4f3a122e59bfdf0072c48b4e8
+index 0000000000000000000000000000000000000000..9e3074ae16d719d14f08eeab1d347da9397e4431
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java
 @@ -0,0 +1,25 @@
@@ -135,14 +157,14 @@ index 0000000000000000000000000000000000000000..24d251025dc67fa4f3a122e59bfdf007
 +public final class BranchReader {
 +	public static String getBranch() {
 +		String branch = "null";
-+		InputStream branchStream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
++		InputStream branchStream = Bukkit.class.getClassLoader().getResourceAsStream("branch-info.properties");
 +		Properties properties = new Properties();
 +		if (branchStream != null) {
 +			try {
 +				properties.load(branchStream);
-+				branch = properties.getProperty("Git-Branch");
++				branch = properties.getProperty("branch");
 +			} catch (IOException ex) {
-+				Logger.getLogger(SugarcaneVersionFetcher.class.getName()).log(Level.SEVERE, "Could not get branch info from MANIFEST.MF!", ex);
++				Logger.getLogger(SugarcaneVersionFetcher.class.getName()).log(Level.SEVERE, "Could not get branch info from branch-info.properties!", ex);
 +			}
 +		}
 +		return branch;
