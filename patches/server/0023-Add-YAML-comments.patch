@@ -5,7 +5,7 @@ Subject: [PATCH] Add YAML comments
 
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd2d3057e1 100644
+index 9ecb44c4b0a2183aef40eed4c27b032ca8722457..06b28c6344cc0934e3c6d186abe5ab48cd9ce9bf 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -13,17 +13,16 @@ import java.util.regex.Pattern;
@@ -32,7 +32,7 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
  
  	public static void init(File configFile) {
  		CONFIG_FILE = configFile;
-@@ -35,13 +34,36 @@ public class SugarcaneConfig {
+@@ -35,13 +34,37 @@ public class SugarcaneConfig {
  			Bukkit.getLogger().log(Level.SEVERE, "Could not load sugarcane.yml, please correct your syntax errors", ex);
  			throw Throwables.propagate(ex);
  		}
@@ -67,10 +67,11 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
 +		c.addComment("config-version", "Config version, do NOT modify this!");
 +		c.addComment("settings.checks.flight", "Toggles flight checks for players");
 +		c.addComment("settings.checks.vehicle-flight", "Toggles flight checks for players in vehicles");
++		c.addComment("settings.timings.timings-url", "Sets the timings server url");
  	}
  
  	private static void removeLeftovers() {
-@@ -90,16 +112,18 @@ public class SugarcaneConfig {
+@@ -90,16 +113,18 @@ public class SugarcaneConfig {
  
  		try {
  			config.save(CONFIG_FILE);
@@ -91,7 +92,7 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
  		final char unit = str.charAt(str.length() - 1);
  		str = NOT_NUMERIC.matcher(str).replaceAll("");
  		double num;
-@@ -116,10 +140,10 @@ public class SugarcaneConfig {
+@@ -116,10 +141,10 @@ public class SugarcaneConfig {
  			default: break;
  		}
  		return (int) num;
@@ -104,7 +105,7 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
  
  		if (seconds > 60 * 60 * 24) {
  			time += TimeUnit.SECONDS.toDays(seconds) + "d";
-@@ -135,43 +159,50 @@ public class SugarcaneConfig {
+@@ -135,43 +160,50 @@ public class SugarcaneConfig {
  			time += TimeUnit.SECONDS.toMinutes(seconds) + "m";
  		}
  		return time;
@@ -158,9 +159,9 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
  		return config.getString(path, config.getString(path));
 -}
 +	}
-+
  
 -public static boolean logPlayerLoginLoc = true;
++
 +
 +	//define settings
 +	public static boolean debug = false;
@@ -171,7 +172,7 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
  	private static void general() {
  		logPlayerLoginLoc = getBoolean("settings.log-player-login-location", logPlayerLoginLoc);
  	}
-@@ -181,28 +212,28 @@ public static boolean logPlayerLoginLoc = true;
+@@ -181,13 +213,13 @@ public static boolean logPlayerLoginLoc = true;
  	}
  
  	public static boolean disableEntityStuckChecks = false;
@@ -185,8 +186,15 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
  	public static String brandName = "Sugarcane";
 -private static void brandName() {
 -	brandName = getString("brand-name", brandName);
--    }
--
++    private static void brandName() {
++    	brandName = getString("brand-name", brandName);
+     }
+ 
+ 	public static String timingsUrl = "https://timin.gs";
+@@ -195,13 +227,6 @@ private static void brandName() {
+ 		timingsUrl = getString("settings.timings.timings-url", timingsUrl);
+ 	}
+ 
 -    public static boolean checkFlying = true;
 -    public static boolean checkVehicleFlying = true;
 -    private static void flightChecks() {
@@ -194,17 +202,13 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
 -        checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
 -    }
 -
--    public static int itemStuckSleepTicks = 1;
--    private static void itemStuckSleepTicks() {
--        itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
--    }
--
--    public static int ItemMergeBehavior = -1;
--    public static boolean SplitItems = false;
--    private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
-+	private static void brandName() {
-+		brandName = getString("brand-name", brandName);
-+	}
+     public static int itemStuckSleepTicks = 1;
+     private static void itemStuckSleepTicks() {
+         itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
+@@ -210,4 +235,11 @@ private static void brandName() {
+     public static int ItemMergeBehavior = -1;
+     public static boolean SplitItems = false;
+     private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
 +
 +	public static boolean checkFlying = true;
 +	public static boolean checkVehicleFlying = true;
@@ -212,15 +216,6 @@ index c9d44d58a7e54d46473e634f5a947fa547777b57..56314b8715d6ea6a9f0ebf7a7445acdd
 +		checkFlying = getBoolean("settings.checks.flight", checkFlying);
 +		checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
 +	}
-+
-+	public static int itemStuckSleepTicks = 1;
-+	private static void itemStuckSleepTicks() {
-+		itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
-+	}
-+
-+	public static int ItemMergeBehavior = -1;
-+	public static boolean SplitItems = false;
-+	private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
  }
 \ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Util.java b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java

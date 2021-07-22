@@ -28,13 +28,13 @@ index 69834b75a81491dcd3133d95cf81cc3cc91bb782..d4c11e1e66549fa1f117a1b935c2aaa2
                      this.disconnect(com.destroystokyo.paper.PaperConfig.flyingKickVehicleMessage, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_VEHICLE); // Paper - use configurable kick message & kick event cause
                      return;
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index c10f930391b2cd16cd91d175479e09ed68b6c053..59aeb2545bf283974b7cc4333f00025e3d84950f 100644
+index aafece28a0c0c98c1bacb203831b63f62a0bfe28..ba3294b921c86637275b3543b5b65c7fc628993b 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -189,4 +189,11 @@ private static void disableEntityStuckChecks() {
- private static void brandName() {
- 	brandName = getString("brand-name", brandName);
-     }
+@@ -194,4 +194,11 @@ private static void brandName() {
+ 	private static void timingsUrl() {
+ 		timingsUrl = getString("settings.timings.timings-url", timingsUrl);
+ 	}
 +
 +    public static boolean checkFlying = true;
 +    public static boolean checkVehicleFlying = true;
