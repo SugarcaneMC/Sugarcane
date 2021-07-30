@@ -1,0 +1,177 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Sat Jul 31 01:44:16 2021 +0200
+Subject: [PATCH] Add fire item smelting
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index 3ea87ede0..84b7aa223 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -23,9 +23,9 @@ import net.minecraft.world.entity.Entity;
+ import net.minecraft.world.entity.EntityType;
+ import net.minecraft.world.entity.MoverType;
+ import net.minecraft.world.entity.player.Player;
+-import net.minecraft.world.item.Item;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.Items;
++import net.minecraft.world.item.crafting.SmeltingRecipe;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.gameevent.GameEvent;
+ import net.minecraft.world.phys.Vec3;
+@@ -39,6 +39,8 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
+ // CraftBukkit end
+ import org.bukkit.event.player.PlayerAttemptPickupItemEvent; // Paper
+ import org.sugarcanemc.sugarcane.config.SugarcaneConfig; // Sugarcane
++import org.sugarcanemc.sugarcane.util.Util;
++import org.sugarcanemc.sugarcane.util.cached_shorthands.Recipes;
+ 
+ public class ItemEntity extends Entity {
+ 
+@@ -378,14 +380,27 @@ public class ItemEntity extends Entity {
+                 return false;
+             }
+             // CraftBukkit end
+-            this.markHurt();
+-            this.health = (int) ((float) this.health - amount);
+-            this.gameEvent(GameEvent.ENTITY_DAMAGED, source.getEntity());
+-            if (this.health <= 0) {
+-                this.getItem().onDestroyed(this);
+-                this.discard();
+-            }
++            // Sugarcane - cook items on fire
++            boolean smelted = false;
++            if(source == DamageSource.IN_FIRE && SugarcaneConfig.FireItemCooking) {
++                for(SmeltingRecipe r : Recipes.getFurnaceRecipes()){
++                    if(r.getIngredients().get(0).itemStacks[0].getItem() == this.getItem().getItem()){
++                        this.getItem().setItem(r.getResultItem().getItem());
++                        immuneToFire = true;
++                        smelted = true;
+ 
++                    }
++                }
++            }
++            if(!smelted) {
++                this.markHurt();
++                this.health = (int) ((float) this.health - amount);
++                this.gameEvent(GameEvent.ENTITY_DAMAGED, source.getEntity());
++                if (this.health <= 0) {
++                    this.getItem().onDestroyed(this);
++                    this.discard();
++                }
++            }
+             return true;
+         }
+     }
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 06b28c634..4637c6b26 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
+ import org.bukkit.Bukkit;
+ import org.bukkit.configuration.InvalidConfigurationException;
+ import org.bukkit.configuration.file.YamlConfiguration;
+-import org.sugarcanemc.sugarcane.util.yaml.YamlCommenter;
++import org.sugarcanemc.sugarcane.util.yaml.*;
+ 
+ public class SugarcaneConfig {
+ 	public static File CONFIG_FILE;
+@@ -54,17 +54,20 @@ public class SugarcaneConfig {
+ 		c.addComment("debug", "Enable debug output for Sugarcane code!\nWarning: this WILL increase log size a lot!\nKeep in mind this is for output considered too spammy for verbose!");
+ 		c.addComment("verbose", "Enable verbose mode for Sugarcane code!\nWarning: may increase log size and/or hurt performance!");
+ 		c.addComment("brand-name", "Set the software name the server reports to be using.");
+-		c.addComment("ItemMergeBehavior",
++		c.addComment("config-version", "Config version, do NOT modify this!");
++		c.addComment("settings.checks.flight", "Toggles flight checks for players");
++		c.addComment("settings.checks.vehicle-flight", "Toggles flight checks for players in vehicles");
++		c.addComment("settings.timings.timings-url", "Sets the timings server url");
++
++		/* Retro features - bringing back the past since 2021 */
++		c.addComment("settings.retro.item-merge-behavior",
+ 				"""
+ 						Changes how item merging works
+ 						Values:
+ 						- -1: Normal (use the vanilla item stacking)
+ 						-  0: Infinite (stack infinitely based on item type and metadata)
+ 						-  1: No stacking (every separate item is its own entity, only for fun!)""");
+-		c.addComment("config-version", "Config version, do NOT modify this!");
+-		c.addComment("settings.checks.flight", "Toggles flight checks for players");
+-		c.addComment("settings.checks.vehicle-flight", "Toggles flight checks for players in vehicles");
+-		c.addComment("settings.timings.timings-url", "Sets the timings server url");
++		c.addComment("settings.retro.fire-item-cooking", "Cook items on fire (0.31 2010-01-29 - Indev 2010-02-19)");
+ 	}
+ 
+ 	private static void removeLeftovers() {
+@@ -90,9 +93,7 @@ public class SugarcaneConfig {
+ 	}
+ 
+ 	protected static void log(String s) {
+-		if (verbose) {
+-			Bukkit.getLogger().info(s);
+-		}
++		if (verbose) Bukkit.getLogger().info(s);
+ 	}
+ 
+ 	static void readConfig(Class<?> clazz, Object instance) {
+@@ -234,7 +235,7 @@ public class SugarcaneConfig {
+ 
+     public static int ItemMergeBehavior = -1;
+     public static boolean SplitItems = false;
+-    private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
++    private static void shouldItemsMerge() { ItemMergeBehavior = getInt("settings.retro.item-merge-behavior", getInt("ItemMergeBehavior", -1)); SplitItems = ItemMergeBehavior == 1; set("ItemMergeBehavior", null); }
+ 
+ 	public static boolean checkFlying = true;
+ 	public static boolean checkVehicleFlying = true;
+@@ -242,4 +243,9 @@ public class SugarcaneConfig {
+ 		checkFlying = getBoolean("settings.checks.flight", checkFlying);
+ 		checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
+ 	}
++
++	public static boolean FireItemCooking = false;
++	private static void fireItemCooking() {
++		FireItemCooking = getBoolean("settings.retro.fire-item-cooking", FireItemCooking);
++	}
+ }
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Util.java b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
+index 54eb3166c..5bedcfba2 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
+@@ -12,4 +12,8 @@ public class Util {
+     public static void logDebug(String s){
+         if(SugarcaneConfig.debug) System.out.println(s);
+     }
++
++    public static long timeSince(long timestamp){
++        return System.currentTimeMillis() - timestamp;
++    }
+ }
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/cached_shorthands/Recipes.java b/src/main/java/org/sugarcanemc/sugarcane/util/cached_shorthands/Recipes.java
+new file mode 100644
+index 000000000..694fe99e0
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/cached_shorthands/Recipes.java
+@@ -0,0 +1,23 @@
++package org.sugarcanemc.sugarcane.util.cached_shorthands;
++
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.world.item.crafting.RecipeType;
++import net.minecraft.world.item.crafting.SmeltingRecipe;
++
++import java.util.List;
++
++import static org.sugarcanemc.sugarcane.util.Util.timeSince;
++
++public class Recipes {
++    private static final long fetchCooldown = 10000;
++    private static long lastFurnaceRecipeFetch = 0;
++
++    private static List<SmeltingRecipe> _furnaceRecipes;
++    public static List<SmeltingRecipe> getFurnaceRecipes() {
++        if(timeSince(lastFurnaceRecipeFetch) > fetchCooldown) {
++            _furnaceRecipes = MinecraftServer.getServer().getRecipeManager().getAllRecipesFor(RecipeType.SMELTING);
++            lastFurnaceRecipeFetch = System.currentTimeMillis();
++        }
++        return _furnaceRecipes;
++    }
++}
