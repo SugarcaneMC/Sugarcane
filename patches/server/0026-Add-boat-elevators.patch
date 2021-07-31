@@ -1,0 +1,53 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date:  Sun Aug 1 01:33:39 2021 +0200
+Subject: [PATCH] Add boat elevators
+
+diff --git a/src/main/java/net/minecraft/world/entity/vehicle/Boat.java b/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
+index 4f85cd75a..122482cd6 100644
+--- a/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
++++ b/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
+@@ -59,6 +59,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
+ import org.bukkit.event.vehicle.VehicleDestroyEvent;
+ import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
+ import org.bukkit.event.vehicle.VehicleMoveEvent;
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
+ // CraftBukkit end
+ 
+ public class Boat extends Entity {
+@@ -328,7 +329,7 @@ public class Boat extends Entity {
+     public void tick() {
+         this.oldStatus = this.status;
+         this.status = this.getStatus();
+-        if (this.status != Boat.Status.UNDER_WATER && this.status != Boat.Status.UNDER_FLOWING_WATER) {
++        if (this.status == Boat.Status.UNDER_WATER || this.status == Boat.Status.UNDER_FLOWING_WATER || SugarcaneConfig.BoatElevators) {
+             this.outOfControlTicks = 0.0F;
+         } else {
+             ++this.outOfControlTicks;
+@@ -704,10 +705,10 @@ public class Boat extends Entity {
+                 d2 = (this.waterLevel - this.getY()) / (double) this.getBbHeight();
+                 this.invFriction = 0.9F;
+             } else if (this.status == Boat.Status.UNDER_FLOWING_WATER) {
+-                d1 = -7.0E-4D;
++                d1 = SugarcaneConfig.BoatElevators ? 0.04d : -7.0E-4D;
+                 this.invFriction = 0.9F;
+             } else if (this.status == Boat.Status.UNDER_WATER) {
+-                d2 = 0.009999999776482582D;
++                d2 = SugarcaneConfig.BoatElevators ? 0.04d : 0.009999999776482582D;
+                 this.invFriction = 0.45F;
+             } else if (this.status == Boat.Status.IN_AIR) {
+                 this.invFriction = 0.9F;
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 4637c6b26..a57d325cb 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -248,4 +248,8 @@ public class SugarcaneConfig {
+ 	private static void fireItemCooking() {
+ 		FireItemCooking = getBoolean("settings.retro.fire-item-cooking", FireItemCooking);
+ 	}
++	public static boolean BoatElevators = false;
++	private static void boatElevators() {
++		BoatElevators = getBoolean("settings.retro.boat-elevators", BoatElevators);
++	}
+ }
+\ No newline at end of file
