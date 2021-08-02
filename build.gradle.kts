@@ -86,10 +86,10 @@ paperweight {
         }
 
         reobfPackagesToFix.addAll(
-            "org.sugarcanemc.sugarcane",
+            "org.sugarcanemc",
             "gg.airplane",
-            "net.pl3x.purpur",
-            "com.tuinity.tuinity",
+            "net.pl3x",
+            "com.tuinity",
             "ca.spottedleaf",
             "me.jellysquid.mods"
         )
