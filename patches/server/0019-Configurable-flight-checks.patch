@@ -6,7 +6,7 @@ Subject: [PATCH] Configurable flight checks
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 69834b75a81491dcd3133d95cf81cc3cc91bb782..d4c11e1e66549fa1f117a1b935c2aaa2de023913 100644
+index 43d124818c4538bc0d84111dfab25c38aab249c1..b6a066f84feebb328513739dfd92b224acd4b687 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -319,7 +319,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
@@ -28,19 +28,17 @@ index 69834b75a81491dcd3133d95cf81cc3cc91bb782..d4c11e1e66549fa1f117a1b935c2aaa2
                      this.disconnect(com.destroystokyo.paper.PaperConfig.flyingKickVehicleMessage, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_VEHICLE); // Paper - use configurable kick message & kick event cause
                      return;
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index aafece28a0c0c98c1bacb203831b63f62a0bfe28..ba3294b921c86637275b3543b5b65c7fc628993b 100644
+index 8b2e8de93cafd052b509f33117673091c18310fe..ad21cad5b2d11d76e08f60b5269178e4e95ac1d4 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -194,4 +194,11 @@ private static void brandName() {
- 	private static void timingsUrl() {
- 		timingsUrl = getString("settings.timings.timings-url", timingsUrl);
- 	}
-+
-+    public static boolean checkFlying = true;
-+    public static boolean checkVehicleFlying = true;
-+    private static void flightChecks() {
-+        checkFlying = getBoolean("settings.checks.flight", checkFlying);
-+        checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
-+    }
+@@ -190,4 +190,10 @@ private static void brandName() {
+ 	brandName = getString("brand-name", brandName);
+     }
+ 
++	public static boolean checkFlying = true;
++	public static boolean checkVehicleFlying = true;
++	private static void flightChecks() {
++		checkFlying = getBoolean("settings.checks.flight", checkFlying);
++		checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
++	}
  }
-\ No newline at end of file

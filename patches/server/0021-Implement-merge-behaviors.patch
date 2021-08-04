@@ -18,7 +18,7 @@ index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f17
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..3ea87ede0ab251ef9bf8e502229bc17cffeab3db 100644
+index d3c09c1b3951cf11d6eff798d3b3e5a85c879b20..28446ec5d36fab4f93ae9621b0d957647e5a5b34 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -269,16 +269,15 @@ index 6c4e661cfb4c556c07222d1ac4d3ccc40157c108..3ea87ede0ab251ef9bf8e502229bc17c
      }
  
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 6131e70c3a202288c0b015a139e6438eecfd1c75..9ecb44c4b0a2183aef40eed4c27b032ca8722457 100644
+index d2ce7ef2d7fd9518a06e43567a96658388cf5c92..2b9c3bcba4621e8d7f41bb1ee08bef30b799a44a 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -206,4 +206,8 @@ private static void brandName() {
-     private static void itemStuckSleepTicks() {
-         itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
-     }
+@@ -201,4 +201,8 @@ private static void brandName() {
+ 	private static void itemStuckSleepTicks() {
+ 		itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
+ 	}
 +
 +    public static int ItemMergeBehavior = -1;
 +    public static boolean SplitItems = false;
 +    private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
  }
-\ No newline at end of file

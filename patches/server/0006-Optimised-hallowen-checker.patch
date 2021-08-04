@@ -6,7 +6,7 @@ Subject: [PATCH] Optimised hallowen checker
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index c9f23d568855f8826d93e174003f22f32666c13e..726d805d9cac489d051bbf9d8152dfaf5f0b1458 100644
+index 0158829fda8b50a56374a4f6247adedf01cc5597..c656d6f8427644f8f055924cdf27fac053cf536b 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1533,6 +1533,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -69,7 +69,7 @@ index 5b19d8db09867791782c899d41d314c511f6c8a2..b087230c8aea614c12970b9d27bc6049
                  this.armorDropChances[EquipmentSlot.HEAD.getIndex()] = 0.0F;
              }
 diff --git a/src/main/java/net/minecraft/world/entity/monster/Zombie.java b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
-index 40f2fd62b1d36843c5539932d2fb2496009fee21..3094784a4b7bc3b052493d16fcc3b1c2e92e6295 100644
+index 39fa4a9a52c510e88036ab790a8739d20935188b..0a26c3ea405e208d830173d56b49566645d1bd77 100644
 --- a/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 +++ b/src/main/java/net/minecraft/world/entity/monster/Zombie.java
 @@ -563,11 +563,16 @@ public class Zombie extends Monster {

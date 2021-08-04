@@ -3,10 +3,10 @@ From: tr7zw <tr7zw@live.de>
 Date: Wed, 5 Aug 2020 08:05:10 -0500
 Subject: [PATCH] Sugarcane configuration
 
-also some basic settings that dont deserve a patch from Yatopia
+also some basic settings that dont deserve a patch from Yatopia , licensed under MIT license
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 69d85e5a0a5ab9ffb682d8565aa08a4a567b68da..83df7d92421b5f71359839ee2b915642046909ec 100644
+index 7b5d81be9f4a55fc7e163359aa6d8b265a538610..5b8ca87be904825d51a155c4c9853ca165bbb71b 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -232,8 +232,9 @@ public class TimingsExport extends Thread {
@@ -20,17 +20,21 @@ index 69d85e5a0a5ab9ffb682d8565aa08a4a567b68da..83df7d92421b5f71359839ee2b915642
          ));
  
          new TimingsExport(listeners, parent, history).start();
-@@ -323,7 +324,7 @@ public class TimingsExport extends Thread {
-         String response = null;
-         String timingsURL = null;
-         try {
--            HttpURLConnection con = (HttpURLConnection) new URL(net.pl3x.purpur.PurpurConfig.timingsUrl + "/post").openConnection(); // Purpur
-+            HttpURLConnection con = (HttpURLConnection) new URL(org.sugarcanemc.sugarcane.config.SugarcaneConfig.timingsUrl + "/post").openConnection(); // Sugarcane // Purpur
-             con.setDoOutput(true);
-             String hostName = "BrokenHost";
-             try {
+diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+index e6ed874b707435b3ac5af500b7b85ac046f305c5..775bf86c6aef8a15e54ea7f0933e3b85f6fa8a24 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+@@ -217,7 +217,7 @@ public class PaperConfig {
+         timings = reallyEnableTimings;
+         // Airplane end
+         boolean verboseTimings = getBoolean("timings.verbose", true);
+-        TimingsManager.url = getString("timings.url", "https://timings.pl3x.net/");
++        TimingsManager.url = getString("timings.url", "https://timin.gs/");
+         if (!TimingsManager.url.endsWith("/")) {
+             TimingsManager.url += "/";
+         }
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 127e211548675155e8f3c11cf15775406c9f44bc..24e3865d6d7d712dd8484df225f69774bae08a38 100644
+index 1da53b46c69dc5cfca0fea805cc491e79a841153..cb1e3f0fcf2c62a6aa227be1de0062f4327458a3 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -235,7 +235,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -50,7 +54,7 @@ index 127e211548675155e8f3c11cf15775406c9f44bc..24e3865d6d7d712dd8484df225f69774
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 74358ddddaab9658cbc56ce948c29da294950f17..da5dc2ef61e2b388f16e10240274a800ede79571 100644
+index bea3e2054f0c0e56dce956063c9d7edf2e4cc0c6..afed04f4820363d3f06ba571f23d44fa95175f1e 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -398,22 +398,24 @@ public abstract class LivingEntity extends Entity {
@@ -92,10 +96,10 @@ index 74358ddddaab9658cbc56ce948c29da294950f17..da5dc2ef61e2b388f16e10240274a800
          if (this.fireImmune() || this.level.isClientSide) {
              this.clearFire();
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 331dc4350f3b8262c33d6cb3c41601137d81f3ab..e007e9b3eef13c647475bb00cf46bfa2b10a2bd5 100644
+index c0ee449daee3ff53bd58aaf37d341f0a2b16a6fc..e30307111184bf9674b65aaacb1c8456ad24fc0d 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -871,6 +871,7 @@ public final class CraftServer implements Server {
+@@ -882,6 +882,7 @@ public final class CraftServer implements Server {
              this.playerList.getBans().load();
          } catch (IOException ex) {
              this.logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
@@ -103,7 +107,7 @@ index 331dc4350f3b8262c33d6cb3c41601137d81f3ab..e007e9b3eef13c647475bb00cf46bfa2
          }
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
-@@ -2410,6 +2411,13 @@ public final class CraftServer implements Server {
+@@ -2489,6 +2490,13 @@ public final class CraftServer implements Server {
              org.spigotmc.RestartCommand.restart();
          }
  
@@ -138,10 +142,10 @@ index 35518427857c77dfa0737f1684a0a427ddb90048..0dc9b788cffd16633675d52613687a0c
                          .withRequiredArg()
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..0d75b0266088cee6e9b3896c2fcf7d333d69d998
+index 0000000000000000000000000000000000000000..c75c0de0bf7f1d331da76a31a3a21ac708587724
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -0,0 +1,195 @@
+@@ -0,0 +1,191 @@
 +package org.sugarcanemc.sugarcane.config;
 +
 +import com.google.common.base.Throwables;
@@ -332,9 +336,4 @@ index 0000000000000000000000000000000000000000..0d75b0266088cee6e9b3896c2fcf7d33
 +	brandName = getString("brand-name", brandName);
 +    }
 +
-+	public static String timingsUrl = "https://timin.gs";
-+	private static void timingsUrl() {
-+		timingsUrl = getString("settings.timings.timings-url", timingsUrl);
-+	}
 +}
-\ No newline at end of file

@@ -6,12 +6,12 @@ Subject: [PATCH] add config for logging login location
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index bea7b50888462b89c82da756d0a72226a0cdb3fc..ebd794983c7271860a542dcc9d682ddd2e91c9d9 100644
+index 54f5e11b636649d1fb5a1b5cc05427b81341e10f..21cab9f37d5a49ae3620aad5180b892303c48fd5 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -485,7 +485,14 @@ public abstract class PlayerList {
          // Paper end
-         if (player.tpsBar()) net.pl3x.purpur.task.TPSBarTask.addPlayer(player.getBukkitEntity()); // Purpur
+         net.pl3x.purpur.task.BossBarTask.addToAll(player); // Purpur
          // CraftBukkit - Moved from above, added world
 -        PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
 +
@@ -26,7 +26,7 @@ index bea7b50888462b89c82da756d0a72226a0cdb3fc..ebd794983c7271860a542dcc9d682ddd
  
      public void updateEntireScoreboard(ServerScoreboard scoreboard, ServerPlayer player) {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 87f06b075f7b33032c1acda3a4157c5cb6ec7818..c10f930391b2cd16cd91d175479e09ed68b6c053 100644
+index 9869bf483dcf535a88d428bb855b9300163c1035..8b2e8de93cafd052b509f33117673091c18310fe 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -171,6 +171,10 @@ public class SugarcaneConfig {

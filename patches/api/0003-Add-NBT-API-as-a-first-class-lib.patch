@@ -6,7 +6,7 @@ Subject: [PATCH] Add NBT API as a first-class lib
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a10a2a6581c9be8b4c6d8f468f4a8955ce163af4..bbf600a7146bc42b9c0a3349ea3ee4f0719919a4 100644
+index c23f8096ab55df5996659f8d97634c961ef24bb8..0128a5e6a0654f329af3cfc3a9cddf2ed2b49aa3 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -3,6 +3,7 @@ import java.util.Locale
@@ -17,15 +17,15 @@ index a10a2a6581c9be8b4c6d8f468f4a8955ce163af4..bbf600a7146bc42b9c0a3349ea3ee4f0
  }
  
  java {
-@@ -31,6 +32,7 @@ dependencies {
+@@ -28,6 +29,7 @@ dependencies {
+     api("net.kyori:adventure-text-serializer-plain")
      api("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") // Purpur
-     api("com.mojang:authlib:2.3.31") // Sugarcane
 +    api("de.tr7zw:item-nbt-api:2.8.0") // Sugarcane
  
-     compileOnly("org.apache.maven:maven-resolver-provider:3.8.1")
-     compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.7.0")
-@@ -72,6 +74,9 @@ tasks.jar {
+     implementation("org.ow2.asm:asm:9.1")
+     implementation("org.ow2.asm:asm-commons:9.1")
+@@ -73,6 +75,9 @@ tasks.jar {
      }
  }
  
@@ -120,10 +120,10 @@ index c9d64da90a05f252d91dd10d2d5f62ba66afb944..d290bb18c997579b9aa00f808c4794aa
       * Returns a list of entities within a bounding box centered around this
       * entity
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index ac2967eac165d74c8ee7e0e9ac63124a10851a0e..21ea323d761d5fca213fae5760e4301f6b2f7988 100644
+index bbf0f3c1cddb3b11020a80424a4dbca1b53f1c2c..e0f65b6f93bf51e871c8503b4d96e9f08c991f55 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
-@@ -579,6 +579,43 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
+@@ -580,6 +580,43 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
      }
      // Paper end
  

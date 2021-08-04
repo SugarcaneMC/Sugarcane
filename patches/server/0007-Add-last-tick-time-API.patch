@@ -8,7 +8,7 @@ Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 726d805d9cac489d051bbf9d8152dfaf5f0b1458..59770d703dc463b316889c0d6c386d4f4548ff29 100644
+index c656d6f8427644f8f055924cdf27fac053cf536b..d2540a25fb63be6ca78072e9f26c91083bdd1e9f 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1195,6 +1195,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -31,10 +31,10 @@ index 726d805d9cac489d051bbf9d8152dfaf5f0b1458..59770d703dc463b316889c0d6c386d4f
                      this.mayHaveDelayedTasks = true;
                      // Purpur start - tps catchup
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index e007e9b3eef13c647475bb00cf46bfa2b10a2bd5..1f689e9a2f5536a83de0ea340f74b242f64dc0da 100644
+index e30307111184bf9674b65aaacb1c8456ad24fc0d..9d03c3876da8d582ce9e567c3b8c68d1577ecd3e 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2568,6 +2568,8 @@ public final class CraftServer implements Server {
+@@ -2647,6 +2647,8 @@ public final class CraftServer implements Server {
  
      // Paper end
  

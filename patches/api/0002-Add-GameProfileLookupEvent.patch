@@ -6,24 +6,24 @@ Subject: [PATCH] Add GameProfileLookupEvent
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 309d201b7d551efd4a5903e6d990b0e718af6a78..a10a2a6581c9be8b4c6d8f468f4a8955ce163af4 100644
+index 8d19658eb77565524f6d36debcb7629db56f04c6..c23f8096ab55df5996659f8d97634c961ef24bb8 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -30,6 +30,7 @@ dependencies {
-     api("org.ow2.asm:asm-commons:9.0")
-     api("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
-     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") // Purpur
-+    api("com.mojang:authlib:2.3.31") // Sugarcane
- 
-     compileOnly("org.apache.maven:maven-resolver-provider:3.8.1")
+@@ -36,6 +36,7 @@ dependencies {
      compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.7.0")
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/events/GameProfileLookupEvent.java b/src/main/java/org/sugarcanemc/sugarcane/events/GameProfileLookupEvent.java
+     compileOnly("org.apache.maven.resolver:maven-resolver-transport-http:1.7.0")
+     compileOnly("com.google.code.findbugs:jsr305:1.3.9") // Paper
++    compileOnly("com.mojang:authlib:2.3.31") // Sugarcane
+ 
+     val annotations = "org.jetbrains:annotations:21.0.1" // Paper - we don't want Java 5 annotations...
+     compileOnly(annotations)
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java b/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..116e9055accce14ab6d04ffc9296c172c100ed0b
+index 0000000000000000000000000000000000000000..b226b65afc4418595b77e9f6c95a5caf4fcd8444
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/events/GameProfileLookupEvent.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java
 @@ -0,0 +1,51 @@
-+package org.sugarcanemc.sugarcane.events;
++package org.sugarcanemc.sugarcane.api.events;
 +
 +import com.mojang.authlib.GameProfile;
 +import java.util.UUID;

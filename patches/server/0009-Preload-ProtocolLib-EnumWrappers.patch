@@ -6,7 +6,7 @@ Subject: [PATCH] Preload ProtocolLib EnumWrappers
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 59770d703dc463b316889c0d6c386d4f4548ff29..db2608278369b2b55864196a011ac9a3b2cec1e6 100644
+index d2540a25fb63be6ca78072e9f26c91083bdd1e9f..1ac28e0a7c5d9a2f2325af2fee683f1e226ee212 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1218,6 +1218,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -18,7 +18,7 @@ index 59770d703dc463b316889c0d6c386d4f4548ff29..db2608278369b2b55864196a011ac9a3
                  org.spigotmc.WatchdogThread.tick(); // Paper
                  org.spigotmc.WatchdogThread.hasStarted = true; // Paper
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 5e2198ffad7d81ee25a717d0f111b332b3f9c95c..87f06b075f7b33032c1acda3a4157c5cb6ec7818 100644
+index c75c0de0bf7f1d331da76a31a3a21ac708587724..9869bf483dcf535a88d428bb855b9300163c1035 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -109,18 +109,11 @@ public class SugarcaneConfig {

@@ -3,20 +3,20 @@ From: SugarcaneMC <SugarcaneMC@gmail.com>
 Date: Fri, 23 Oct 2020 09:20:01 -0700
 Subject: [PATCH] Utilities
 
-From Yatopia
+Original code by Yatopia, licensed under MIT License
 This patch includes all utilities required by the Sugarcane project and its patches.
 
 Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a04ab6e7ca8838a53ee777310efdc71641ea3d85..11ebd1bbc77db344498615d1746c518632b744e3 100644
+index ce67267544b1061bf0cdafe5d3f620dadb97ddf8..869b1f3486b420c9424486b945a251d7718d38a1 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -54,6 +54,7 @@ dependencies {
-     implementation("org.apache.logging.log4j:log4j-iostreams:2.14.1") // Paper
+@@ -53,6 +53,7 @@ dependencies {
      implementation("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      implementation("org.ow2.asm:asm:9.1")
+     implementation("org.ow2.asm:asm-commons:9.1") // Paper - ASM event executor generation
 +    implementation("org.apache.commons:commons-rng-core:1.3")
      implementation("com.googlecode.json-simple:json-simple:1.1.1") {
          // This includes junit transitively for whatever reason

@@ -5,10 +5,10 @@ Subject: [PATCH] Sugarcane Config
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 2f9ee4cf3b2163dbe086b4d40179bfa64ebfdecf..84d41cbaa149503fee69296c333b70dd8969b880 100644
+index b8c380dae58d47514d684a6de2fd17b7d5135ab1..a244c3a8a91b2931acaa45b10bfb1e2e45c3448f 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1649,6 +1649,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1700,6 +1700,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
          // Purpur end
  

@@ -15,15 +15,15 @@ index 3e05459f27c4c5697ae65da504d67a6a2f617b57..571d8f5c70bff2edb5cd5ac40e0a0d49
 +/src/main/resources/branch-info.properties
 \ No newline at end of file
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 887bbcdc4ed121b17bbb22f3df9de1db19351aee..89088615953d546c474da8a1bf826659c8c34673 100644
+index f1eb3a90a79c34ac4fe267d71925bc92260713ba..ce67267544b1061bf0cdafe5d3f620dadb97ddf8 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -37,8 +37,8 @@ repositories {
+@@ -35,8 +35,8 @@ repositories {
  }
  
  dependencies {
 -    implementation(project(":Airplane-API")) // Airplane // Tuinity
--    implementation("com.destroystokyo.paper:paper-mojangapi:1.16.5-R0.1-SNAPSHOT") // Tuinity
+-    implementation("io.papermc.paper:paper-mojangapi:1.17.1-R0.1-SNAPSHOT") // Tuinity
 +    implementation(project(":Sugarcane-API")) // Sugarcane // Airplane // Tuinity
 +    implementation(project(":Sugarcane-MojangAPI")) // Tuinity // Sugarcane
      // Paper start
@@ -33,7 +33,7 @@ index 887bbcdc4ed121b17bbb22f3df9de1db19351aee..89088615953d546c474da8a1bf826659
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
--            "Implementation-Version" to "git-Airplane-$implementationVersion", // Airplane // Tuinity
+-            "Implementation-Version" to "git-AirplanePurpur-$implementationVersion", // Airplane // Tuinity
 +            "Implementation-Version" to "git-Sugarcane-$gitBranch-$implementationVersion", // Sugarcane // Airplane // Tuinity
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
@@ -88,23 +88,24 @@ index 8c3c68465197fafc14849dc38a572e309931e2a2..8e1ca69049c50f242b8198d47302bf9f
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 3f9111ea2680dfbc2a2fc709ba0b08179e542478..c9f23d568855f8826d93e174003f22f32666c13e 100644
+index 1ea82baf9f14ec7820abf29b2db5b218c967ca90..0158829fda8b50a56374a4f6247adedf01cc5597 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1733,7 +1733,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1732,8 +1732,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
      @DontObfuscate
      public String getServerModName() {
-         String purpurName = net.pl3x.purpur.PurpurConfig.serverModName;
--        return purpurName.equals("Purpur") ? "AirplanePurpur" : purpurName; // Airplane // Tuinity - Tuinity > //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+-        String purpurName = net.pl3x.purpur.PurpurConfig.serverModName;
+-        return purpurName.equals("Purpur") ? "AirplanePurpur" : purpurName; // Airplane // Purpur // Tuinity // Paper // Spigot // CraftBukkit
 +        return org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Sugarcane - Sugarcane > // Airplane - Airplane > // Tuinity - Tuinity > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
      }
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index cc7ccda063f5caabcd518c1bf8764eb73396a83f..331dc4350f3b8262c33d6cb3c41601137d81f3ab 100644
+index 2d148bba699ca9546f2f3d68b9af0c1f632557c7..c0ee449daee3ff53bd58aaf37d341f0a2b16a6fc 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -230,7 +230,7 @@ import javax.annotation.Nullable; // Paper
+@@ -240,7 +240,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {

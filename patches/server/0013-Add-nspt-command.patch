@@ -6,7 +6,7 @@ Subject: [PATCH] Add nspt command
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 24e3865d6d7d712dd8484df225f69774bae08a38..73c717d46694a45a22f23593e9ccc95b0fd1232d 100644
+index cb1e3f0fcf2c62a6aa227be1de0062f4327458a3..fffb121642399154a197649501241eb8f96ff7c0 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -228,6 +228,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -16,12 +16,12 @@ index 24e3865d6d7d712dd8484df225f69774bae08a38..73c717d46694a45a22f23593e9ccc95b
 +        org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager.registerCommands(); // Sugarcane
          com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
-         io.papermc.paper.util.StacktraceDeobfuscator.INSTANCE.getClass(); // load mappings for stacktrace deobf
+         io.papermc.paper.util.ObfHelper.INSTANCE.getClass(); // load mappings for stacktrace deobf and etc.
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 1f689e9a2f5536a83de0ea340f74b242f64dc0da..d7114b5073541741530a20fade2ee7ee52d36082 100644
+index 9d03c3876da8d582ce9e567c3b8c68d1577ecd3e..22e21e09c38341d89033de75a6a607de3404c6af 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -929,6 +929,7 @@ public final class CraftServer implements Server {
+@@ -940,6 +940,7 @@ public final class CraftServer implements Server {
          this.reloadData();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          com.destroystokyo.paper.PaperConfig.registerCommands(); // Paper

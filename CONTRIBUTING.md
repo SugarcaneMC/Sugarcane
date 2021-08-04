@@ -33,8 +33,8 @@ While we will fix minor formatting issues, you should stick to the guide below w
 
 All modifications to non-Sugarcane files should be marked.
 
-* Multi-line changes need start with // Sugarcane start and end with // Sugarcane end
-  * However adding a reason to // Sugarcane start would be very appreciated.
+* Multi-line changes need start with `// Sugarcane start` and end with `// Sugarcane end`
+  * However adding a reason to `// Sugarcane start` would be very appreciated.
 
 * The comments should generally be about the reason the change was made, what it was before, or what the change is.
   * Multi-line messages should start with `// Sugarcane start` and use `/*Multi line message here*/` for the message itself.
@@ -65,4 +65,4 @@ When in doubt or the code around your change is in a clearly different style, us
 * Pull requests are to be aimed at the 1.17/dev branch.
 * Ports of Fabric Mods and other forks are acceptable.
 
-  * When porting a fabric mod that uses Yarn mappings , you can use `https://wagyourtail.xyz/Projects/Minecraft%20Mappings%20Viewer/App?version=1.17&mapping=yarn,yarnIntermediary,mojang` to easily figure out how yarn names are named in mojang mappings
+  * When porting a fabric mod that uses Yarn mappings , you can use `https://wagyourtail.xyz/Projects/Minecraft%20Mappings%20Viewer/App?version=1.17.1&mapping=yarn,yarnIntermediary,mojang` to easily figure out how yarn names are named in mojang mappings
