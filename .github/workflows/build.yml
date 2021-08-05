@@ -17,11 +17,10 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Apply patches
-      run: ./gradlew applyPatches --stacktrace --no-daemon
+      run: ./gradlew applyPatches
     - name: Build Sugarcane
       run: |
-          ./gradlew build --stacktrace --no-daemon
-          ./gradlew paperclip --stacktrace --no-daemon
+          ./gradlew build paperclipJar
     - name: Upload Sugarcane Paperclip
       uses: actions/upload-artifact@v2
       with:
