@@ -15,8 +15,6 @@ pipeline {
                 scmSkip(deleteBuild: true, skipPattern:'^\\[CI-SKIP\\]')
                 sh 'git config --global gc.auto 0'
                 sh 'rm -rf ./target'
-                sh 'rm -rf Sugarcane-Server'
-                sh 'rm -rf Sugarcane-API'
             }
         }
         stage('Decompile & apply patches') {
@@ -32,6 +30,8 @@ pipeline {
                     git config user.email "jenkins@sugarcanemc.org"
                     git config user.name "Jenkins"
                     chmod +x gradlew
+                    rm -rf Sugarcane-Server
+                    rm -rf Sugarcane-API
                     ./gradlew applyPatches
                     '''
                 }
