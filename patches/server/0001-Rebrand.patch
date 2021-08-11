@@ -15,20 +15,18 @@ index 3e05459f27c4c5697ae65da504d67a6a2f617b57..571d8f5c70bff2edb5cd5ac40e0a0d49
 +/src/main/resources/branch-info.properties
 \ No newline at end of file
 diff --git a/build.gradle.kts b/build.gradle.kts
-index f1eb3a90a79c34ac4fe267d71925bc92260713ba..ce67267544b1061bf0cdafe5d3f620dadb97ddf8 100644
+index f1eb3a90a79c34ac4fe267d71925bc92260713ba..a712f06132fba8e299005c4155797c1beb8966af 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -35,8 +35,8 @@ repositories {
+@@ -35,7 +35,7 @@ repositories {
  }
  
  dependencies {
 -    implementation(project(":Airplane-API")) // Airplane // Tuinity
--    implementation("io.papermc.paper:paper-mojangapi:1.17.1-R0.1-SNAPSHOT") // Tuinity
 +    implementation(project(":Sugarcane-API")) // Sugarcane // Airplane // Tuinity
-+    implementation(project(":Sugarcane-MojangAPI")) // Tuinity // Sugarcane
+     implementation("io.papermc.paper:paper-mojangapi:1.17.1-R0.1-SNAPSHOT") // Tuinity
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.12.1")
-     implementation("net.minecrell:terminalconsoleappender:1.2.0")
 @@ -92,7 +92,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",

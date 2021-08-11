@@ -9,11 +9,11 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/") { content { onlyForConfigurations(PAPERCLIP_CONFIG) } }
-    maven("https://maven.quiltmc.org/repository/release/") { content { onlyForConfigurations(REMAPPER_CONFIG) } }
+    maven("https://maven.fabricmc.net/") { content { onlyForConfigurations(REMAPPER_CONFIG) } }
 }
 
 dependencies {
-    remapper("org.quiltmc:tiny-remapper:0.4.1")
+    remapper("net.fabricmc:tiny-remapper:0.5.0")
     paperclip("io.papermc:paperclip:2.0.1")
 }
 
@@ -60,8 +60,6 @@ allprojects {
     }
 }
 
-val paperDir = rootProject.layout.projectDirectory.dir(".gradle/caches/paperweight/upstreams/paper")
-
 paperweight {
     serverProject.set(project(":Sugarcane-Server"))
 
@@ -74,15 +72,6 @@ paperweight {
 
             apiOutputDir.set(layout.projectDirectory.dir("Sugarcane-API"))
             serverOutputDir.set(layout.projectDirectory.dir("Sugarcane-Server"))
-        }
-        
-        patchTasks {
-            register("mojangApi") {
-                isBareDirectory.set(true)
-                upstreamDirPath.set("$paperDir/Paper-MojangAPI")
-                patchDir.set(layout.projectDirectory.dir("patches/mojangapi"))
-                outputDir.set(layout.projectDirectory.dir("Sugarcane-MojangAPI"))
-            }
         }
 
         reobfPackagesToFix.addAll(
