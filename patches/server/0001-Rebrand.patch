@@ -5,17 +5,19 @@ Subject: [PATCH] Rebrand
 
 
 diff --git a/.gitignore b/.gitignore
-index 3e05459f27c4c5697ae65da504d67a6a2f617b57..571d8f5c70bff2edb5cd5ac40e0a0d491eacea88 100644
+index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21e0033d41 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -40,3 +40,4 @@ dependency-reduced-pom.xml
+@@ -40,6 +40,7 @@ dependency-reduced-pom.xml
  
  /src/main/resources/achievement
  /src/main/resources/lang
 +/src/main/resources/branch-info.properties
-\ No newline at end of file
+ 
+ # vs code
+ /.vscode
 diff --git a/build.gradle.kts b/build.gradle.kts
-index f1eb3a90a79c34ac4fe267d71925bc92260713ba..a712f06132fba8e299005c4155797c1beb8966af 100644
+index 7590941720eb6882cea671ae98cfe9ab793e79cf..04f90dbfe7838c8b6fdee866f2f99d78ce6764bb 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -35,7 +35,7 @@ repositories {
@@ -27,7 +29,7 @@ index f1eb3a90a79c34ac4fe267d71925bc92260713ba..a712f06132fba8e299005c4155797c1b
      implementation("io.papermc.paper:paper-mojangapi:1.17.1-R0.1-SNAPSHOT") // Tuinity
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.12.1")
-@@ -92,7 +92,7 @@ tasks.jar {
+@@ -93,7 +93,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
@@ -36,7 +38,7 @@ index f1eb3a90a79c34ac4fe267d71925bc92260713ba..a712f06132fba8e299005c4155797c1b
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -105,6 +105,11 @@ tasks.jar {
+@@ -106,6 +106,11 @@ tasks.jar {
              attributes("$tld/bukkit", "Sealed" to true)
          }
      }
@@ -72,6 +74,86 @@ index f5d01bce4d5547b4aeca96b7962b2090f47ea541..8f24d0c3fc2aeee085143176535001f5
  
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
+diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+index 24019b1e3c68f3b8f362d4a1a8cf925cf135ce5d..ab89709ef5af6cc61dda182efd45735add12a63f 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
++++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+@@ -14,11 +14,12 @@ import javax.annotation.Nullable;
+ import java.io.*;
+ import java.net.HttpURLConnection;
+ import java.net.URL;
++import java.net.URLEncoder;
+ import java.util.stream.StreamSupport;
++import org.sugarcanemc.sugarcane.util.versioning.BranchReader;
+ 
+ public class PaperVersionFetcher implements VersionFetcher {
+     private static final java.util.regex.Pattern VER_PATTERN = java.util.regex.Pattern.compile("^([0-9\\.]*)\\-.*R"); // R is an anchor, will always give '-R' at end
+-    private static final String JENKINS_URL = "https://ci.pl3x.net/job/Purpur/lastSuccessfulBuild/buildNumber"; // Purpur
+     private static @Nullable String mcVer;
+ 
+     @Override
+@@ -29,8 +30,9 @@ public class PaperVersionFetcher implements VersionFetcher {
+     @Nonnull
+     @Override
+     public Component getVersionMessage(@Nonnull String serverVersion) {
+-        String[] parts = serverVersion.substring("git-AirplanePurpur-".length()).split("[-\\s]"); // Tuinity
+-        final Component updateMessage = getUpdateStatusMessage("TECHNOVE/Airplane", "purpur/1.17", parts[0]); // Tuinity
++        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]"); // Tuinity
++        final @Nonnull String branch = BranchReader.getBranch();
++        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, parts[0]); // Sugarcane // Tuinity
+         final Component history = getHistory();
+ 
+         return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
+@@ -56,14 +58,8 @@ public class PaperVersionFetcher implements VersionFetcher {
+         int distance;
+         // Purpur start - put this back...
+         try {
+-            /*
+-            int build = Integer.parseInt(versionInfo);
+-            distance = fetchDistanceFromSiteApi(build, getMinecraftVersion());
+-            if (distance < 0) {
+-                distance = fetchDistanceFromJenkins(build);
+-            }
+-             */
+-            throw new NumberFormatException();
++            int jenkinsBuild = Integer.parseInt(versionInfo);
++            distance = fetchDistanceFromJenkins(jenkinsBuild, branch);
+         } catch (NumberFormatException ignored) {
+             versionInfo = versionInfo.replace("\"", "");
+             distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
+@@ -82,30 +78,10 @@ public class PaperVersionFetcher implements VersionFetcher {
+         }
+     }
+ 
+-    private static int fetchDistanceFromSiteApi(int jenkinsBuild, @Nullable String siteApiVersion) {
+-        if (siteApiVersion == null) { return -1; }
+-        try {
+-            try (BufferedReader reader = Resources.asCharSource(
+-                new URL("https://api.pl3x.net/v2/purpur/" + siteApiVersion), // Purpur
+-                Charsets.UTF_8
+-            ).openBufferedStream()) {
+-                JsonObject json = new Gson().fromJson(reader, JsonObject.class);
+-                int latest = json.getAsJsonObject("builds").getAsJsonPrimitive("latest").getAsInt(); // Purpur
+-                return latest - jenkinsBuild;
+-            } catch (JsonSyntaxException ex) {
+-                ex.printStackTrace();
+-                return -1;
+-            }
+-        } catch (IOException e) {
+-            e.printStackTrace();
+-            return -1;
+-        }
+-    }
+-
+     // Purpur start
+-    private static int fetchDistanceFromJenkins(int jenkinsBuild) {
++    private static int fetchDistanceFromJenkins(int jenkinsBuild, @Nonnull String branch) {
+         try {
+-            try (BufferedReader reader = Resources.asCharSource(new URL(JENKINS_URL), Charsets.UTF_8).openBufferedStream()) {
++            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
+                 return Integer.decode(reader.readLine()) - jenkinsBuild;
+             } catch (NumberFormatException ex) {
+                 ex.printStackTrace();
 diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 index 8c3c68465197fafc14849dc38a572e309931e2a2..8e1ca69049c50f242b8198d47302bf9ff0c9d1e8 100644
 --- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
@@ -86,21 +168,21 @@ index 8c3c68465197fafc14849dc38a572e309931e2a2..8e1ca69049c50f242b8198d47302bf9f
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 1ea82baf9f14ec7820abf29b2db5b218c967ca90..0158829fda8b50a56374a4f6247adedf01cc5597 100644
+index c9cadf5b24e740f2762f765cbb029335cf9bf168..0158829fda8b50a56374a4f6247adedf01cc5597 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1732,8 +1732,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
--        String purpurName = net.pl3x.purpur.PurpurConfig.serverModName;
--        return purpurName.equals("Purpur") ? "AirplanePurpur" : purpurName; // Airplane // Purpur // Tuinity // Paper // Spigot // CraftBukkit
+-        String serverName = net.pl3x.purpur.PurpurConfig.serverModName;
+-        return serverName.equals("Purpur") ? "AirplanePurpur" : serverName; // Airplane // Purpur // Tuinity // Paper // Spigot // CraftBukkit
 +        return org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Sugarcane - Sugarcane > // Airplane - Airplane > // Tuinity - Tuinity > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
      }
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 2d148bba699ca9546f2f3d68b9af0c1f632557c7..c0ee449daee3ff53bd58aaf37d341f0a2b16a6fc 100644
+index 236b4b4913dfa2080029cb70f3bcbea3b5ebe6ca..6fbc886b721fd5efe4a211ebce13f39b2fd828dd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -240,7 +240,7 @@ import javax.annotation.Nullable; // Paper
@@ -112,19 +194,6 @@ index 2d148bba699ca9546f2f3d68b9af0c1f632557c7..c0ee449daee3ff53bd58aaf37d341f0a
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index f12eec135f8134409f1abe5c97ffee59913a4d9e..ff6ab50538e099240fc658f636617503c97f66de 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -395,7 +395,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
- 
-     @Override
-     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
--        return new com.destroystokyo.paper.PaperVersionFetcher();
-+        return new org.sugarcanemc.sugarcane.util.VersionFetcher.SugarcaneVersionFetcher(); // Sugarcane
-     }
- 
-     @Override
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a0e5994ec 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
@@ -138,181 +207,37 @@ index 1788d79ea489e446d3d9f541693d4ba3dfc26015..3fa8dad66f7e6ccd6b5b0e7c169d5f5a
          Properties properties = new Properties();
  
          if (stream != null) {
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..9e3074ae16d719d14f08eeab1d347da9397e4431
+index 0000000000000000000000000000000000000000..185533bbcc019dfc1922794d1c07ea621e3b7851
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/BranchReader.java
-@@ -0,0 +1,25 @@
-+package org.sugarcanemc.sugarcane.util.VersionFetcher;
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java
+@@ -0,0 +1,26 @@
++package org.sugarcanemc.sugarcane.util.versioning;
 +
++import javax.annotation.Nonnull;
 +import java.io.IOException;
 +import java.io.InputStream;
 +import java.util.Properties;
 +import java.util.logging.Level;
 +import java.util.logging.Logger;
-+import org.bukkit.Bukkit;
 +
 +public final class BranchReader {
-+	public static String getBranch() {
-+		String branch = "null";
-+		InputStream branchStream = Bukkit.class.getClassLoader().getResourceAsStream("branch-info.properties");
++	@Nonnull
++	public static final String getBranch() {
++		@Nonnull String branch = "unknown";
++		InputStream branchStream = BranchReader.class.getClassLoader().getResourceAsStream("branch-info.properties");
 +		Properties properties = new Properties();
 +		if (branchStream != null) {
 +			try {
 +				properties.load(branchStream);
 +				branch = properties.getProperty("branch");
 +			} catch (IOException ex) {
-+				Logger.getLogger(SugarcaneVersionFetcher.class.getName()).log(Level.SEVERE, "Could not get branch info from branch-info.properties!", ex);
++				Logger.getLogger(BranchReader.class.getName()).log(Level.SEVERE, "Could not get branch info from branch-info.properties!", ex);
 +			}
 +		}
 +		return branch;
 +	}
-+}
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
-new file mode 100644
-index 0000000000000000000000000000000000000000..02c7acd28befeeacc7d8f4507ca68d220709b351
---- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/util/VersionFetcher/SugarcaneVersionFetcher.java
-@@ -0,0 +1,139 @@
-+package org.sugarcanemc.sugarcane.util.VersionFetcher;
-+
-+import com.destroystokyo.paper.VersionHistoryManager;
-+import com.google.common.base.Charsets;
-+import com.google.common.io.Resources;
-+import com.google.gson.Gson;
-+import com.google.gson.JsonObject;
-+import com.google.gson.JsonSyntaxException;
-+import net.kyori.adventure.text.Component;
-+import net.kyori.adventure.text.TextComponent;
-+import net.kyori.adventure.text.format.NamedTextColor;
-+import net.kyori.adventure.text.format.TextDecoration;
-+
-+import javax.annotation.Nonnull;
-+import java.io.BufferedReader;
-+import java.io.IOException;
-+import java.io.InputStream;
-+import java.io.InputStreamReader;
-+import java.net.HttpURLConnection;
-+import java.net.URL;
-+import java.net.URLEncoder;
-+import java.util.Arrays;
-+import java.util.Objects;
-+import java.util.Properties;
-+import java.util.jar.Manifest;
-+import java.util.logging.Level;
-+import java.util.logging.Logger;
-+
-+import com.destroystokyo.paper.util.VersionFetcher;
-+import javax.annotation.Nullable;
-+import net.kyori.adventure.text.Component;
-+import net.kyori.adventure.text.format.NamedTextColor;
-+import net.kyori.adventure.text.TextComponent;
-+import net.kyori.adventure.text.format.TextDecoration;
-+
-+import org.bukkit.Bukkit;
-+
-+import org.sugarcanemc.sugarcane.util.VersionFetcher.BranchReader;
-+
-+public class SugarcaneVersionFetcher implements VersionFetcher {
-+
-+    @Override
-+    public long getCacheTime() {
-+        return 3600000;
-+    }
-+
-+    @Nonnull
-+    @Override
-+    public Component getVersionMessage(@Nonnull String serverVersion) {
-+        if (serverVersion.equals("null")) return Component.text("Custom build");
-+        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
-+        final String gitBranch = BranchReader.getBranch();
-+        String version = parts[parts.length - 3];
-+        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", gitBranch, version);
-+        final Component history = getHistory();
-+
-+        return history != null ?  TextComponent.ofChildren(history, Component.newline(), updateMessage) : updateMessage;
-+    }
-+
-+    private Component getUpdateStatusMessage(String repo, String gitBranch, String versionInfo) {
-+        int distance;
-+        try {
-+            int jenkinsBuild = Integer.parseInt(versionInfo);
-+            distance = fetchDistanceFromJenkins(gitBranch, jenkinsBuild);
-+        } catch (NumberFormatException ignored) {
-+            distance = fetchDistanceFromGitHub(repo, gitBranch, versionInfo.replace("\"", ""));
-+        }
-+
-+        switch (distance) {
-+            case -1:
-+                return Component.text("Error obtaining version information", NamedTextColor.YELLOW);
-+            case 0:
-+                return Component.text("You are running the latest version", NamedTextColor.GREEN);
-+            case -2:
-+                return Component.text("Unknown version", NamedTextColor.YELLOW);
-+            default:
-+                return Component.text("You are " + distance + " version(s) behind", NamedTextColor.YELLOW);
-+        }
-+    }
-+
-+    // modified from PurpurVersionFetcher
-+    private static int fetchDistanceFromJenkins(String gitBranch, int jenkinsBuild) {
-+        try {
-+            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(gitBranch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
-+                return Integer.decode(reader.readLine()) - jenkinsBuild;
-+            } catch (NumberFormatException ex) {
-+                ex.printStackTrace();
-+                return -2;
-+            }
-+        } catch (IOException e) {
-+            e.printStackTrace();
-+            return -1;
-+        }
-+    }
-+
-+    // Contributed by Techcable <Techcable@outlook.com> in GH-65
-+    // from PaperVersionFetcher
-+    private static int fetchDistanceFromGitHub(@Nonnull String repo, @Nonnull String gitBranch, @Nonnull String hash) {
-+        try {
-+            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/" + repo + "/compare/" + gitBranch + "..." + hash).openConnection();
-+            connection.connect();
-+            if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) return -2; // Unknown commit
-+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charsets.UTF_8))) {
-+                JsonObject obj = new Gson().fromJson(reader, JsonObject.class);
-+                String status = obj.get("status").getAsString();
-+                switch (status) {
-+                    case "identical":
-+                        return 0;
-+                    case "behind":
-+                        return obj.get("behind_by").getAsInt();
-+                    default:
-+                        return -1;
-+                }
-+            } catch (JsonSyntaxException | NumberFormatException e) {
-+                e.printStackTrace();
-+                return -1;
-+            }
-+        } catch (IOException e) {
-+            e.printStackTrace();
-+            return -1;
-+        }
-+    }
-+
-+    // from PaperVersionFetcher
-+    @Nullable
-+    private Component getHistory() {
-+        final VersionHistoryManager.VersionData data = VersionHistoryManager.INSTANCE.getVersionData();
-+        if (data == null) {
-+            return null;
-+        }
-+
-+        final String oldVersion = data.getOldVersion();
-+        if (oldVersion == null) {
-+            return null;
-+        }
-+
-+        return Component.text("Previous version: " + oldVersion, NamedTextColor.GRAY, TextDecoration.ITALIC);
-+    }
 +}
 diff --git a/src/main/resources/logo.png b/src/main/resources/logo.png
 index 35ae7a94cebd4a9a16fc9112ccc248fa3cac5f32..cd935e3b9e21e326faf2d66717897fc7bde65ce0 100644
