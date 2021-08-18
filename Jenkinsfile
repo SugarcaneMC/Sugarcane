@@ -42,7 +42,7 @@ pipeline {
             }
             steps {
                         sh'''
-                        ./gradlew build paperclipJar :Sugarcane-API:publishMavenPublicationToMavenRepository
+                        ./gradlew build paperclipJar :Sugarcane-API:publishMavenPublicationToMavenRepository publishToMavenLocal
                         mkdir -p "./target"
                         cp -v "sugarcane-paperclip.jar" "./target/sugarcane-paperclip-b$BUILD_NUMBER.jar"
                         '''

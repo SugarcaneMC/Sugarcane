@@ -1,19 +1,18 @@
-import io.papermc.paperweight.util.constants.*
-
 plugins {
     java
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.0.0" apply false
-    id("io.papermc.paperweight.patcher") version "1.1.10-SNAPSHOT"
+    id("io.papermc.paperweight.patcher") version "1.1.9"
 }
 
 repositories {
     mavenCentral()
-    maven("https://papermc.io/repo/repository/maven-public/") { content { onlyForConfigurations(PAPERCLIP_CONFIG) } }
-    maven("https://maven.fabricmc.net/") { content { onlyForConfigurations(REMAPPER_CONFIG) } }
+    maven("https://papermc.io/repo/repository/maven-public/") { content { onlyForConfigurations("paperclip") } }
+    maven("https://maven.fabricmc.net/") { content { onlyForConfigurations("remapper") } }
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.5.0")
+    remapper("net.fabricmc:tiny-remapper:0.5.0:fat")
     paperclip("io.papermc:paperclip:2.0.1")
 }
 
