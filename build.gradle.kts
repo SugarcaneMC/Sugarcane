@@ -62,12 +62,12 @@ allprojects {
 paperweight {
     serverProject.set(project(":Sugarcane-Server"))
 
-    useStandardUpstream("Airplane") {
-        url.set(github("TECHNOVE", "Airplane"))
-        ref.set(providers.gradleProperty("airplaneRef"))
+    useStandardUpstream("Purpur") {
+        url.set(github("pl3xgaming", "Purpur"))
+        ref.set(providers.gradleProperty("purpurRef"))
 
         withStandardPatcher {
-            baseName("Airplane")
+            baseName("Purpur")
 
             apiOutputDir.set(layout.projectDirectory.dir("Sugarcane-API"))
             serverOutputDir.set(layout.projectDirectory.dir("Sugarcane-Server"))

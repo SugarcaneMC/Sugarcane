@@ -6,7 +6,7 @@ Subject: [PATCH] Add NBT API as a first-class lib
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index cb80547932f7c6a9ec01c52dcbd4d243101a6da9..e5e1fdc5cc16c5ba469819a354b4107cb499f2b4 100644
+index ce0930c72de473483a1b88f1edb814aea9032956..45f9eaf4d43812b4819ea05a471432c43aec9cff 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -3,6 +3,7 @@ import java.util.Locale
@@ -17,7 +17,7 @@ index cb80547932f7c6a9ec01c52dcbd4d243101a6da9..e5e1fdc5cc16c5ba469819a354b4107c
  }
  
  java {
-@@ -29,6 +30,7 @@ dependencies {
+@@ -40,6 +41,7 @@ dependencies {
      api("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      api("org.slf4j:slf4j-api:1.7.30") // Paper
      api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") // Purpur
@@ -25,7 +25,7 @@ index cb80547932f7c6a9ec01c52dcbd4d243101a6da9..e5e1fdc5cc16c5ba469819a354b4107c
  
      implementation("org.ow2.asm:asm:9.1")
      implementation("org.ow2.asm:asm-commons:9.1")
-@@ -74,6 +76,9 @@ tasks.jar {
+@@ -85,6 +87,9 @@ tasks.jar {
      }
  }
  
@@ -33,8 +33,8 @@ index cb80547932f7c6a9ec01c52dcbd4d243101a6da9..e5e1fdc5cc16c5ba469819a354b4107c
 +    relocate("de.tr7zw.changeme.nbtapi", "de.tr7zw.nbtapi")
 +}
  tasks.withType<Javadoc>().configureEach {
+     (options as CoreJavadocOptions).addStringOption("sourcepath", apiAndDocs.resolvedConfiguration.files.joinToString(separator = File.pathSeparator, transform = File::getPath))
      (options as StandardJavadocDocletOptions).links(
-         "https://guava.dev/releases/21.0/api/docs/",
 diff --git a/src/main/java/org/bukkit/Chunk.java b/src/main/java/org/bukkit/Chunk.java
 index 98263d896f316983609432c45b85401a2692432d..09e0c62e1ef36dc842c163e69e8fde9e55531ec3 100644
 --- a/src/main/java/org/bukkit/Chunk.java
@@ -120,7 +120,7 @@ index c9d64da90a05f252d91dd10d2d5f62ba66afb944..d290bb18c997579b9aa00f808c4794aa
       * Returns a list of entities within a bounding box centered around this
       * entity
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index bbf0f3c1cddb3b11020a80424a4dbca1b53f1c2c..e0f65b6f93bf51e871c8503b4d96e9f08c991f55 100644
+index ff9815e10cef89e98fb6d0181ac1eee0cc24d296..aff6fae2f36ae10c2462f8b74783192263b001d5 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
 @@ -580,6 +580,43 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor

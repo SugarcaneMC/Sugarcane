@@ -8,10 +8,10 @@ Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de>
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 34902835cd4e030902feb568a2315c7f5d60f0eb..6d1e64b47fdd81581334cdce62c14aef9f5acf84 100644
+index e4ec2a0c15a6ada5bef9671e427cd56413f18d80..72b14cb53bdf7aa4eaa480ed112efd8a86b6dc1d 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -2038,6 +2038,16 @@ public final class Bukkit {
+@@ -2040,6 +2040,16 @@ public final class Bukkit {
          return server.isStopping();
      }
  
@@ -29,10 +29,10 @@ index 34902835cd4e030902feb568a2315c7f5d60f0eb..6d1e64b47fdd81581334cdce62c14aef
       * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager
       *
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index a244c3a8a91b2931acaa45b10bfb1e2e45c3448f..01ef92bae3e25d74927b0692f7a63563f1510b69 100644
+index 22723684664526bee6a586f04bc4aeaa627bf18e..3983602023a715f876eb7fe01629b616153408be 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1804,6 +1804,26 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1806,6 +1806,26 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      boolean isStopping();
  

@@ -5,7 +5,7 @@ Subject: [PATCH] (EMC) Do not process chat/commands before player has joined
 
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index b6a066f84feebb328513739dfd92b224acd4b687..e18636046f288387467a89749519cd20dab48ee1 100644
+index 43d124818c4538bc0d84111dfab25c38aab249c1..cab9b1966fbe991cc43eaae871f5291626702f03 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 @@ -2108,6 +2108,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
