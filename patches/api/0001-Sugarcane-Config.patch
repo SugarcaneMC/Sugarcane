@@ -23,3 +23,16 @@ index 80c70522eecb08c0dbfadcdeb21c9cfac42d7902..22723684664526bee6a586f04bc4aeaa
          /**
           * Sends the component to the player
           *
+diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
+index 42c9911885b1323032cc14c737c562695692744c..713d3e180b67a711359d3e5bb49f281ec4bf666b 100644
+--- a/src/main/java/org/bukkit/entity/Player.java
++++ b/src/main/java/org/bukkit/entity/Player.java
+@@ -1570,7 +1570,7 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+      * @throws IllegalArgumentException Thrown if the hash is not 20 bytes
+      *     long.
+      */
+-    void setResourcePack(String url, byte[] hash, boolean force, net.kyori.adventure.text.Component prompt);
++    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, net.kyori.adventure.text.Component prompt);
+     // Purpur end
+ 
+     /**
