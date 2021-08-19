@@ -32,6 +32,7 @@ pipeline {
                     chmod +x gradlew
                     rm -rf Sugarcane-Server
                     rm -rf Sugarcane-API
+                    rm -rf .gradle
                     ./gradlew applyPatches
                     '''
                 }
