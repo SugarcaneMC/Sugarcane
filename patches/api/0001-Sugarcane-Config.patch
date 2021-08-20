@@ -24,7 +24,7 @@ index 80c70522eecb08c0dbfadcdeb21c9cfac42d7902..22723684664526bee6a586f04bc4aeaa
           * Sends the component to the player
           *
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 42c9911885b1323032cc14c737c562695692744c..5ecec84b7f3736b23b054f658b9b92df985d93f0 100644
+index 42c9911885b1323032cc14c737c562695692744c..039c47c853c101d2af61a9f8b6afc2c040a04b63 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
 @@ -1530,7 +1530,7 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
@@ -32,7 +32,7 @@ index 42c9911885b1323032cc14c737c562695692744c..5ecec84b7f3736b23b054f658b9b92df
       *     long.
       */
 -    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, String prompt);
-+    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, @NotNull String prompt);
++    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, @Nullable String prompt);
  
      /**
       * Request that the player's client download and switch resource packs.
@@ -41,7 +41,7 @@ index 42c9911885b1323032cc14c737c562695692744c..5ecec84b7f3736b23b054f658b9b92df
       *     long.
       */
 -    void setResourcePack(String url, byte[] hash, boolean force, net.kyori.adventure.text.Component prompt);
-+    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, @NotNull net.kyori.adventure.text.Component prompt);
++    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, @Nullable net.kyori.adventure.text.Component prompt);
      // Purpur end
  
      /**
