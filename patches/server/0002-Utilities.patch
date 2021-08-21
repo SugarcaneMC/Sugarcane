@@ -10,10 +10,10 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a78dff67f92cc626acc2b24a8a84c2b37867820e..0bf070a3cd9994d032025f66a7790c64147bb133 100644
+index 7cbffca48c0d991d71fdb3cc8ed79ce4485ce5af..d07d3bf25ca1acc651c98e707d3c106fc89fae31 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -54,6 +54,7 @@ dependencies {
+@@ -53,6 +53,7 @@ dependencies {
      implementation("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      implementation("org.ow2.asm:asm:9.2")
      implementation("org.ow2.asm:asm-commons:9.2") // Paper - ASM event executor generation

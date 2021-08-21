@@ -24,7 +24,7 @@ index 80c70522eecb08c0dbfadcdeb21c9cfac42d7902..22723684664526bee6a586f04bc4aeaa
           * Sends the component to the player
           *
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 42c9911885b1323032cc14c737c562695692744c..039c47c853c101d2af61a9f8b6afc2c040a04b63 100644
+index 743883f3d95b94a58ed7826dd74b3f37be9aecb9..2f80cdd9c21c9edaf8d354d2a8ce4352e9c814a4 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
 @@ -1530,7 +1530,7 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
@@ -32,7 +32,7 @@ index 42c9911885b1323032cc14c737c562695692744c..039c47c853c101d2af61a9f8b6afc2c0
       *     long.
       */
 -    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, String prompt);
-+    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, @Nullable String prompt);
++    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, @NotNull String prompt);
  
      /**
       * Request that the player's client download and switch resource packs.

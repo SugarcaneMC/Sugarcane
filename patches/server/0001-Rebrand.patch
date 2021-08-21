@@ -17,10 +17,10 @@ index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21
  # vs code
  /.vscode
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 1dac8dda93c03d1f0c4f8a91387527a7d06d1360..a78dff67f92cc626acc2b24a8a84c2b37867820e 100644
+index 9b844735f37de2f833b59f619c88045e8ad336c9..7cbffca48c0d991d71fdb3cc8ed79ce4485ce5af 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -36,7 +36,7 @@ repositories {
+@@ -35,7 +35,7 @@ repositories {
  }
  
  dependencies {
@@ -29,7 +29,7 @@ index 1dac8dda93c03d1f0c4f8a91387527a7d06d1360..a78dff67f92cc626acc2b24a8a84c2b3
      implementation("io.papermc.paper:paper-mojangapi:1.17.1-R0.1-SNAPSHOT") // Tuinity
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.12.1")
-@@ -94,7 +94,7 @@ tasks.jar {
+@@ -93,7 +93,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
@@ -38,7 +38,7 @@ index 1dac8dda93c03d1f0c4f8a91387527a7d06d1360..a78dff67f92cc626acc2b24a8a84c2b3
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -107,6 +107,11 @@ tasks.jar {
+@@ -106,6 +106,11 @@ tasks.jar {
              attributes("$tld/bukkit", "Sealed" to true)
          }
      }

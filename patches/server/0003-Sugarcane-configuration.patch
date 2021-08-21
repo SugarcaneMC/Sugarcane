@@ -20,12 +20,12 @@ index 0e86ceb4d70c45835c9d1c6ca0908fdddf14d55a..e261ebc858ca2f40c20f97402c48cb1b
          ));
  
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index caed8d2a39260b2c06b0cdac865f178e3074e7ef..448d284641ae6cc1b18ad1b1da96ba5ae679b185 100644
+index aed391418d867e79d7236a3a3d8de54cb35807b1..f204d7130b53738077e6bc84ed06e18912fcc77c 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
 @@ -217,7 +217,7 @@ public class PaperConfig {
          timings = reallyEnableTimings;
-         // Airplane end
+         // Airplane end */ // Purpur end
          boolean verboseTimings = getBoolean("timings.verbose", true);
 -        TimingsManager.url = getString("timings.url", "https://timings.pl3x.net/");
 +        TimingsManager.url = getString("timings.url", "https://timin.gs/");
