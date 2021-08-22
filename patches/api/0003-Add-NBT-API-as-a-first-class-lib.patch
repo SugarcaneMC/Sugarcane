@@ -6,7 +6,7 @@ Subject: [PATCH] Add NBT API as a first-class lib
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index ce0930c72de473483a1b88f1edb814aea9032956..45f9eaf4d43812b4819ea05a471432c43aec9cff 100644
+index 04e42fd454a5316cffa7056c46da02e3b4c17f35..6bceaa795c5b45b2fc10b6f5c09cb6f0fe2d7120 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -3,6 +3,7 @@ import java.util.Locale
@@ -17,7 +17,7 @@ index ce0930c72de473483a1b88f1edb814aea9032956..45f9eaf4d43812b4819ea05a471432c4
  }
  
  java {
-@@ -40,6 +41,7 @@ dependencies {
+@@ -42,6 +43,7 @@ dependencies {
      api("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      api("org.slf4j:slf4j-api:1.7.30") // Paper
      api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") // Purpur
@@ -25,7 +25,7 @@ index ce0930c72de473483a1b88f1edb814aea9032956..45f9eaf4d43812b4819ea05a471432c4
  
      implementation("org.ow2.asm:asm:9.1")
      implementation("org.ow2.asm:asm-commons:9.1")
-@@ -85,6 +87,9 @@ tasks.jar {
+@@ -87,6 +89,9 @@ tasks.jar {
      }
  }
  
