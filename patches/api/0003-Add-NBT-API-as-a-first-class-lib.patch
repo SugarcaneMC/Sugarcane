@@ -6,7 +6,7 @@ Subject: [PATCH] Add NBT API as a first-class lib
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 04e42fd454a5316cffa7056c46da02e3b4c17f35..6bceaa795c5b45b2fc10b6f5c09cb6f0fe2d7120 100644
+index 4ea8b634d2cd1601aba13db46f52842c2080afca..442a9fd3b58ce7d7221ea0f4735b82bed32951d9 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -3,6 +3,7 @@ import java.util.Locale
@@ -25,7 +25,7 @@ index 04e42fd454a5316cffa7056c46da02e3b4c17f35..6bceaa795c5b45b2fc10b6f5c09cb6f0
  
      implementation("org.ow2.asm:asm:9.1")
      implementation("org.ow2.asm:asm-commons:9.1")
-@@ -87,6 +89,9 @@ tasks.jar {
+@@ -89,6 +91,9 @@ tasks.jar {
      }
  }
  

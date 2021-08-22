@@ -33,7 +33,7 @@ index 9b844735f37de2f833b59f619c88045e8ad336c9..d8aa69103d3037b3ecdc2e0a6774e67c
      implementation("com.googlecode.json-simple:json-simple:1.1.1") {
          // This includes junit transitively for whatever reason
          isTransitive = false
-+        exclude(group = "junit", module = "junit") // Sugarcane
++        exclude(group = "junit", module = "junit")
      }
      runtimeOnly("org.xerial:sqlite-jdbc:3.34.0")
      runtimeOnly("mysql:mysql-connector-java:8.0.23") // Paper
