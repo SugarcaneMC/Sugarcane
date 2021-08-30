@@ -9,10 +9,10 @@ Original code by Yatopia, licensed under MIT License
 Co-authored-by: ishland <ishlandmc@yeah.net>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 1ac28e0a7c5d9a2f2325af2fee683f1e226ee212..a24740d7a1b3e9d6b429bac28253337cc41e57c0 100644
+index 2c8951211096a5ed630000cf893ae6ea692b2723..b4f5f9b9d50699009dc77110e78a3e1c37bcbc3d 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1082,7 +1082,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1097,7 +1097,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Spigot start
          MCUtil.asyncExecutor.shutdown(); // Paper
@@ -23,7 +23,7 @@ index 1ac28e0a7c5d9a2f2325af2fee683f1e226ee212..a24740d7a1b3e9d6b429bac28253337c
          if (org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) {
              MinecraftServer.LOGGER.info("Saving usercache.json");
 diff --git a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
-index b601bc87a2a1e7f3a6190223ac4d8bf2cb9f92de..981d633223d4bed3dcccc2071c51f04554e067ed 100644
+index 331ed6aa983714d6fc3596526fc7df0ab993062c..90d5768dc217350cc6eba8ff2982f5b90da79f43 100644
 --- a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 +++ b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 @@ -24,6 +24,10 @@ public class PlayerDataStorage {

@@ -6,15 +6,15 @@ Subject: [PATCH] Optimised hallowen checker
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 0158829fda8b50a56374a4f6247adedf01cc5597..c656d6f8427644f8f055924cdf27fac053cf536b 100644
+index fda128d5503ca0814f1a66fa2cf53fc1f551b504..076778cf073c949e875d27fbe82789f8c8a02564 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1533,6 +1533,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1547,6 +1547,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Paper end
  
 +        org.sugarcanemc.sugarcane.util.entity.HalloweenChecker.tick(); // Sugarcane
-         com.tuinity.tuinity.util.CachedLists.reset(); // Tuinity
+         io.papermc.paper.util.CachedLists.reset(); // Paper
          // Paper start
          long endTime = System.nanoTime();
 diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java

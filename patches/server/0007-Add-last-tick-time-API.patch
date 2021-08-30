@@ -8,10 +8,10 @@ Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index c656d6f8427644f8f055924cdf27fac053cf536b..d2540a25fb63be6ca78072e9f26c91083bdd1e9f 100644
+index 076778cf073c949e875d27fbe82789f8c8a02564..95e79f5974fc7acb54b4101b98363d6b7b58acf8 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1195,6 +1195,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1210,6 +1210,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      // Paper End
      // Spigot End
  
@@ -20,7 +20,7 @@ index c656d6f8427644f8f055924cdf27fac053cf536b..d2540a25fb63be6ca78072e9f26c9108
      protected void runServer() {
          try {
              long serverStartTime = Util.getNanos(); // Paper
-@@ -1267,7 +1269,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1281,7 +1283,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                      this.nextTickTime += 50L;
                      this.startMetricsRecordingTick();
                      this.profiler.push("tick");
@@ -31,10 +31,10 @@ index c656d6f8427644f8f055924cdf27fac053cf536b..d2540a25fb63be6ca78072e9f26c9108
                      this.mayHaveDelayedTasks = true;
                      // Purpur start - tps catchup
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index e30307111184bf9674b65aaacb1c8456ad24fc0d..9d03c3876da8d582ce9e567c3b8c68d1577ecd3e 100644
+index 85b01b5c7da61f2a21f2596b57078cb53fd98a3a..12b42a62d73cd17f6b4b0900c8f7c3435b91bd29 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2647,6 +2647,8 @@ public final class CraftServer implements Server {
+@@ -2710,6 +2710,8 @@ public final class CraftServer implements Server {
  
      // Paper end
  

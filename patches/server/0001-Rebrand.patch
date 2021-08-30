@@ -17,19 +17,19 @@ index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21
  # vs code
  /.vscode
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 9b844735f37de2f833b59f619c88045e8ad336c9..d8aa69103d3037b3ecdc2e0a6774e67c2be3a26f 100644
+index 399641413d38f1a27165a0cf60b6c7c781cf1488..198cb9585a191055cc8aa0a4312db36e67bb499b 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -35,7 +35,7 @@ repositories {
+@@ -32,7 +32,7 @@ repositories {
  }
  
  dependencies {
--    implementation(project(":Purpur-API")) // Tuinity // Airplane // Purpur
-+    implementation(project(":Sugarcane-API")) // Tuinity // Airplane // Purpur // Sugarcane
-     implementation("io.papermc.paper:paper-mojangapi:1.17.1-R0.1-SNAPSHOT") // Tuinity
+-    implementation(project(":Purpur-API")) // Airplane // Purpur
++    implementation(project(":Sugarcane-API")) // Airplane // Purpur // Sugarcane
+     implementation("io.papermc.paper:paper-mojangapi:1.17.1-R0.1-SNAPSHOT") // Airplane
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.12.1")
-@@ -56,6 +56,7 @@ dependencies {
+@@ -53,6 +53,7 @@ dependencies {
      implementation("com.googlecode.json-simple:json-simple:1.1.1") {
          // This includes junit transitively for whatever reason
          isTransitive = false
@@ -37,16 +37,16 @@ index 9b844735f37de2f833b59f619c88045e8ad336c9..d8aa69103d3037b3ecdc2e0a6774e67c
      }
      runtimeOnly("org.xerial:sqlite-jdbc:3.34.0")
      runtimeOnly("mysql:mysql-connector-java:8.0.23") // Paper
-@@ -93,7 +94,7 @@ tasks.jar {
+@@ -90,7 +91,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
--            "Implementation-Version" to "git-Purpur-$implementationVersion", // Tuinity // Airplane // Purpur
-+            "Implementation-Version" to "git-Sugarcane-$gitBranch-$implementationVersion", // Sugarcane // Airplane // Tuinity
+-            "Implementation-Version" to "git-Purpur-$implementationVersion", // Airplane // Purpur
++            "Implementation-Version" to "git-Sugarcane-$gitBranch-$implementationVersion", // Sugarcane // Purpur // Airplane
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -106,6 +107,11 @@ tasks.jar {
+@@ -103,6 +104,11 @@ tasks.jar {
              attributes("$tld/bukkit", "Sealed" to true)
          }
      }
@@ -59,32 +59,29 @@ index 9b844735f37de2f833b59f619c88045e8ad336c9..d8aa69103d3037b3ecdc2e0a6774e67c
  
  publishing {
 diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
-index b3e7a11adf333d412ffde82aca9c9848d99bfc92..48fc5197a1b160e722bf5b9c3fe36a4f535d8c2e 100644
+index 05f1b6d103ec20f196b60944f5bc007384c449f1..4e48190486293a999892e9fb9ab5cf677ecc4808 100644
 --- a/src/main/java/com/destroystokyo/paper/Metrics.java
 +++ b/src/main/java/com/destroystokyo/paper/Metrics.java
 @@ -593,7 +593,7 @@ public class Metrics {
              boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
              // Only start Metrics, if it's enabled in the config
              if (config.getBoolean("enabled", true)) {
--                Metrics metrics = new Metrics("Purpur", serverUUID, logFailedRequests, Bukkit.getLogger()); // Tuinity - we have our own bstats page // Airplane // Purpur
-+                Metrics metrics = new Metrics("Sugarcane", serverUUID, logFailedRequests, Bukkit.getLogger()); // Tuinity - we have our own bstats page // Airplane
- 
+-                Metrics metrics = new Metrics("Purpur", serverUUID, logFailedRequests, Bukkit.getLogger()); // Airplane // Purpur
++                Metrics metrics = new Metrics("Sugarcane", serverUUID, logFailedRequests, Bukkit.getLogger()); // Airplane // Purpur // Sugarcane
                  metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
                      String minecraftVersion = Bukkit.getVersion();
-@@ -602,8 +602,9 @@ public class Metrics {
-                 }));
+                     minecraftVersion = minecraftVersion.substring(minecraftVersion.indexOf("MC: ") + 4, minecraftVersion.length() - 1);
+@@ -602,7 +602,7 @@ public class Metrics {
  
                  metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
--                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : (PaperConfig.isProxyOnlineMode() ? "bungee" : "offline"))); // Purpur
--                metrics.addCustomChart(new Metrics.SimplePie("purpur_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Tuinity - we have our own bstats page // Airplane // Purpur
-+
-+                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () ->  Bukkit.getOnlineMode() ? "online" : (PaperConfig.isProxyOnlineMode() ? "bungee" : "offline"))); // Sugarcane
-+                metrics.addCustomChart(new Metrics.SimplePie("sugarcane_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Tuinity - we have our own bstats page // Airplane // Sugarcane
+                 metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : (PaperConfig.isProxyOnlineMode() ? "bungee" : "offline"))); // Purpur
+-                metrics.addCustomChart(new Metrics.SimplePie("purpur_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Airplane // Purpur
++                metrics.addCustomChart(new Metrics.SimplePie("sugarcane_version", () -> (Metrics.class.getPackage().getImplementationVersion() != null) ? Metrics.class.getPackage().getImplementationVersion() : "unknown")); // Airplane // Purpur // Sugarcane
  
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index 247ddb242011a21536f4399657c8019888158a15..75b3cfdc29eaecaf73ef403cc437431f1400e4f5 100644
+index e2c0717066ac16a9274daff1a192bf70f0c119a0..6f82cf05913ca58e3fc09b9b114ab45e037d682b 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 @@ -14,11 +14,12 @@ import javax.annotation.Nullable;
@@ -106,35 +103,31 @@ index 247ddb242011a21536f4399657c8019888158a15..75b3cfdc29eaecaf73ef403cc437431f
      @Nonnull
      @Override
      public Component getVersionMessage(@Nonnull String serverVersion) {
--        String[] parts = serverVersion.substring("git-Purpur-".length()).split("[-\\s]"); // Tuinity // Airplane // Purpur
--        final Component updateMessage = getUpdateStatusMessage("pl3xgaming/Purpur", "ver/" + getMinecraftVersion(), parts[0]); // Tuinity // Airplane // Purpur
-+        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]"); // Tuinity
+-        String[] parts = serverVersion.substring("git-Purpur-".length()).split("[-\\s]"); // Airplane // Purpur
+-        final Component updateMessage = getUpdateStatusMessage("pl3xgaming/Purpur", "ver/" + getMinecraftVersion(), parts[0]); // Airplane // Purpur
++        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]"); // Airplane // Purpur // Sugarcane
 +        final @Nonnull String branch = BranchReader.getBranch();
-+        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, parts[0]); // Sugarcane // Tuinity
++        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, parts[0]); // Airplane // Purpur // Sugarcane
          final Component history = getHistory();
  
          return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
-@@ -56,11 +58,8 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -56,7 +58,7 @@ public class PaperVersionFetcher implements VersionFetcher {
          int distance;
-         // Purpur start - put this back...
          try {
--            int build = Integer.parseInt(versionInfo);
--            distance = fetchDistanceFromSiteApi(build, getMinecraftVersion());
--            if (distance < 0) {
--                distance = fetchDistanceFromJenkins(build);
--            }
-+            int jenkinsBuild = Integer.parseInt(versionInfo);
+             int jenkinsBuild = Integer.parseInt(versionInfo);
+-            distance = fetchDistanceFromSiteApi(jenkinsBuild, getMinecraftVersion());
 +            distance = fetchDistanceFromJenkins(jenkinsBuild, branch);
          } catch (NumberFormatException ignored) {
              versionInfo = versionInfo.replace("\"", "");
              distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
-@@ -79,30 +78,10 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -74,19 +76,13 @@ public class PaperVersionFetcher implements VersionFetcher {
          }
      }
  
 -    private static int fetchDistanceFromSiteApi(int jenkinsBuild, @Nullable String siteApiVersion) {
 -        if (siteApiVersion == null) { return -1; }
--        try {
++    private static int fetchDistanceFromJenkins(int jenkinsBuild, @Nonnull String branch) {
+         try {
 -            try (BufferedReader reader = Resources.asCharSource(
 -                new URL("https://api.pl3x.net/v2/purpur/" + siteApiVersion), // Purpur
 -                Charsets.UTF_8
@@ -143,24 +136,15 @@ index 247ddb242011a21536f4399657c8019888158a15..75b3cfdc29eaecaf73ef403cc437431f
 -                int latest = json.getAsJsonObject("builds").getAsJsonPrimitive("latest").getAsInt(); // Purpur
 -                return latest - jenkinsBuild;
 -            } catch (JsonSyntaxException ex) {
--                ex.printStackTrace();
--                return -1;
--            }
--        } catch (IOException e) {
--            e.printStackTrace();
--            return -1;
--        }
--    }
--
-     // Purpur start
--    private static int fetchDistanceFromJenkins(int jenkinsBuild) {
-+    private static int fetchDistanceFromJenkins(int jenkinsBuild, @Nonnull String branch) {
-         try {
--            try (BufferedReader reader = Resources.asCharSource(new URL(JENKINS_URL), Charsets.UTF_8).openBufferedStream()) {
 +            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) {
-                 return Integer.decode(reader.readLine()) - jenkinsBuild;
-             } catch (NumberFormatException ex) {
++                return Integer.decode(reader.readLine()) - jenkinsBuild;
++            } catch (NumberFormatException ex) {
                  ex.printStackTrace();
+-                return -1;
++                return -2;
+             }
+         } catch (IOException e) {
+             e.printStackTrace();
 diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 index 8c3c68465197fafc14849dc38a572e309931e2a2..8e1ca69049c50f242b8198d47302bf9ff0c9d1e8 100644
 --- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
@@ -175,50 +159,50 @@ index 8c3c68465197fafc14849dc38a572e309931e2a2..8e1ca69049c50f242b8198d47302bf9f
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 8d9704ce916b13de96a6c95bfcb553ddd130b21c..9120f1bba864494136ecfe8b40b1f18e479a9cf1 100644
+index 2576e2c6bce86cacc54092559f6ed05969f3e01c..fda128d5503ca0814f1a66fa2cf53fc1f551b504 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1732,7 +1732,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1746,7 +1746,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
--        return net.pl3x.purpur.PurpurConfig.serverModName; // Purpur - Purpur > // Airplane - Airplane > // Tuinity - Tuinity > //Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
-+        return org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Sugarcane - Sugarcane > // Purpur - Purpur > // Airplane - Airplane > // Tuinity - Tuinity > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
+-        return net.pl3x.purpur.PurpurConfig.serverModName; // Purpur - Purpur > // Airplane - Airplane > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
++        return org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Sugarcane - Sugarcane > // Purpur - Purpur > // Airplane - Airplane > // Paper - Paper > // Spigot - Spigot > // CraftBukkit - cb > vanilla!
      }
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index c687ab0e629f40e5c0900b27f9243e09b7d217d4..6fbc886b721fd5efe4a211ebce13f39b2fd828dd 100644
+index bd3b975481ce780199d6ec60bddaaa263714d289..81d326d7383db7632d9287ad88f27ec95ed27d9b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -240,7 +240,7 @@ import javax.annotation.Nullable; // Paper
+@@ -246,7 +246,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {
--    private final String serverName = "Purpur"; // Paper // Tuinity // Airplane // Purpur
-+    private final String serverName = org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Sugarcane // Airplane // Tuinity // Paper
+-    private final String serverName = "Purpur"; // Paper // Airplane // Purpur
++    private final String serverName = org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Paper // Airplane // Purpur // Sugarcane
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 191f5331f0c7871f80f0da9cc38345ce33353577..3fa8dad66f7e6ccd6b5b0e7c169d5f5a0e5994ec 100644
+index e7d740e191c5ac408ba1fa493e9367dd52900a02..ee60dca1025eec079d34c49b3c72f8d9abe32c54 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
 @@ -11,7 +11,7 @@ public final class Versioning {
      public static String getBukkitVersion() {
          String result = "Unknown-Version";
  
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/net.pl3x.purpur/purpur-api/pom.properties"); // Tuinity // Airplane // Purpur
-+        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.sugarcanemc.sugarcane/sugarcane-api/pom.properties"); // Tuinity // Airplane // Sugarcane
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/net.pl3x.purpur/purpur-api/pom.properties"); // Airplane // Purpur
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.sugarcanemc.sugarcane/sugarcane-api/pom.properties"); // Airplane // Sugarcane
          Properties properties = new Properties();
  
          if (stream != null) {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..185533bbcc019dfc1922794d1c07ea621e3b7851
+index 0000000000000000000000000000000000000000..299aa31da83bfa38109fe0e9ff2416782c6a3ce3
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,28 @@
 +package org.sugarcanemc.sugarcane.util.versioning;
 +
 +import javax.annotation.Nonnull;
@@ -239,8 +223,10 @@ index 0000000000000000000000000000000000000000..185533bbcc019dfc1922794d1c07ea62
 +				properties.load(branchStream);
 +				branch = properties.getProperty("branch");
 +			} catch (IOException ex) {
-+				Logger.getLogger(BranchReader.class.getName()).log(Level.SEVERE, "Could not get branch info from branch-info.properties!", ex);
++				Logger.getLogger(BranchReader.class.getName()).log(Level.WARNING, "Could not get branch info from branch-info.properties!", ex);
 +			}
++		} else {
++			Logger.getLogger(BranchReader.class.getName()).log(Level.WARNING, "Could not load branch-info.properties from the JAR!");
 +		}
 +		return branch;
 +	}

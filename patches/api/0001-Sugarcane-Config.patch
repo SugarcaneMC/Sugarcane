@@ -5,7 +5,7 @@ Subject: [PATCH] Sugarcane Config
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 9f50b301e8ec5b914e5f9bb0229549078bcbf257..8451248ba79d45485abfafa4ef837906836ae385 100644
+index 8550b2a95df396cf64f564fb2400df38af2397dd..ac14b1c548355c28f3fcb20d23cd93e435262d64 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -30,7 +30,9 @@ dependencies {
@@ -37,10 +37,10 @@ index 9f50b301e8ec5b914e5f9bb0229549078bcbf257..8451248ba79d45485abfafa4ef837906
  
  tasks.jar {
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 80c70522eecb08c0dbfadcdeb21c9cfac42d7902..22723684664526bee6a586f04bc4aeaa627bf18e 100644
+index 88767865cc2dce0e341eef0f53323af6f95fb841..0988a8945478e6bc51af8b23048ff01e3726a0bd 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1702,6 +1702,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1694,6 +1694,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
          // Purpur end
  
@@ -55,25 +55,3 @@ index 80c70522eecb08c0dbfadcdeb21c9cfac42d7902..22723684664526bee6a586f04bc4aeaa
          /**
           * Sends the component to the player
           *
-diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 743883f3d95b94a58ed7826dd74b3f37be9aecb9..2f80cdd9c21c9edaf8d354d2a8ce4352e9c814a4 100644
---- a/src/main/java/org/bukkit/entity/Player.java
-+++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -1530,7 +1530,7 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
-      * @throws IllegalArgumentException Thrown if the hash is not 20 bytes
-      *     long.
-      */
--    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, String prompt);
-+    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, @NotNull String prompt);
- 
-     /**
-      * Request that the player's client download and switch resource packs.
-@@ -1570,7 +1570,7 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
-      * @throws IllegalArgumentException Thrown if the hash is not 20 bytes
-      *     long.
-      */
--    void setResourcePack(String url, byte[] hash, boolean force, net.kyori.adventure.text.Component prompt);
-+    void setResourcePack(@NotNull String url, @NotNull byte[] hash, boolean force, @Nullable net.kyori.adventure.text.Component prompt);
-     // Purpur end
- 
-     /**

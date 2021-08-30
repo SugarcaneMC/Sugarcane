@@ -17,10 +17,10 @@ Our changes are the following:
 Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 21cab9f37d5a49ae3620aad5180b892303c48fd5..ce447db270005f1fb920a9720e594c1e791b66d4 100644
+index 685834f9f62b82f23ad97a2f0e3f1432f2ab7082..161561ae4a792466daaa5e5830684090ae27d3bf 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -750,14 +750,20 @@ public abstract class PlayerList {
+@@ -749,14 +749,20 @@ public abstract class PlayerList {
          if (getBans().isBanned(gameprofile) && (gameprofilebanentry = getBans().get(gameprofile)) != null) {
              // Paper end
  

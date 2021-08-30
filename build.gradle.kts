@@ -2,13 +2,12 @@ plugins {
     java
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.0.0" apply false
-    id("io.papermc.paperweight.patcher") version "1.1.9"
+    id("io.papermc.paperweight.patcher") version "1.1.11"
 }
 
 repositories {
     mavenCentral()
     maven("https://papermc.io/repo/repository/maven-public/") { content { onlyForConfigurations("paperclip") } }
-    maven("https://maven.fabricmc.net/") { content { onlyForConfigurations("remapper") } }
 }
 
 dependencies {
@@ -71,6 +70,9 @@ paperweight {
 
             apiOutputDir.set(layout.projectDirectory.dir("Sugarcane-API"))
             serverOutputDir.set(layout.projectDirectory.dir("Sugarcane-Server"))
+
+            remapRepo.set("https://maven.fabricmc.net/")
+            decompileRepo.set("https://files.minecraftforge.net/maven/")
         }
 
         reobfPackagesToFix.addAll(
@@ -97,4 +99,34 @@ tasks.register<Copy>("installGitHooks") {
 
 tasks.wrapper {
 	distributionType = Wrapper.DistributionType.ALL
+}
+
+tasks.generateDevelopmentBundle {
+    apiCoordinates.set("org.sugarcanemc.sugarcane:sugarcane-api")
+    mojangApiCoordinates.set("io.papermc.paper:paper-mojangapi")
+    libraryRepositories.set(
+        listOf(
+            "https://libraries.minecraft.net/",
+            "https://maven.quiltmc.org/repository/release/",
+            "https://repo.aikar.co/content/groups/aikar",
+            "https://ci.emc.gs/nexus/content/groups/aikar/",
+            "https://papermc.io/repo/repository/maven-public/"
+        )
+    )
+}
+
+publishing {
+    if (project.hasProperty("publishDevBundle")) {
+        publications.create<MavenPublication>("devBundle") {
+            artifact(tasks.generateDevelopmentBundle) {
+                artifactId = "dev-bundle"
+            }
+        }
+    }
+}
+
+tasks.register("printMinecraftVersion") {
+    doLast {
+        println(providers.gradleProperty("mcVersion").get().trim())
+    }
 }

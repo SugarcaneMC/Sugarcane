@@ -6,12 +6,12 @@ Subject: [PATCH] Sugarcane configuration
 also some basic settings that dont deserve a patch from Yatopia , licensed under MIT license
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 0e86ceb4d70c45835c9d1c6ca0908fdddf14d55a..e261ebc858ca2f40c20f97402c48cb1bb00a12cb 100644
+index 6d4f049cd77599d9cc0ed79e70902eb1ddc03f02..2fbaa051461713b8c79da963884242a4e7cba5a7 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -233,7 +233,8 @@ public class TimingsExport extends Thread {
-             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Tuinity - add config to timings report
-             pair("tuinity", mapAsJSON(Bukkit.spigot().getTuinityConfig(), null)), // Tuinity - add config to timings report
+@@ -232,7 +232,8 @@ public class TimingsExport extends Thread {
+             pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
+             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)),
              pair("airplane", mapAsJSON(gg.airplane.AirplaneConfig.getConfigCopy(), null)),
 -            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null))
 +            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null)),
@@ -20,7 +20,7 @@ index 0e86ceb4d70c45835c9d1c6ca0908fdddf14d55a..e261ebc858ca2f40c20f97402c48cb1b
          ));
  
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index aed391418d867e79d7236a3a3d8de54cb35807b1..f204d7130b53738077e6bc84ed06e18912fcc77c 100644
+index c9ab6c8a4e7918f34b1c4702306622a8406ba27f..1e0e5c7837ee39e8aa963a7a10d6682b59a48246 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
 @@ -217,7 +217,7 @@ public class PaperConfig {
@@ -33,13 +33,14 @@ index aed391418d867e79d7236a3a3d8de54cb35807b1..f204d7130b53738077e6bc84ed06e189
              TimingsManager.url += "/";
          }
 diff --git a/src/main/java/gg/airplane/compat/ServerConfigurations.java b/src/main/java/gg/airplane/compat/ServerConfigurations.java
-index 59e6f3c31e8efa7f3e827b641f19bc3a9cd809ef..f8c442377845a31ad1a85a1468380202a58e8f93 100644
+index 59e6f3c31e8efa7f3e827b641f19bc3a9cd809ef..903317459fbc257f169ea0553f87e7e54df857c8 100644
 --- a/src/main/java/gg/airplane/compat/ServerConfigurations.java
 +++ b/src/main/java/gg/airplane/compat/ServerConfigurations.java
-@@ -25,7 +25,9 @@ public class ServerConfigurations {
+@@ -24,8 +24,9 @@ public class ServerConfigurations {
+       "bukkit.yml",
        "spigot.yml",
        "paper.yml",
-       "tuinity.yml",
+-      "tuinity.yml",
 -      "airplane.yml"
 +      "purpur.yml",
 +      "airplane.yml",
@@ -48,11 +49,11 @@ index 59e6f3c31e8efa7f3e827b641f19bc3a9cd809ef..f8c442377845a31ad1a85a1468380202
  
      public static Map<String, String> getCleanCopies() throws IOException {
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 1da53b46c69dc5cfca0fea805cc491e79a841153..45272396117a7e55e66469f19b29f7c969812b55 100644
+index 77eb1b3bf77d496fb0675fbb681efb0df32fb5c4..70d7088343e5f7756aa0e5efc3ec947faff96ddf 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -235,6 +235,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
-         com.tuinity.tuinity.config.TuinityConfig.init((java.io.File) options.valueOf("tuinity-settings")); // Tuinity - Server Config
+@@ -234,6 +234,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         // Paper end
          gg.airplane.AirplaneConfig.load(); // Airplane - config
          gg.airplane.commands.AirplaneCommands.init(); // Airplane - command
 +        // Sugarcane start - config
@@ -67,7 +68,7 @@ index 1da53b46c69dc5cfca0fea805cc491e79a841153..45272396117a7e55e66469f19b29f7c9
          this.setPvpAllowed(dedicatedserverproperties.pvp);
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 34bf7a2a869329a4a1dd8b36fd8ab09fbcd3669e..a189f15f69427842675a7d42a2038a5e4efc975a 100644
+index 4ed72b06786505f61502772bba973b12c2076be0..d0d8a4e1a67a67e97c615b6b7e902e19ed77845e 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -398,18 +398,23 @@ public abstract class LivingEntity extends Entity {
@@ -107,10 +108,10 @@ index 34bf7a2a869329a4a1dd8b36fd8ab09fbcd3669e..a189f15f69427842675a7d42a2038a5e
                  }
              }
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 6fbc886b721fd5efe4a211ebce13f39b2fd828dd..199f1034070392fd9851355c19f13a69781fc1be 100644
+index 81d326d7383db7632d9287ad88f27ec95ed27d9b..85b01b5c7da61f2a21f2596b57078cb53fd98a3a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -882,6 +882,7 @@ public final class CraftServer implements Server {
+@@ -888,6 +888,7 @@ public final class CraftServer implements Server {
              this.playerList.getBans().load();
          } catch (IOException ex) {
              this.logger.log(Level.WARNING, "Failed to load banned-players.json, " + ex.getMessage());
@@ -118,7 +119,7 @@ index 6fbc886b721fd5efe4a211ebce13f39b2fd828dd..199f1034070392fd9851355c19f13a69
          }
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
-@@ -2484,6 +2485,13 @@ public final class CraftServer implements Server {
+@@ -2547,6 +2548,13 @@ public final class CraftServer implements Server {
          }
          // Purpur end
  
@@ -133,10 +134,10 @@ index 6fbc886b721fd5efe4a211ebce13f39b2fd828dd..199f1034070392fd9851355c19f13a69
          public void restart() {
              org.spigotmc.RestartCommand.restart();
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 6ebf61329e7ae7fc6b863d8dfbb43a23c31d6a74..fd52a98d41bedae0b7a97797b378f77b12050c0f 100644
+index 56674053351962a75b2731dde137dbbc0c70dbde..920b56846b6d96c017215e46cc7ed41fba739301 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -162,6 +162,14 @@ public class Main {
+@@ -155,6 +155,14 @@ public class Main {
                      .describedAs("Yml file");
                  // Purpur end
  

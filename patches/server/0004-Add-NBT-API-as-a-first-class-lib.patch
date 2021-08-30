@@ -6,16 +6,14 @@ Subject: [PATCH] Add NBT API as a first-class lib
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 81869f1142a904f0d1075fba948ff253148703d6..97f4d793b67caf32efab11f3fb7f7192584160c0 100644
+index 03516d61f690a9b74f2418cc4e3ea8386cbeac52..d6fd981c535c26e606ab763ea127f9ebb986e964 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -156,6 +156,9 @@ tasks.shadowJar {
-     relocate("org.bukkit.craftbukkit", "org.bukkit.craftbukkit.v$packageVersion") {
+@@ -128,6 +128,7 @@ relocation {
+     relocate("org.bukkit.craftbukkit" to "org.bukkit.craftbukkit.v$packageVersion") {
          exclude("org.bukkit.craftbukkit.Main*")
      }
-+
-+    relocate("de.tr7zw.changeme.nbtapi", "de.tr7zw.nbtapi")
-+
-     listOf(
-         "jline", "org.apache.commons.codec", "org.apache.commons.io", // Paper - don't relocate fastutil
-         "org.apache.commons.lang3", "org.apache.http", "org.apache.maven", "org.codehaus.plexus",
++      relocate("de.tr7zw.changeme.nbtapi" to "de.tr7zw.nbtapi") // Sugarcane - Add NBT API as a first-class lib
+ 
+     fun cb(pack: String) = "org.bukkit.craftbukkit.libs.$pack"
+ 

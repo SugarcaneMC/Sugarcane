@@ -18,7 +18,7 @@ index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f17
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index d3c09c1b3951cf11d6eff798d3b3e5a85c879b20..28446ec5d36fab4f93ae9621b0d957647e5a5b34 100644
+index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e872218539aeb5ed 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -64,12 +64,12 @@ index d3c09c1b3951cf11d6eff798d3b3e5a85c879b20..28446ec5d36fab4f93ae9621b0d95764
      private boolean isMergable() {
          ItemStack itemstack = this.getItem();
 -
--        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < 6000 && itemstack.getCount() < itemstack.getMaxStackSize();
+-        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize(); // Paper - respect despawn rate in pickup check.
 +        // Sugarcane - add merge behavior
 + 
-+        if(SugarcaneConfig.ItemMergeBehavior == -1) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < 6000 && itemstack.getCount() < itemstack.getMaxStackSize();
++        if(SugarcaneConfig.ItemMergeBehavior == -1) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize();
 +        // Sugarcane - merge items infinitely
-+        else if(SugarcaneConfig.ItemMergeBehavior == 0) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < 6000;
++        else if(SugarcaneConfig.ItemMergeBehavior == 0) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate();
 +        // Sugarcane - limit to 1 item per stack
 +        else return false; // Sugarcane - handled during tick
      }
@@ -128,7 +128,7 @@ index d3c09c1b3951cf11d6eff798d3b3e5a85c879b20..28446ec5d36fab4f93ae9621b0d95764
  
      }
 -
-+    //sugarcane - rewrite function playerTouch (what a mess...)
++    // Sugarcane - rewrite function playerTouch (what a mess...)
      @Override
      public void playerTouch(Player player) {
          if (!this.level.isClientSide) {
