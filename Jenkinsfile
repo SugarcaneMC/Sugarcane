@@ -59,8 +59,10 @@ pipeline {
         stage('Discord Webhook') {
             steps {
                 script {
-                    discordSend description: "**Changes:** ${RUN_CHANGES_DISPLAY_URL} 
- **Artifacts:** ${RUN_ARTIFACTS_DISPLAY_URL}", footer: "Build: ${BUILD_DISPLAY_NAME}", link: BUILD_URL, result: currentBuild.currentResult, title: "**Sugarcane** - ${BRANCH_NAME} ${BUILD_DISPLAY_NAME}", webhookURL: discord_webhook1
+                    discordSend description: """**Changes:** 
+                                                          ${RUN_CHANGES_DISPLAY_URL} 
+                                             **Artifacts:** 
+                                                         ${RUN_ARTIFACTS_DISPLAY_URL}""", footer: "Build: ${BUILD_DISPLAY_NAME}", link: BUILD_URL, result: currentBuild.currentResult, title: "**Sugarcane** - ${BRANCH_NAME} ${BUILD_DISPLAY_NAME}", webhookURL: discord_webhook1
                 }
             }   
         }
