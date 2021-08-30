@@ -71,7 +71,7 @@ pipeline {
 
                                                  **Artifacts:** 
                                                          
-                                                            *${ARTIFACT_URL}*""", footer: "Build: ${BUILD_DISPLAY_NAME}", link: BUILD_URL, result: currentBuild.currentResult, title: "**Sugarcane** - *${BRANCH_NAME}* ${BUILD_DISPLAY_NAME}", webhookURL: discord_webhook1
+                                                           - ${ARTIFACT_URL}""", footer: "Build: ${BUILD_DISPLAY_NAME}", link: BUILD_URL, result: currentBuild.currentResult, title: "**Sugarcane** - ${BRANCH_NAME} ${BUILD_DISPLAY_NAME}", webhookURL: discord_webhook1
                 }
             }   
         }
