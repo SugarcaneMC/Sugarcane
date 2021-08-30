@@ -125,8 +125,21 @@ publishing {
     }
 }
 
+tasks.register("printMinecraftVersionAP") {
+    doLast {
+        println("Applying Patches to: Sugarcane for Minecraft " + providers.gradleProperty("mcVersion").get().trim())
+    }
+}
+
+tasks.register("printMinecraftVersionBD") {
+    doLast {
+        println("Building: Sugarcane for Minecraft " + providers.gradleProperty("mcVersion").get().trim())
+    }
+}
+
+
 tasks.register("printMinecraftVersion") {
     doLast {
-        println(providers.gradleProperty("mcVersion").get().trim())
+        println("Minecraft: " + providers.gradleProperty("mcVersion").get().trim())
     }
 }

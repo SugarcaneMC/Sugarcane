@@ -32,7 +32,7 @@ pipeline {
                     chmod +x gradlew
                     rm -rf Sugarcane-Server
                     rm -rf Sugarcane-API
-                    ./gradlew applyPatches
+                    ./gradlew printMinecraftVersionAP applyPatches
                     '''
                 }
             }
@@ -42,7 +42,7 @@ pipeline {
             }
             steps {
                         sh'''
-                        ./gradlew build paperclipJar :Sugarcane-API:publishMavenPublicationToMavenRepository publishToMavenLocal -PpublishDevBundle
+                        ./gradlew printMinecraftVersionBD build paperclipJar :Sugarcane-API:publishMavenPublicationToMavenRepository publishToMavenLocal
                         mkdir -p "./target"
                         cp -v "sugarcane-paperclip.jar" "./target/sugarcane-paperclip-b$BUILD_NUMBER.jar"
                         '''
@@ -59,7 +59,7 @@ pipeline {
         stage('Discord Webhook') {
             steps {
                 script {
-                    discordSend description: "Sugarcane Jenkins Build", footer: "Sugarcane", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: discord_webhook1
+                    discordSend description: "Build: " env.BUILD_NUMBER " Status: " env.BUILD_STATUS " Changes: - " env.BUILD_CHANGES " Artifacts: " env.BUILD_ARTIFACTS, footer: "Sugarcane " env.BUILD_NUMBER, link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: discord_webhook1
                 }
             }   
         }
