@@ -59,7 +59,7 @@ pipeline {
         stage('Discord Webhook') {
             steps {
                 script {
-                    discordSend description: "Build: " env.BUILD_NUMBER " Status: " env.BUILD_STATUS " Changes: - " env.BUILD_CHANGES " Artifacts: " env.BUILD_ARTIFACTS, footer: "Sugarcane " env.BUILD_NUMBER, link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: discord_webhook1
+                    discordSend description: currentBuild.description, footer: BUILD_DISPLAY_NAME, link: BUILD_URL, result: currentBuild.currentResult, title: "Sugarcane", webhookURL: discord_webhook1
                 }
             }   
         }
