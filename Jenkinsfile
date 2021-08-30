@@ -59,10 +59,12 @@ pipeline {
         stage('Discord Webhook') {
             steps {
                 script {
+                    env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B HEAD', returnStdout: true).trim()
+                    env.GIT_COMMIT_CUT = sh (script: 'git rev-parse --short HEAD', returnStdout: true).trim()
                     discordSend description: """**Changes:** 
-                                                          ${RUN_CHANGES_DISPLAY_URL} 
+                                                          - `${GIT_COMMIT_CUT}` *${GIT_COMMIT_MSG}* 
                                              **Artifacts:** 
-                                                         ${RUN_ARTIFACTS_DISPLAY_URL}""", footer: "Build: ${BUILD_DISPLAY_NAME}", link: BUILD_URL, result: currentBuild.currentResult, title: "**Sugarcane** - ${BRANCH_NAME} ${BUILD_DISPLAY_NAME}", webhookURL: discord_webhook1
+                                                         - ${RUN_ARTIFACTS_DISPLAY_URL}""", footer: "Build: ${BUILD_DISPLAY_NAME}", link: BUILD_URL, result: currentBuild.currentResult, title: "**Sugarcane** - *${BRANCH_NAME} ${BUILD_DISPLAY_NAME}*", webhookURL: discord_webhook1
                 }
             }   
         }
