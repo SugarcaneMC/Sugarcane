@@ -61,10 +61,14 @@ pipeline {
                 script {
                     env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B HEAD', returnStdout: true).trim()
                     env.GIT_COMMIT_CUT = sh (script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                    discordSend description: """**Changes:** 
+                    env.ARTIFACT_URL = "${BUILD_URL}artifact/target/sugarcane-paperclip-b${BUILD_NUMBER}.jar"
+                    discordSend description: """**Build:** ${BUILD_DISPLAY_NAME}
+                                                **Status:** ${currentBuild.currentResult}
+
+                                                **Changes:** 
                                                           - `${GIT_COMMIT_CUT}` *${GIT_COMMIT_MSG}* 
-                                             **Artifacts:** 
-                                                         - ${RUN_ARTIFACTS_DISPLAY_URL}""", footer: "Build: ${BUILD_DISPLAY_NAME}", link: BUILD_URL, result: currentBuild.currentResult, title: "**Sugarcane** - *${BRANCH_NAME} ${BUILD_DISPLAY_NAME}*", webhookURL: discord_webhook1
+                                                 **Artifacts:** 
+                                                         - ${ARTIFACT_URL}""", footer: "Build: ${BUILD_DISPLAY_NAME}", link: BUILD_URL, result: currentBuild.currentResult, title: "**Sugarcane** - *${BRANCH_NAME} ${BUILD_DISPLAY_NAME}*", webhookURL: discord_webhook1
                 }
             }   
         }
