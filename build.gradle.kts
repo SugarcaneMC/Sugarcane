@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.5.0:fat")
+    remapper("org.quiltmc:tiny-remapper:0.4.3:fat")
     paperclip("io.papermc:paperclip:2.0.1")
 }
 
@@ -71,7 +71,7 @@ paperweight {
             apiOutputDir.set(layout.projectDirectory.dir("Sugarcane-API"))
             serverOutputDir.set(layout.projectDirectory.dir("Sugarcane-Server"))
 
-            remapRepo.set("https://maven.fabricmc.net/")
+            remapRepo.set("https://maven.quiltmc.org/repository/release/")
             decompileRepo.set("https://files.minecraftforge.net/maven/")
         }
 
