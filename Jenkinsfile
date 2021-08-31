@@ -12,7 +12,7 @@ pipeline {
                 jdk "JDK 16"
             }
             steps {
-                scmSkip(deleteBuild: true, skipPattern:'.*\[ci skip\].*')
+                scmSkip(deleteBuild: true, skipPattern:'.*\\[ci skip\\].*')
                 sh 'git config --global gc.auto 0'
                 sh 'rm -rf ./target'
             }
