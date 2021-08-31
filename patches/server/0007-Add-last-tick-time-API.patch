@@ -8,7 +8,7 @@ Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 076778cf073c949e875d27fbe82789f8c8a02564..95e79f5974fc7acb54b4101b98363d6b7b58acf8 100644
+index 0390c73dec416181916139cf8752464065742804..d3a0553bfd813ae039cedd8693d15e6c0d012ae1 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1210,6 +1210,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
@@ -20,7 +20,7 @@ index 076778cf073c949e875d27fbe82789f8c8a02564..95e79f5974fc7acb54b4101b98363d6b
      protected void runServer() {
          try {
              long serverStartTime = Util.getNanos(); // Paper
-@@ -1281,7 +1283,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1280,7 +1282,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                      this.nextTickTime += 50L;
                      this.startMetricsRecordingTick();
                      this.profiler.push("tick");
