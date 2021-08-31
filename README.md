@@ -1,7 +1,7 @@
 <div align=center>
     <img src="https://cdn.discordapp.com/attachments/517734448008134686/857649078409887784/sugar2.png" width="512">
     <br /><br />
-    <h3>✅ Highly optimized <a href="https://github.com/TECHNOVE/Airplane">Airplane</a> fork that focuses on stability and performance.</h3>
+    <h3>✅ Highly optimized <a href="https://github.com/pl3xgaming/Purpur">Purpur</a> fork that focuses on stability and performance.</h3>
     <a href="https://sugarcanemc.org/discord">
         <img alt="Discord" src="https://img.shields.io/discord/855918593497759754?color=green&label=discord&logo=discord&style=for-the-badge">
     </a>
@@ -102,7 +102,7 @@ And then add the Sugarcane-API dependency:
 
 # Try it for yourself
 
-* **[GitHub Actions](https://github.com/SugarcaneMC/Sugarcane/actions?query=branch%3Aver%2F1.17)** - Download latest developmemt build for Minecraft 1.17 (**not for production**).
+* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/)** - Download latest development builds for Minecraft 1.17.1 (**not for production**).
 
 # Contributing
 
