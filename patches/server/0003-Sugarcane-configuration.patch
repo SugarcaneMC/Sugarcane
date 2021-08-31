@@ -6,13 +6,13 @@ Subject: [PATCH] Sugarcane configuration
 also some basic settings that dont deserve a patch from Yatopia , licensed under MIT license
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index 6d4f049cd77599d9cc0ed79e70902eb1ddc03f02..2fbaa051461713b8c79da963884242a4e7cba5a7 100644
+index bca3bc0b8687940dff181bab6a5a2a3c11423358..e8b1d9c5e4c3fa271612c907553903b3e0fe0466 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -232,7 +232,8 @@ public class TimingsExport extends Thread {
              pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
-             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)),
-             pair("airplane", mapAsJSON(gg.airplane.AirplaneConfig.getConfigCopy(), null)),
+             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Airplane
+             pair("airplane", mapAsJSON(gg.airplane.AirplaneConfig.getConfigCopy(), null)), // Airplane
 -            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null))
 +            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null)),
 +            pair("sugarcane", mapAsJSON(Bukkit.spigot().getSugarcaneConfig(), null))
@@ -20,7 +20,7 @@ index 6d4f049cd77599d9cc0ed79e70902eb1ddc03f02..2fbaa051461713b8c79da963884242a4
          ));
  
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index c9ab6c8a4e7918f34b1c4702306622a8406ba27f..1e0e5c7837ee39e8aa963a7a10d6682b59a48246 100644
+index 977363508e090ede5191f7dbc4c258bfb0a9c911..b723f1dcd4f71ea7116b44b3376edd1b0c1e76cd 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
 @@ -217,7 +217,7 @@ public class PaperConfig {
