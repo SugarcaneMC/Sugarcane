@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'slave' }
+    agent { label 'main' }
     options { timestamps() }
 
    environment {
@@ -12,7 +12,7 @@ pipeline {
                 jdk "JDK 16"
             }
             steps {
-                scmSkip(deleteBuild: true, skipPattern:'^\\[CI-SKIP\\]')
+                scmSkip(deleteBuild: true, skipPattern:'.*\[ci skip\].*')
                 sh 'git config --global gc.auto 0'
                 sh 'rm -rf ./target'
             }
@@ -29,7 +29,6 @@ pipeline {
                     git pull
                     git config user.email "jenkins@sugarcanemc.org"
                     git config user.name "Jenkins"
-                    chmod +x gradlew
                     rm -rf Sugarcane-Server
                     rm -rf Sugarcane-API
                     ./gradlew printMinecraftVersionAP applyPatches
