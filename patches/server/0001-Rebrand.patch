@@ -81,7 +81,7 @@ index 05f1b6d103ec20f196b60944f5bc007384c449f1..4e48190486293a999892e9fb9ab5cf67
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index b6c1e50df4e0a69ac1e81613539bcc0731c67063..142365dafe2b072830293835c46be74b03d0a3ac 100644
+index b6c1e50df4e0a69ac1e81613539bcc0731c67063..27a60864f94ed0e171fc37060d8770afaa90afce 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 @@ -14,11 +14,12 @@ import javax.annotation.Nullable;
@@ -159,7 +159,7 @@ index b6c1e50df4e0a69ac1e81613539bcc0731c67063..142365dafe2b072830293835c46be74b
 -
      // Purpur start
 -    private static int fetchDistanceFromJenkins(int jenkinsBuild) {
-+    private static int fetchDistanceFromJenkins(int jenkinsBuild @Nonnull String branch) { // Sugarcane
++    private static int fetchDistanceFromJenkins(int jenkinsBuild, @Nonnull String branch) { // Sugarcane
          try {
 -            try (BufferedReader reader = Resources.asCharSource(new URL(JENKINS_URL), Charsets.UTF_8).openBufferedStream()) {
 +            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) { // Sugarcane
