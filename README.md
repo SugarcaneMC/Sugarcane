@@ -1,22 +1,25 @@
 <div align=center>
     <img src="https://cdn.discordapp.com/attachments/517734448008134686/857649078409887784/sugar2.png" width="512">
     <br /><br />
-    <h3>✅ Highly optimized <a href="https://github.com/pl3xgaming/Purpur">Purpur</a> fork that focuses on stability and performance.</h3>
+    <h3>✅ Highly optimized <a href="https://github.com/TECHNOVE/Airplane">Airplane</a> fork that focuses on stability and performance.</h3>
     <a href="https://sugarcanemc.org/discord">
         <img alt="Discord" src="https://img.shields.io/discord/855918593497759754?color=green&label=discord&logo=discord&style=for-the-badge">
     </a>
-    <a href="https://sugarcanemc.org/">
+    <a href="https://sugarcanemc.org">
         <img alt="Website" src="https://img.shields.io/website?style=for-the-badge&up_color=red&up_message=SugarcaneMC&url=https%3A%2F%2Fsugarcanemc.org%2F">
+    </a>
+    <a href="https://ci.sugarcanemc.org/job/Sugarcane">
+        <img alt="Jenkins" src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.sugarcanemc.org%2Fjob%2FSugarcane%2Fjob%2F1.17.1%25252Fdev%2F&label=Jenkins%20build&logo=jenkins&logoColor=orange&style=for-the-badge">
     </a>
 </div>
 
 # We use patches from the following projects
 
-* [Paper](https://github.com/PaperMC/Paper)
-* [Tuinity](https://github.com/Tuinity/Tuinity)
-* [Airplane](https://github.com/TECHNOVE/Airplane)
-* [Purpur](https://github.com/pl3xgaming/Purpur)
-* NOTE: We also borrow some patches from [Yatopia.](https://github.com/YatopiaMC/Yatopia)
+* **[Paper](https://github.com/PaperMC/Paper)**
+* **[Tuinity](https://github.com/Tuinity/Tuinity)**
+* **[Airplane](https://github.com/TECHNOVE/Airplane)**
+* **[Purpur](https://github.com/pl3xgaming/Purpur)**
+* **NOTE: We also borrow some patches from [Yatopia](https://github.com/YatopiaMC/Yatopia).**
 
 # ❗ Reminder
 This project is still **work in progress**, so there will not have stable builds for production for a while, until we perform enough tests to ensure it's stable enough for production.
@@ -101,9 +104,8 @@ And then add the Sugarcane-API dependency:
 ## We also have a [Discord Server](https://sugarcanemc.org/discord) for support
 
 # Try it for yourself
-
-* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/)** - Download latest development builds for Minecraft 1.17.1 (**not for production**).
+* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/)** - Download latest development builds for Minecraft 1.17.1 (**Not for production**).
 
 # Contributing
 
-**See [Contributing.md](https://github.com/SugarcaneMC/Sugarcane/blob/main/CONTRIBUTING.md)**
+**See [CONTRIBUTING.md](https://github.com/SugarcaneMC/Sugarcane/blob/main/CONTRIBUTING.md)**
