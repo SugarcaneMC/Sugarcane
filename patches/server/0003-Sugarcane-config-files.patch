@@ -1,9 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: tr7zw <tr7zw@live.de>
-Date: Wed, 5 Aug 2020 08:05:10 -0500
-Subject: [PATCH] Sugarcane configuration
+From: SugarcaneMC <sugarcanemcorg@gmail.com>
+Date: Wed, 6 Sep 2021 17:24:10 +0200
+Subject: [PATCH] Sugarcane config files
 
-also some basic settings that dont deserve a patch from Yatopia , licensed under MIT license
+also some settings from Yatopia & Sugarcane that don't deserve a patch, licensed under MIT license
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
 index bca3bc0b8687940dff181bab6a5a2a3c11423358..e8b1d9c5e4c3fa271612c907553903b3e0fe0466 100644
@@ -20,7 +20,7 @@ index bca3bc0b8687940dff181bab6a5a2a3c11423358..e8b1d9c5e4c3fa271612c907553903b3
          ));
  
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index 977363508e090ede5191f7dbc4c258bfb0a9c911..b723f1dcd4f71ea7116b44b3376edd1b0c1e76cd 100644
+index 7029aa4aa8180caa91b1f3141012a5618d4598b3..d7b6eb8e0f9e256db38218070a3eb94da77abc59 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
 @@ -217,7 +217,7 @@ public class PaperConfig {
@@ -107,6 +107,27 @@ index 4ed72b06786505f61502772bba973b12c2076be0..d0d8a4e1a67a67e97c615b6b7e902e19
                      }
                  }
              }
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index 5e06dbb25359b593c6960652ee99f8227bf4deb0..93438d2b7a3a9ce2c72a85ab011deef415a80aa8 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -169,6 +169,8 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+ 
+     public final net.pl3x.purpur.PurpurWorldConfig purpurConfig; // Purpur
+ 
++    public final org.sugarcanemc.sugarcane.config.SugarcaneWorldConfig sugarcaneConfig; // Sugarcane - world config
++
+     public final co.aikar.timings.WorldTimingsHandler timings; // Paper
+     public static BlockPos lastPhysicsProblem; // Spigot
+     private org.spigotmc.TickLimiter entityLimiter;
+@@ -361,6 +363,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+         this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName()); // Spigot
+         this.paperConfig = new com.destroystokyo.paper.PaperWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), this.spigotConfig); // Paper
+         this.purpurConfig = new net.pl3x.purpur.PurpurWorldConfig((ServerLevel) this, ((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Purpur
++        this.sugarcaneConfig = new org.sugarcanemc.sugarcane.config.SugarcaneWorldConfig((ServerLevel) this, ((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Sugarcane - world config
+         this.playerBreedingCooldowns = this.getNewBreedingCooldownCache(); // Purpur
+         this.generator = gen;
+         this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 index 81d326d7383db7632d9287ad88f27ec95ed27d9b..85b01b5c7da61f2a21f2596b57078cb53fd98a3a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
@@ -348,4 +369,89 @@ index 0000000000000000000000000000000000000000..c75c0de0bf7f1d331da76a31a3a21ac7
 +	brandName = getString("brand-name", brandName);
 +    }
 +
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..002a91d44042c63e040061960c3be649d2d702ea
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
+@@ -0,0 +1,79 @@
++package org.sugarcanemc.sugarcane.config;
++
++import org.apache.commons.lang.BooleanUtils;
++import org.bukkit.World;
++import org.bukkit.configuration.ConfigurationSection;
++
++import java.util.Map;
++import java.util.function.Predicate;
++
++import net.minecraft.server.level.ServerLevel;
++
++import java.util.List;
++
++import static org.sugarcanemc.sugarcane.config.SugarcaneConfig.log;
++
++@SuppressWarnings("unused")
++public class SugarcaneWorldConfig {
++
++	private final ServerLevel level;
++	private final String worldName;
++	private final World.Environment environment;
++
++	public SugarcaneWorldConfig(ServerLevel level, String worldName, World.Environment environment) {
++		this.level = level;
++		this.worldName = worldName;
++		this.environment = environment;
++		init();
++	}
++
++	public void init() {
++		log("-------- World Settings For [" + worldName + "] --------");
++		SugarcaneConfig.readConfig(SugarcaneWorldConfig.class, this);
++	}
++
++	private void set(String path, Object val) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, val);
++		SugarcaneConfig.config.set("world-settings.default." + path, val);
++		if (SugarcaneConfig.config.get("world-settings." + worldName + "." + path) != null) {
++			SugarcaneConfig.config.addDefault("world-settings." + worldName + "." + path, val);
++			SugarcaneConfig.config.set("world-settings." + worldName + "." + path, val);
++		}
++	}
++
++	private ConfigurationSection getConfigurationSection(String path) {
++		ConfigurationSection section = SugarcaneConfig.config.getConfigurationSection("world-settings." + worldName + "." + path);
++		return section != null ? section : SugarcaneConfig.config.getConfigurationSection("world-settings.default." + path);
++	}
++
++	private String getString(String path, String def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getString("world-settings." + worldName + "." + path, SugarcaneConfig.config.getString("world-settings.default." + path));
++	}
++
++	private boolean getBoolean(String path, boolean def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getBoolean("world-settings." + worldName + "." + path, SugarcaneConfig.config.getBoolean("world-settings.default." + path));
++	}
++
++	private boolean getBoolean(String path, Predicate<Boolean> predicate) {
++		String val = getString(path, "default").toLowerCase();
++		Boolean bool = BooleanUtils.toBooleanObject(val, "true", "false", "default");
++		return predicate.test(bool);
++	}
++
++	private double getDouble(String path, double def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getDouble("world-settings." + worldName + "." + path, SugarcaneConfig.config.getDouble("world-settings.default." + path));
++	}
++
++	private int getInt(String path, int def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getInt("world-settings." + worldName + "." + path, SugarcaneConfig.config.getInt("world-settings.default." + path));
++	}
++
++	private <T> List<?> getList(String path, T def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getList("world-settings." + worldName + "." + path, SugarcaneConfig.config.getList("world-settings.default." + path));
++	}
 +}

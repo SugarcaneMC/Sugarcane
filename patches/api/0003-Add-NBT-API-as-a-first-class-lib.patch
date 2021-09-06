@@ -6,7 +6,7 @@ Subject: [PATCH] Add NBT API as a first-class lib
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 1d0c54ffd30bbf79be074822a8c7f43f307229ed..7329875fb7c3f1ca985cccf0c5a5b3f94546ddac 100644
+index 4ea8b634d2cd1601aba13db46f52842c2080afca..442a9fd3b58ce7d7221ea0f4735b82bed32951d9 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -3,6 +3,7 @@ import java.util.Locale
@@ -20,7 +20,7 @@ index 1d0c54ffd30bbf79be074822a8c7f43f307229ed..7329875fb7c3f1ca985cccf0c5a5b3f9
 @@ -42,6 +43,7 @@ dependencies {
      api("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
      api("org.slf4j:slf4j-api:1.7.30") // Paper
-     api("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT") // Purpur
+     api("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT") // Purpur
 +    api("de.tr7zw:item-nbt-api:2.8.0") // Sugarcane
  
      implementation("org.ow2.asm:asm:9.1")
@@ -36,10 +36,10 @@ index 1d0c54ffd30bbf79be074822a8c7f43f307229ed..7329875fb7c3f1ca985cccf0c5a5b3f9
      (options as CoreJavadocOptions).addStringOption("sourcepath", apiAndDocs.resolvedConfiguration.files.joinToString(separator = File.pathSeparator, transform = File::getPath))
      (options as StandardJavadocDocletOptions).links(
 diff --git a/src/main/java/org/bukkit/Chunk.java b/src/main/java/org/bukkit/Chunk.java
-index 98263d896f316983609432c45b85401a2692432d..09e0c62e1ef36dc842c163e69e8fde9e55531ec3 100644
+index 50ef424e74b6f92fcc61a293fb92a0b9f88eb8cd..f03f458f78672c77478fb5ee2876cd0c59f29221 100644
 --- a/src/main/java/org/bukkit/Chunk.java
 +++ b/src/main/java/org/bukkit/Chunk.java
-@@ -275,4 +275,16 @@ public interface Chunk extends PersistentDataHolder {
+@@ -276,4 +276,16 @@ public interface Chunk extends PersistentDataHolder {
       * @return if the block is contained within
       */
      boolean contains(@NotNull BlockData block);
