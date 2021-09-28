@@ -6,7 +6,7 @@ Subject: [PATCH] add config for logging login location
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 9770a8b7ce0b27c0cb9851ac942b3089a053dc7b..134bbd1bd669d2654b97a64a5b06ef68b01f4a84 100644
+index 71705517943f62ae85a9298cf484bb7c78438267..685834f9f62b82f23ad97a2f0e3f1432f2ab7082 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -485,7 +485,14 @@ public abstract class PlayerList {

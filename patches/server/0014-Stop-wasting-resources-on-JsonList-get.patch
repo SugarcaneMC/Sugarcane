@@ -24,14 +24,14 @@ index 685834f9f62b82f23ad97a2f0e3f1432f2ab7082..161561ae4a792466daaa5e5830684090
          if (getBans().isBanned(gameprofile) && (gameprofilebanentry = getBans().get(gameprofile)) != null) {
              // Paper end
  
-+            if (!gameprofilebanentry.hasExpired()) { // Sugarcane
++            if (!gameprofilebanentry.hasExpired()) { // Sugarcane - Stop wasting resources on JsonList#get
              chatmessage = new TranslatableComponent("multiplayer.disconnect.banned.reason", new Object[]{gameprofilebanentry.getReason()});
              if (gameprofilebanentry.getExpires() != null) {
                  chatmessage.append(new TranslatableComponent("multiplayer.disconnect.banned.expiration", new Object[]{PlayerList.BAN_DATE_FORMAT.format(gameprofilebanentry.getExpires())}));
              }
  
              // return chatmessage;
-+            // Sugarcane start
++            // Sugarcane start - Stop wasting resources on JsonList#get
              event.disallow(PlayerLoginEvent.Result.KICK_BANNED, PaperAdventure.asAdventure(chatmessage)); // Paper - Adventure
 -        } else if (!this.isWhitelisted(gameprofile, event)) { // Paper
 +            } else {
@@ -50,7 +50,7 @@ index 9152c6c9e7e5c8fdb9183c2b4f088a810621b333..8fcb7f18c4e66060e0535a22f96c9fd2
          // Paper start
          // this.g();
          // return (V) this.d.get(this.a(k0)); // CraftBukkit - fix decompile error
-+        // Sugarcane start - only remove if it expires and has been requested
++        // Sugarcane start - only remove if it expires and has been requested (Stop wasting resources on JsonList#get)
 +        return this.map.get(this.getKeyForUser(key));
 +        /*
          return (V) this.map.computeIfPresent(this.getKeyForUser(key), (k, v) -> {
@@ -65,7 +65,7 @@ index 9152c6c9e7e5c8fdb9183c2b4f088a810621b333..8fcb7f18c4e66060e0535a22f96c9fd2
      public void save() throws IOException {
          this.removeExpired(); // Paper - remove expired values before saving
          JsonArray jsonarray = new JsonArray();
-+        // Sugarcane start - we're nuking streams wherever possible
++        // Sugarcane start - we're nuking streams wherever possible (Stop wasting resources on JsonList#get)
 +        /*
          Stream<JsonObject> stream = this.map.values().stream().map((jsonlistentry) -> { // CraftBukkit - decompile error
              JsonObject jsonobject = new JsonObject();

@@ -31,7 +31,7 @@ index 84551164b76bc8f064a3a0c030c3a1b47f567b6f..b0f8b11ea071fa96beefcc28cab6a552
              if (this.profile.isComplete()) {
                  server.getProfileCache().add(this.profile);
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-index 6381544b0038de9a09c01238638e4e127e4eddc6..63d46d54a185115366d8f88376124749638de8b6 100644
+index f61c313195c3d16d996721b2f8cd0d9a10ce1aaf..2bb0791a25b48a4bfa86d9f1e1a0650d2f3a7312 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
 @@ -154,7 +154,15 @@ public class SkullBlockEntity extends BlockEntity {
