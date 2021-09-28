@@ -6,7 +6,7 @@ Subject: [PATCH] Global Eula file
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/Eula.java b/src/main/java/net/minecraft/server/Eula.java
-index 43a88bc58716eef4040584944f52893c5a47699f..1593a0d52d43b05830a43afde85b3074d736b1ef 100644
+index a1d5c0f8fe2adb2ee56f3217e089211ec7c61eb0..00008b0dc478cccd710b1d82f5158f02f6271f03 100644
 --- a/src/main/java/net/minecraft/server/Eula.java
 +++ b/src/main/java/net/minecraft/server/Eula.java
 @@ -16,12 +16,26 @@ public class Eula {

@@ -9,16 +9,16 @@ Original code by Yatopia, licensed under MIT License
 Co-authored-by: ishland <ishlandmc@yeah.net>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 2c8951211096a5ed630000cf893ae6ea692b2723..b4f5f9b9d50699009dc77110e78a3e1c37bcbc3d 100644
+index 0cfc4a927ff1cfd419c8247817bde1e78b7749b2..6355a1a0536d1b35a06fa2f8f8d6a27db8e3d7b1 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
 @@ -1097,7 +1097,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Spigot start
          MCUtil.asyncExecutor.shutdown(); // Paper
-+        this.playerDataStorage.executorService.shutdown(); // Sugarcane
++        this.playerDataStorage.executorService.shutdown(); // Sugarcane - New nbt cache
          try { MCUtil.asyncExecutor.awaitTermination(30, java.util.concurrent.TimeUnit.SECONDS); // Paper
-+            this.playerDataStorage.executorService.awaitTermination(30, java.util.concurrent.TimeUnit.SECONDS); // Sugarcane - New async nbt cache
++            this.playerDataStorage.executorService.awaitTermination(30, java.util.concurrent.TimeUnit.SECONDS); // Sugarcane - New nbt cache
          } catch (java.lang.InterruptedException ignored) {} // Paper
          if (org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) {
              MinecraftServer.LOGGER.info("Saving usercache.json");

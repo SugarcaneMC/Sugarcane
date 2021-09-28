@@ -36,10 +36,10 @@ index 4ea8b634d2cd1601aba13db46f52842c2080afca..442a9fd3b58ce7d7221ea0f4735b82be
      (options as CoreJavadocOptions).addStringOption("sourcepath", apiAndDocs.resolvedConfiguration.files.joinToString(separator = File.pathSeparator, transform = File::getPath))
      (options as StandardJavadocDocletOptions).links(
 diff --git a/src/main/java/org/bukkit/Chunk.java b/src/main/java/org/bukkit/Chunk.java
-index 50ef424e74b6f92fcc61a293fb92a0b9f88eb8cd..f03f458f78672c77478fb5ee2876cd0c59f29221 100644
+index 5a4884db36d448c885e49c965ae329a0638dd628..f060a234e5e4a5c8cfbc10fea5964686b095f60c 100644
 --- a/src/main/java/org/bukkit/Chunk.java
 +++ b/src/main/java/org/bukkit/Chunk.java
-@@ -276,4 +276,16 @@ public interface Chunk extends PersistentDataHolder {
+@@ -283,4 +283,16 @@ public interface Chunk extends PersistentDataHolder {
       * @return if the block is contained within
       */
      boolean contains(@NotNull BlockData block);
@@ -88,7 +88,7 @@ index 3b10fcc13893403b29f0260b8605144679e89b82..18a70e1131c117d49448734a5ae96b8b
 +    // Sugarcane end
  }
 diff --git a/src/main/java/org/bukkit/entity/Entity.java b/src/main/java/org/bukkit/entity/Entity.java
-index c9d64da90a05f252d91dd10d2d5f62ba66afb944..d290bb18c997579b9aa00f808c4794aa9c5890c4 100644
+index a365998c2c359fb6cd535ebf0f2d893943b87b75..f8df19762a8e5d5b872710740d029d6a731c20a6 100644
 --- a/src/main/java/org/bukkit/entity/Entity.java
 +++ b/src/main/java/org/bukkit/entity/Entity.java
 @@ -190,6 +190,27 @@ public interface Entity extends Metadatable, CommandSender, Nameable, Persistent
@@ -120,7 +120,7 @@ index c9d64da90a05f252d91dd10d2d5f62ba66afb944..d290bb18c997579b9aa00f808c4794aa
       * Returns a list of entities within a bounding box centered around this
       * entity
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index ff9815e10cef89e98fb6d0181ac1eee0cc24d296..aff6fae2f36ae10c2462f8b74783192263b001d5 100644
+index 880eb42c16d2405195c9bfaec4e3a17c946887a8..727a2d6956e8f390e095adec65ac1ada914f350c 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
 @@ -580,6 +580,43 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor

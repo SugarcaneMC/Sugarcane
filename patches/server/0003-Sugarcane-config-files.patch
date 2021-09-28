@@ -1,12 +1,12 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: SugarcaneMC <sugarcanemcorg@gmail.com>
-Date: Wed, 6 Sep 2021 17:24:10 +0200
+Date: Mon, 6 Sep 2021 17:24:10 +0200
 Subject: [PATCH] Sugarcane config files
 
 also some settings from Yatopia & Sugarcane that don't deserve a patch, licensed under MIT license
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index bca3bc0b8687940dff181bab6a5a2a3c11423358..e8b1d9c5e4c3fa271612c907553903b3e0fe0466 100644
+index c5803537b23d44bad5f447bd2f98d54226d3e80e..03d0d2fa893e88ff7074827c75828f509dcc0b2c 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
 @@ -232,7 +232,8 @@ public class TimingsExport extends Thread {
@@ -20,7 +20,7 @@ index bca3bc0b8687940dff181bab6a5a2a3c11423358..e8b1d9c5e4c3fa271612c907553903b3
          ));
  
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index 7029aa4aa8180caa91b1f3141012a5618d4598b3..d7b6eb8e0f9e256db38218070a3eb94da77abc59 100644
+index 7a580dec61eaf50d57628b30f84d246558266dd1..d0db52e8867e884849a3ee894e231c94bf75abaf 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
 @@ -217,7 +217,7 @@ public class PaperConfig {
@@ -33,14 +33,13 @@ index 7029aa4aa8180caa91b1f3141012a5618d4598b3..d7b6eb8e0f9e256db38218070a3eb94d
              TimingsManager.url += "/";
          }
 diff --git a/src/main/java/gg/airplane/compat/ServerConfigurations.java b/src/main/java/gg/airplane/compat/ServerConfigurations.java
-index 59e6f3c31e8efa7f3e827b641f19bc3a9cd809ef..903317459fbc257f169ea0553f87e7e54df857c8 100644
+index f9a71ff3edd7e7b6cda680e5a156373b5aa813c2..903317459fbc257f169ea0553f87e7e54df857c8 100644
 --- a/src/main/java/gg/airplane/compat/ServerConfigurations.java
 +++ b/src/main/java/gg/airplane/compat/ServerConfigurations.java
-@@ -24,8 +24,9 @@ public class ServerConfigurations {
+@@ -24,7 +24,9 @@ public class ServerConfigurations {
        "bukkit.yml",
        "spigot.yml",
        "paper.yml",
--      "tuinity.yml",
 -      "airplane.yml"
 +      "purpur.yml",
 +      "airplane.yml",
@@ -49,7 +48,7 @@ index 59e6f3c31e8efa7f3e827b641f19bc3a9cd809ef..903317459fbc257f169ea0553f87e7e5
  
      public static Map<String, String> getCleanCopies() throws IOException {
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 77eb1b3bf77d496fb0675fbb681efb0df32fb5c4..70d7088343e5f7756aa0e5efc3ec947faff96ddf 100644
+index 79a9e8dd970b10ceb03d814224a568a9331208c9..05156955d84634e778b51c44961d9d3b4b9cf379 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -234,6 +234,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
@@ -68,7 +67,7 @@ index 77eb1b3bf77d496fb0675fbb681efb0df32fb5c4..70d7088343e5f7756aa0e5efc3ec947f
          this.setPvpAllowed(dedicatedserverproperties.pvp);
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 4ed72b06786505f61502772bba973b12c2076be0..d0d8a4e1a67a67e97c615b6b7e902e19ed77845e 100644
+index fa951b44300f3ac26342771d9a84bea637a1d7c4..2ef0feae8a18dbb59a3a5b1c341cc9aa77403588 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -398,18 +398,23 @@ public abstract class LivingEntity extends Entity {
@@ -129,7 +128,7 @@ index 5e06dbb25359b593c6960652ee99f8227bf4deb0..93438d2b7a3a9ce2c72a85ab011deef4
          this.generator = gen;
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 81d326d7383db7632d9287ad88f27ec95ed27d9b..85b01b5c7da61f2a21f2596b57078cb53fd98a3a 100644
+index 3e4e1d389f5d19887a201aaf58eca8fac648385e..b7f7bbcaa5eb6a50cbed1cc55310c2d3c5d25c17 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -888,6 +888,7 @@ public final class CraftServer implements Server {
@@ -140,7 +139,7 @@ index 81d326d7383db7632d9287ad88f27ec95ed27d9b..85b01b5c7da61f2a21f2596b57078cb5
          }
  
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
-@@ -2547,6 +2548,13 @@ public final class CraftServer implements Server {
+@@ -2543,6 +2544,13 @@ public final class CraftServer implements Server {
          }
          // Purpur end
  
