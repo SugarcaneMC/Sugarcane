@@ -22,9 +22,7 @@
 * **NOTE: We also borrow some patches from [Yatopia](https://github.com/YatopiaMC/Yatopia).**
 
 # ❗ Reminder
-This project is still **work in progress**, so there will not have stable builds for production for a while, until we perform enough tests to ensure it's stable enough for production.
-
-We **HIGHLY RECOMMEND TO NOT USE the development builds for any kind of production enviroment**.
+This project is now in rc (release candidate) state. This means that we are confident in the stability of our patches to roll out builds to be tested further and possibly roll out production builds.
 
 If you find any issue or have some suggestion, feel free to [open a issue](https://github.com/SugarcaneMC/Sugarcane/issues/new).
 
