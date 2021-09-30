@@ -5,7 +5,7 @@ Subject: [PATCH] Sugarcane Config
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 8550b2a95df396cf64f564fb2400df38af2397dd..ac14b1c548355c28f3fcb20d23cd93e435262d64 100644
+index 5e18958e87b10911bc815f8b8e8e7c79c90dbb7d..f7aac777a43fd4b949fe7600755bc54cf412872a 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -30,7 +30,9 @@ dependencies {
@@ -19,7 +19,7 @@ index 8550b2a95df396cf64f564fb2400df38af2397dd..ac14b1c548355c28f3fcb20d23cd93e4
      api("it.unimi.dsi:fastutil:8.2.2")
      apiAndDocs(platform("net.kyori:adventure-bom:$adventureVersion"))
      apiAndDocs("net.kyori:adventure-api")
-@@ -65,12 +67,14 @@ configure<PublishingExtension> {
+@@ -71,12 +73,14 @@ configure<PublishingExtension> {
      }
  }
  
