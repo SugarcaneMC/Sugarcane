@@ -8,10 +8,10 @@ Original code by JellySquid, licensed under GNU Lesser General Public License v3
 you can find the original code on https://github.com/CaffeineMC/lithium-fabric/ (Yarn mappings)
 
 diff --git a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java b/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
-index 24552500307c42f9f3dc5c4d9ba73a84a787423a..a6853022770273ac248da13b2cc3777e11be1586 100644
+index 24552500307c42f9f3dc5c4d9ba73a84a787423a..beb03692e04153b112ecb55573862c742fe77d62 100644
 --- a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
-@@ -34,31 +34,25 @@ public class EntitySectionStorage<T extends EntityAccess> {
+@@ -34,33 +34,52 @@ public class EntitySectionStorage<T extends EntityAccess> {
      }
  
      public void forEachAccessibleSection(AABB box, Consumer<EntitySection<T>> action) {
@@ -35,6 +35,8 @@ index 24552500307c42f9f3dc5c4d9ba73a84a787423a..a6853022770273ac248da13b2cc3777e
 -                    EntitySection<T> entitySection = this.sections.get(r);
 -                    if (entitySection != null && entitySection.getStatus().isAccessible()) {
 -                        action.accept(entitySection);
+-                    }
+-                }
 +        // Sugarcane start - port lithium
 +        int minX = SectionPos.posToSectionCoord(box.minX - 2.0D);
 +        int minY = SectionPos.posToSectionCoord(box.minY - 2.0D);
@@ -43,18 +45,45 @@ index 24552500307c42f9f3dc5c4d9ba73a84a787423a..a6853022770273ac248da13b2cc3777e
 +        int maxY = SectionPos.posToSectionCoord(box.maxY + 2.0D);
 +        int maxZ = SectionPos.posToSectionCoord(box.maxZ + 2.0D);
 +
++        // Vanilla order of the AVL long set is sorting by ascending long value. The x, y, z positions are packed into
++        // a long with the x position's lowest 22 bits placed at the MSB.
++        // Therefore the long is negative iff the 22th bit of the x position is set, which happens iff the x position
++        // is negative. A positive x position will never have its 22th bit set, as these big coordinates are far outside
++        // the world. y and z positions are treated as unsigned when sorting by ascending long value, as their sign bits
++        // are placed somewhere inside the packed long
++
 +        for (int x = minX; x <= maxX; x++) {
-+            for (int z = minZ; z <= maxZ; z++) {
-+                for (int y = minY; y <= maxY; y++) {
-+                    EntitySection<T> section = this.getSection(SectionPos.asLong(x, y, z));
-+                    if (section != null && section.getStatus().isAccessible()) {
-+                        action.accept(section);
-                     }
-                 }
++            for (int z = Math.max(minZ, 0); z <= maxZ; z++) {
++                this.forEachInColumn(x, minY, maxY, z, action);
              }
-         }
--
-+        // Sugarcane end
+-        }
+ 
++            int bound = Math.min(-1, maxZ);
++            for (int z = minY; z <= bound; z++) {
++                this.forEachInColumn(x, minY, maxY, z, action);
++            }
++        }
      }
  
++        private void forEachInColumn(int x, int minY, int maxY, int z, Consumer<EntitySection<T>> action) {
++            //y from negative to positive, but y is treated as unsigned
++            for (int y = Math.max(minY, 0); y <= maxY; y++) {
++                this.consumeSection(x, y, z, action);
++            }
++
++            int bound = Math.min(-1, maxY);
++            for (int y = minY; y <= bound; y++) {
++                this.consumeSection(x, y, z, action);
++            }
++        }
++
++        private void consumeSection(int x, int y, int z, Consumer<EntitySection<T>> action) {
++            EntitySection<T> section = this.getSection(SectionPos.asLong(x, y, z));
++            if (section != null && section.getStatus().isAccessible()) {
++                action.accept(section);
++        }
++    } // Sugarcane end
++
      public LongStream getExistingSectionPositionsInChunk(long chunkPos) {
+         int i = ChunkPos.getX(chunkPos);
+         int j = ChunkPos.getZ(chunkPos);
