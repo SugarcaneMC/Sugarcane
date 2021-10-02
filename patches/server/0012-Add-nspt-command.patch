@@ -18,10 +18,10 @@ index 05156955d84634e778b51c44961d9d3b4b9cf379..1a139743fe4c432519f9aa24ffc17068
          io.papermc.paper.util.ObfHelper.INSTANCE.getClass(); // load mappings for stacktrace deobf and etc.
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 03dc049de98afba9ead78faa4f20e413042a227e..7b631c4f717ca3844b351fc52b3fd18630d92094 100644
+index 4424520f40fdfb0e2397d6a89eb838c8e8d52ec5..b9bfa1baf0192558f38926afee3ea1d208af266c 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -944,6 +944,7 @@ public final class CraftServer implements Server {
+@@ -945,6 +945,7 @@ public final class CraftServer implements Server {
          this.reloadData();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          com.destroystokyo.paper.PaperConfig.registerCommands(); // Paper
