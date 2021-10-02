@@ -5,7 +5,7 @@ Subject: [PATCH] add stats command
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 7b631c4f717ca3844b351fc52b3fd18630d92094..29d7e3074517d700a887b6df8efb147728c7a5d6 100644
+index b9bfa1baf0192558f38926afee3ea1d208af266c..61fe84c0466a344b454cbbdbf9e42d026e9cd07a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -179,6 +179,7 @@ import org.bukkit.craftbukkit.metadata.PlayerMetadataStore;
@@ -16,7 +16,7 @@ index 7b631c4f717ca3844b351fc52b3fd18630d92094..29d7e3074517d700a887b6df8efb1477
  import org.bukkit.craftbukkit.scoreboard.CraftScoreboardManager;
  import org.bukkit.craftbukkit.tag.CraftBlockTag;
  import org.bukkit.craftbukkit.tag.CraftFluidTag;
-@@ -993,7 +994,8 @@ public final class CraftServer implements Server {
+@@ -994,7 +995,8 @@ public final class CraftServer implements Server {
          for (BukkitWorker worker : overdueWorkers) {
              Plugin plugin = worker.getOwner();
              String author = "<NoAuthorGiven>";
