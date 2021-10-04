@@ -120,10 +120,10 @@ index a365998c2c359fb6cd535ebf0f2d893943b87b75..f8df19762a8e5d5b872710740d029d6a
       * Returns a list of entities within a bounding box centered around this
       * entity
 diff --git a/src/main/java/org/bukkit/inventory/ItemStack.java b/src/main/java/org/bukkit/inventory/ItemStack.java
-index 880eb42c16d2405195c9bfaec4e3a17c946887a8..727a2d6956e8f390e095adec65ac1ada914f350c 100644
+index 401080c53a0f69dcdfb920dbf0c5a07e249f6338..7205e74416ad987d7bc563475d77b7e151233a10 100644
 --- a/src/main/java/org/bukkit/inventory/ItemStack.java
 +++ b/src/main/java/org/bukkit/inventory/ItemStack.java
-@@ -580,6 +580,43 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
+@@ -599,6 +599,43 @@ public class ItemStack implements Cloneable, ConfigurationSerializable, net.kyor
      }
      // Paper end
  

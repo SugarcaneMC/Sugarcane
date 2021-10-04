@@ -48,10 +48,10 @@ index f9a71ff3edd7e7b6cda680e5a156373b5aa813c2..903317459fbc257f169ea0553f87e7e5
  
      public static Map<String, String> getCleanCopies() throws IOException {
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 79a9e8dd970b10ceb03d814224a568a9331208c9..05156955d84634e778b51c44961d9d3b4b9cf379 100644
+index 855428f579af69af35605f324029a6ce67b50e5e..641893347e65597292487ceb25a35097c5f19eb5 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -234,6 +234,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -235,6 +235,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          // Paper end
          gg.airplane.AirplaneConfig.load(); // Airplane - config
          gg.airplane.commands.AirplaneCommands.init(); // Airplane - command
@@ -67,7 +67,7 @@ index 79a9e8dd970b10ceb03d814224a568a9331208c9..05156955d84634e778b51c44961d9d3b
          this.setPvpAllowed(dedicatedserverproperties.pvp);
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index fa951b44300f3ac26342771d9a84bea637a1d7c4..2ef0feae8a18dbb59a3a5b1c341cc9aa77403588 100644
+index fa3d4b52653398a18105b92e41e0186f27268d8f..4ca932ebbe93e936128fbbb97b4ab0f38909e76e 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
 @@ -398,18 +398,23 @@ public abstract class LivingEntity extends Entity {
@@ -128,18 +128,18 @@ index 5e06dbb25359b593c6960652ee99f8227bf4deb0..93438d2b7a3a9ce2c72a85ab011deef4
          this.generator = gen;
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 3e4e1d389f5d19887a201aaf58eca8fac648385e..c0ad82db1ed79b36c45ea959cded66ddc659683c 100644
+index 2d65f6125d65c9fad15d6ac20ec5905b6c04a188..30221355ef746020cd71394f18fca921fdcc90c2 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -893,6 +893,7 @@ public final class CraftServer implements Server {
+@@ -896,6 +896,7 @@ public final class CraftServer implements Server {
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
          com.destroystokyo.paper.PaperConfig.init((File) console.options.valueOf("paper-settings")); // Paper
          net.pl3x.purpur.PurpurConfig.init((File) console.options.valueOf("purpur-settings")); // Purpur
 +        org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((File) console.options.valueOf("sugarcane-settings")); // Sugarcane - config
          for (ServerLevel world : this.console.getAllLevels()) {
-             world.serverLevelData.setDifficulty(config.difficulty);
-             world.setSpawnSettings(config.spawnMonsters, config.spawnAnimals);
-@@ -928,6 +929,7 @@ public final class CraftServer implements Server {
+             // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
+             world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters, config.spawnAnimals); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
+@@ -931,6 +932,7 @@ public final class CraftServer implements Server {
              world.spigotConfig.init(); // Spigot
              world.paperConfig.init(); // Paper
              world.purpurConfig.init(); // Purpur
@@ -147,7 +147,7 @@ index 3e4e1d389f5d19887a201aaf58eca8fac648385e..c0ad82db1ed79b36c45ea959cded66dd
          }
  
          Plugin[] pluginClone = pluginManager.getPlugins().clone(); // Paper
-@@ -2543,6 +2545,13 @@ public final class CraftServer implements Server {
+@@ -2555,6 +2557,13 @@ public final class CraftServer implements Server {
          }
          // Purpur end
  
