@@ -6,10 +6,10 @@ Subject: [PATCH] Add NBT API as a first-class lib
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 468411866430ffacf35c3e3225b6ff19217b4b94..53cf0b7931d634ac2038d39c44cba314afb84393 100644
+index 445c794f5a1c3569c30fc5454dc181a7fcd18391..be74ad0ba43289a36720269336aacd80c57b6cff 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -131,6 +131,7 @@ relocation {
+@@ -132,6 +132,7 @@ relocation {
      relocate("org.bukkit.craftbukkit" to "org.bukkit.craftbukkit.v$packageVersion") {
          exclude("org.bukkit.craftbukkit.Main*")
      }
