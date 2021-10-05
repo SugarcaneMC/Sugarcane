@@ -8,7 +8,7 @@ Original code by JellySquid, licensed under GNU Lesser General Public License v3
 you can find the original code on https://github.com/CaffeineMC/lithium-fabric/ (Yarn mappings)
 
 diff --git a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java b/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
-index 24552500307c42f9f3dc5c4d9ba73a84a787423a..beb03692e04153b112ecb55573862c742fe77d62 100644
+index 24552500307c42f9f3dc5c4d9ba73a84a787423a..85bdcf3084f6e19915d3306437adb06b4ddd354d 100644
 --- a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
 @@ -34,33 +34,52 @@ public class EntitySectionStorage<T extends EntityAccess> {
@@ -59,7 +59,7 @@ index 24552500307c42f9f3dc5c4d9ba73a84a787423a..beb03692e04153b112ecb55573862c74
 -        }
  
 +            int bound = Math.min(-1, maxZ);
-+            for (int z = minY; z <= bound; z++) {
++            for (int z = minZ; z <= bound; z++) {
 +                this.forEachInColumn(x, minY, maxY, z, action);
 +            }
 +        }
