@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.6.0:fat")
+    remapper("net.fabricmc:tiny-remapper:0.7.0:fat")
     paperclip("io.papermc:paperclip:2.0.1")
 }
 
@@ -79,7 +79,6 @@ paperweight {
             "org.sugarcanemc",
             "gg.airplane",
             "net.pl3x",
-            "com.tuinity",
             "ca.spottedleaf",
             "me.jellysquid.mods"
         )

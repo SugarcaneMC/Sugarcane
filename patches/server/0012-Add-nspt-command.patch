@@ -6,10 +6,10 @@ Subject: [PATCH] Add nspt command
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index 641893347e65597292487ceb25a35097c5f19eb5..5ae03de8c1db7cdf2d90e6aa0b79cd83ac3f55c0 100644
+index d5d53df304d9f74ea40d80e8b00c2548674b0f11..1ff2c567c40a43dbb694913b1f09a70fdd4b19ed 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -229,6 +229,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -239,6 +239,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          }
          net.pl3x.purpur.PurpurConfig.registerCommands();
          // Purpur end
@@ -18,10 +18,10 @@ index 641893347e65597292487ceb25a35097c5f19eb5..5ae03de8c1db7cdf2d90e6aa0b79cd83
          io.papermc.paper.util.ObfHelper.INSTANCE.getClass(); // load mappings for stacktrace deobf and etc.
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 98abe4b24d449f46f9c9c4bd9845c287c71b31c9..a0ebda6c8a972e1de3df0066b295cf7cb3c60d22 100644
+index 9aa6066e6e60bbc091907d49886e4feb3e948152..2deb9949d2eb3d604af431304968bb9f11c21ecc 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -948,6 +948,7 @@ public final class CraftServer implements Server {
+@@ -983,6 +983,7 @@ public final class CraftServer implements Server {
          this.reloadData();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          com.destroystokyo.paper.PaperConfig.registerCommands(); // Paper

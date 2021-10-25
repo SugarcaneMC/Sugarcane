@@ -17,10 +17,10 @@ index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21
  # vs code
  /.vscode
 diff --git a/build.gradle.kts b/build.gradle.kts
-index a0ae42e349bd6531bcf7cd195a10bf4f66eb1b76..4014a581ca7d4ed4465655c4e1d57f51de3a6454 100644
+index dc6c416bb2145bb684e1dedda626263d423cba67..07629526818374ffbb61c69fd0175a185d5fd360 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -32,7 +32,7 @@ repositories {
+@@ -25,7 +25,7 @@ repositories {
  }
  
  dependencies {
@@ -29,7 +29,7 @@ index a0ae42e349bd6531bcf7cd195a10bf4f66eb1b76..4014a581ca7d4ed4465655c4e1d57f51
      implementation("io.papermc.paper:paper-mojangapi:1.17.1-R0.1-SNAPSHOT") // Airplane
      // Paper start
      implementation("org.jline:jline-terminal-jansi:3.12.1")
-@@ -53,6 +53,7 @@ dependencies {
+@@ -46,6 +46,7 @@ dependencies {
      implementation("com.googlecode.json-simple:json-simple:1.1.1") {
          // This includes junit transitively for whatever reason
          isTransitive = false
@@ -37,7 +37,7 @@ index a0ae42e349bd6531bcf7cd195a10bf4f66eb1b76..4014a581ca7d4ed4465655c4e1d57f51
      }
      runtimeOnly("org.xerial:sqlite-jdbc:3.34.0")
      runtimeOnly("mysql:mysql-connector-java:8.0.23") // Paper
-@@ -94,7 +95,7 @@ tasks.jar {
+@@ -87,7 +88,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
@@ -46,7 +46,7 @@ index a0ae42e349bd6531bcf7cd195a10bf4f66eb1b76..4014a581ca7d4ed4465655c4e1d57f51
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -107,6 +108,11 @@ tasks.jar {
+@@ -100,6 +101,11 @@ tasks.jar {
              attributes("$tld/bukkit", "Sealed" to true)
          }
      }
@@ -81,10 +81,10 @@ index 05f1b6d103ec20f196b60944f5bc007384c449f1..4e48190486293a999892e9fb9ab5cf67
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index b6c1e50df4e0a69ac1e81613539bcc0731c67063..27a60864f94ed0e171fc37060d8770afaa90afce 100644
+index aadd6550a5892e403f7b0bbef008461c1566a1bb..5c4a1afb10d869c4719640119a35152e3cb872b9 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-@@ -14,11 +14,12 @@ import javax.annotation.Nullable;
+@@ -15,12 +15,15 @@ import javax.annotation.Nullable;
  import java.io.*;
  import java.net.HttpURLConnection;
  import java.net.URL;
@@ -95,11 +95,15 @@ index b6c1e50df4e0a69ac1e81613539bcc0731c67063..27a60864f94ed0e171fc37060d8770af
  
  public class PaperVersionFetcher implements VersionFetcher {
      private static final java.util.regex.Pattern VER_PATTERN = java.util.regex.Pattern.compile("^([0-9\\.]*)\\-.*R"); // R is an anchor, will always give '-R' at end
+-    private static final String DOWNLOAD_PAGE = "https://purpur.pl3x.net/downloads/";
 -    private static final String JENKINS_URL = "https://ci.pl3x.net/job/Purpur/lastSuccessfulBuild/buildNumber"; // Purpur
++
++    private static final String DOWNLOAD_PAGE = "https://ci.sugarcanemc.org/job/Sugarcane/";
++
      private static @Nullable String mcVer;
  
      @Override
-@@ -29,8 +30,9 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -31,8 +34,9 @@ public class PaperVersionFetcher implements VersionFetcher {
      @Nonnull
      @Override
      public Component getVersionMessage(@Nonnull String serverVersion) {
@@ -111,35 +115,32 @@ index b6c1e50df4e0a69ac1e81613539bcc0731c67063..27a60864f94ed0e171fc37060d8770af
          final Component history = getHistory();
  
          return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
-@@ -55,17 +57,16 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -56,13 +60,15 @@ public class PaperVersionFetcher implements VersionFetcher {
+ 
      private static Component getUpdateStatusMessage(@Nonnull String repo, @Nonnull String branch, @Nonnull String versionInfo) {
          int distance;
-         // Purpur start - put all this back, yet again
 +        // Sugarcane start
          try {
--            int buildNumber = Integer.parseInt(versionInfo);
--            distance = fetchDistanceFromSiteApi(buildNumber, getMinecraftVersion());
--            if (distance < 0) {
--                distance = fetchDistanceFromJenkins(buildNumber);
--            }
-+            int jenkinsBuild = Integer.parseInt(versionInfo);
+             int jenkinsBuild = Integer.parseInt(versionInfo);
+-            distance = fetchDistanceFromSiteApi(jenkinsBuild, getMinecraftVersion());
 +            distance = fetchDistanceFromJenkins(jenkinsBuild, branch);
          } catch (NumberFormatException ignored) {
              versionInfo = versionInfo.replace("\"", "");
              distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
          }
-         // Purpur end
 +        // Sugarcane end
  
          switch (distance) {
              case -1:
-@@ -79,30 +80,10 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -81,25 +87,21 @@ public class PaperVersionFetcher implements VersionFetcher {
          }
      }
  
 -    private static int fetchDistanceFromSiteApi(int jenkinsBuild, @Nullable String siteApiVersion) {
 -        if (siteApiVersion == null) { return -1; }
--        try {
++    // Sugarcane start
++    private static int fetchDistanceFromJenkins(int jenkinsBuild, @Nonnull String branch) { // Sugarcane
+         try {
 -            try (BufferedReader reader = Resources.asCharSource(
 -                new URL("https://api.pl3x.net/v2/purpur/" + siteApiVersion), // Purpur
 -                Charsets.UTF_8
@@ -148,24 +149,22 @@ index b6c1e50df4e0a69ac1e81613539bcc0731c67063..27a60864f94ed0e171fc37060d8770af
 -                int latest = json.getAsJsonObject("builds").getAsJsonPrimitive("latest").getAsInt(); // Purpur
 -                return latest - jenkinsBuild;
 -            } catch (JsonSyntaxException ex) {
--                ex.printStackTrace();
--                return -1;
--            }
--        } catch (IOException e) {
--            e.printStackTrace();
--            return -1;
--        }
--    }
--
-     // Purpur start
--    private static int fetchDistanceFromJenkins(int jenkinsBuild) {
-+    private static int fetchDistanceFromJenkins(int jenkinsBuild, @Nonnull String branch) { // Sugarcane
-         try {
--            try (BufferedReader reader = Resources.asCharSource(new URL(JENKINS_URL), Charsets.UTF_8).openBufferedStream()) {
 +            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) { // Sugarcane
-                 return Integer.decode(reader.readLine()) - jenkinsBuild;
-             } catch (NumberFormatException ex) {
++                return Integer.decode(reader.readLine()) - jenkinsBuild;
++            } catch (NumberFormatException ex) {
                  ex.printStackTrace();
+-                return -1;
++                return -2;
+             }
+         } catch (IOException e) {
+             e.printStackTrace();
+             return -1;
+         }
+     }
++    // Sugarcane end
+ 
+     // Contributed by Techcable <Techcable@outlook.com> in GH-65
+     private static int fetchDistanceFromGitHub(@Nonnull String repo, @Nonnull String branch, @Nonnull String hash) {
 diff --git a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java b/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
 index 8c3c68465197fafc14849dc38a572e309931e2a2..8e1ca69049c50f242b8198d47302bf9ff0c9d1e8 100644
 --- a/src/main/java/com/destroystokyo/paper/console/PaperConsole.java
@@ -180,10 +179,10 @@ index 8c3c68465197fafc14849dc38a572e309931e2a2..8e1ca69049c50f242b8198d47302bf9f
                  .completer(new ConsoleCommandCompleter(this.server))
                  .option(LineReader.Option.COMPLETE_IN_WORD, true);
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 6907bbe83f4907eddf22280e8674c9bdd2682279..ed39bc0c697a8ec39a1ef50c1e7ccfe8125e74c3 100644
+index f415108a98fdb0c4e1c569452e387c3defa4211f..517e1cae9697ff00d129cf8781b9b09066594530 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1746,7 +1746,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1751,7 +1751,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
  
      @DontObfuscate
      public String getServerModName() {
@@ -193,10 +192,10 @@ index 6907bbe83f4907eddf22280e8674c9bdd2682279..ed39bc0c697a8ec39a1ef50c1e7ccfe8
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 1ecad3983a64cfef99953357dd5bbde139fe969e..2d65f6125d65c9fad15d6ac20ec5905b6c04a188 100644
+index bb9aff9f3067b6249447287f5d9f9c6fe86c88d5..2ff7cbf888d7fc0ce3ad34d3d79814d6322be5bf 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -249,7 +249,7 @@ import javax.annotation.Nullable; // Paper
+@@ -251,7 +251,7 @@ import javax.annotation.Nullable; // Paper
  import javax.annotation.Nonnull; // Paper
  
  public final class CraftServer implements Server {
