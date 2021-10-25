@@ -5,7 +5,7 @@ Subject: [PATCH] Sugarcane Config
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 39dacd6b507c4afc997a7ed7b75ea83155f94708..396b8cc3f2288468d994584bb5bff7bdcc9e8e40 100644
+index 39dacd6b507c4afc997a7ed7b75ea83155f94708..f97975046d20139d18fb81641cdc07490d7de629 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -30,7 +30,9 @@ dependencies {
@@ -25,15 +25,14 @@ index 39dacd6b507c4afc997a7ed7b75ea83155f94708..396b8cc3f2288468d994584bb5bff7bd
  
 -val generateApiVersioningFile by tasks.registering {
 -    val pomProps = layout.buildDirectory.file("pom.properties")
--    outputs.file(pomProps)
 +val generateApiVersioningFile by tasks.registering { // Sugarcane
-+    val pomProps = providers.fileContents(layout.buildDirectory.file("pom.properties"))
++    val pomProps: Provider<RegularFile>
++    pomProps = layout.buildDirectory.file("pom.properties")
+     outputs.file(pomProps)
      doLast {
--        pomProps.get().asFile.writeText("version=${project.version}")
-+        File("$pomProps").bufferedWriter().use { out -> 
-+        out.write("version=${project.version}")
-+       }
-     }
+         pomProps.get().asFile.writeText("version=${project.version}")
+-    }
++      }
 +  outputs.cacheIf { true }
  }
  
