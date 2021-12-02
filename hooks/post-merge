@@ -1,0 +1,4 @@
+#!/bin/sh
+./gradlew applyPatches
+./gradlew rebuildPatches
+./gradlew build -x javadoc

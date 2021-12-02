@@ -1,0 +1,139 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: SugarcaneMC <Sugarcanemcorg@gmail.com>
+Date: Fri, 23 Oct 2020 09:20:01 -0700
+Subject: [PATCH] Utilities
+
+Original code by Yatopia, licensed under MIT License
+This patch includes all utilities required by the Sugarcane project and its patches.
+
+Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
+Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 07629526818374ffbb61c69fd0175a185d5fd360..6c0259addbf5cc99c52dd5fab72a6d47dc10ad84 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -43,6 +43,7 @@ dependencies {
+     implementation("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
+     implementation("org.ow2.asm:asm:9.2")
+     implementation("org.ow2.asm:asm-commons:9.2") // Paper - ASM event executor generation
++    implementation("org.apache.commons:commons-rng-core:1.3") // Sugarcane - Utilities
+     implementation("com.googlecode.json-simple:json-simple:1.1.1") {
+         // This includes junit transitively for whatever reason
+         isTransitive = false
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java b/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..0b398b7c73a22718516c14b6bba38969555ef6e1
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java
+@@ -0,0 +1,7 @@
++package org.sugarcanemc.sugarcane.util;
++
++public class Constants {
++
++    public static final int[] EMPTY_ARRAY = new int[0];
++    public static final int[] ZERO_ARRAY = new int[]{0};
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java b/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..08231e36b47fd0998e8578675e290fc34aba5fce
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java
+@@ -0,0 +1,64 @@
++package org.sugarcanemc.sugarcane.util;
++
++import org.apache.commons.rng.core.source64.XoRoShiRo128PlusPlus;
++
++import java.util.Random;
++import java.util.SplittableRandom;
++
++public class FastRandom extends Random {
++
++    private XoRoShiRo128PlusPlus random;
++
++    public FastRandom() {
++        super();
++        SplittableRandom randomseed = new SplittableRandom();
++        this.random = new XoRoShiRo128PlusPlus(randomseed.nextLong(), randomseed.nextLong());
++    }
++
++    public FastRandom(long seed) {
++        super(seed);
++        SplittableRandom randomseed = new SplittableRandom(seed);
++        this.random = new XoRoShiRo128PlusPlus(randomseed.nextLong(), randomseed.nextLong());
++    }
++
++    @Override
++    public boolean nextBoolean() {
++        return random.nextBoolean();
++    }
++
++    @Override
++    public int nextInt() {
++        return random.nextInt();
++    }
++
++    @Override
++    public float nextFloat() {
++        return (float) random.nextDouble();
++    }
++
++    @Override
++    public double nextDouble() {
++        return random.nextDouble();
++    }
++
++    @Override
++    public synchronized void setSeed(long seed) {
++        SplittableRandom randomseed = new SplittableRandom(seed);
++        this.random = new XoRoShiRo128PlusPlus(randomseed.nextLong(), randomseed.nextLong());
++    }
++
++    @Override
++    public void nextBytes(byte[] bytes) {
++        random.nextBytes(bytes);
++    }
++
++    @Override
++    public int nextInt(int bound) {
++        return random.nextInt(bound);
++    }
++
++    @Override
++    public long nextLong() {
++        return random.nextLong();
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..703df46706f0d0345b1b70bea1dc376aa4c19eca
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java
+@@ -0,0 +1,27 @@
++package org.sugarcanemc.sugarcane.util;
++
++import java.util.concurrent.TimeUnit;
++
++public class TimeUtils {
++
++    public static String getFriendlyName(TimeUnit unit) {
++        switch (unit) {
++            case NANOSECONDS:
++                return "ns";
++            case MILLISECONDS:
++                return "ms";
++            case MICROSECONDS:
++                return "micros";
++            case SECONDS:
++                return "s";
++            case MINUTES:
++                return "m";
++            case DAYS:
++                return "d";
++            case HOURS:
++                return "h";
++            default:
++                throw new AssertionError();
++        }
++    }
++}

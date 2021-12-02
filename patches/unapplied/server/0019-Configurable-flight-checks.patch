@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: l_MrBoom_l <admin@epserv.ru>
+Date: Wed, 30 Sep 2020 18:20:12 +0300
+Subject: [PATCH] Configurable flight checks
+
+Original code by Yatopia, licensed under MIT License
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 9dfff4e87a1cb508414b73599371517772c3454e..3b6215f282ba30d40901e8f79924c904d6bdb38a 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -333,7 +333,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+         ++this.tickCount;
+         this.knownMovePacketCount = this.receivedMovePacketCount;
+         if (this.clientIsFloating && !this.player.isSleeping()) {
+-            if (++this.aboveGroundTickCount > 80) {
++            if (org.sugarcanemc.sugarcane.config.SugarcaneConfig.checkFlying && ++this.aboveGroundTickCount > 80) { // Sugarcane - Configurable flight checks
+                 ServerGamePacketListenerImpl.LOGGER.warn("{} was kicked for floating too long!", this.player.getName().getString());
+                 this.disconnect(com.destroystokyo.paper.PaperConfig.flyingKickPlayerMessage, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_PLAYER); // Paper - use configurable kick message & kick event cause
+                 return;
+@@ -352,7 +352,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+             this.vehicleLastGoodY = this.lastVehicle.getY();
+             this.vehicleLastGoodZ = this.lastVehicle.getZ();
+             if (this.clientVehicleIsFloating && this.player.getRootVehicle().getControllingPassenger() == this.player) {
+-                if (++this.aboveGroundVehicleTickCount > 80) {
++                if (org.sugarcanemc.sugarcane.config.SugarcaneConfig.checkVehicleFlying && ++this.aboveGroundVehicleTickCount > 80) { // Sugarcane - Configurable flight checks
+                     ServerGamePacketListenerImpl.LOGGER.warn("{} was kicked for floating a vehicle too long!", this.player.getName().getString());
+                     this.disconnect(com.destroystokyo.paper.PaperConfig.flyingKickVehicleMessage, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_VEHICLE); // Paper - use configurable kick message & kick event cause
+                     return;
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 8b2e8de93cafd052b509f33117673091c18310fe..ad21cad5b2d11d76e08f60b5269178e4e95ac1d4 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -190,4 +190,10 @@ private static void brandName() {
+ 	brandName = getString("brand-name", brandName);
+     }
+ 
++	public static boolean checkFlying = true;
++	public static boolean checkVehicleFlying = true;
++	private static void flightChecks() {
++		checkFlying = getBoolean("settings.checks.flight", checkFlying);
++		checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
++	}
+ }

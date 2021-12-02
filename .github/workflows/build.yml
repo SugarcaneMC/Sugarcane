@@ -1,0 +1,28 @@
+name: Build Sugarcane
+on: [ push, pull_request ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 16
+      uses: actions/setup-java@v2
+      with:
+        java-version: 16
+        distribution: 'adopt'
+    - name: Configure Git
+      run: |
+          git config --global user.email "ci@github.com"
+          git config --global user.name "Github Actions"
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Apply patches
+      run: ./gradlew applyPatches
+    - name: Build Sugarcane
+      run: |
+          ./gradlew build paperclipJar
+    - name: Upload Sugarcane Paperclip
+      uses: actions/upload-artifact@v2
+      with:
+        name: Sugarcane
+        path: sugarcane-paperclip.jar

@@ -1,0 +1,93 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: ishland <ishlandMC@yeah.net>
+Date: Wed, 27 Jan 2021 20:16:47 +0800
+Subject: [PATCH] Preload ProtocolLib EnumWrappers
+
+Original code by Yatopia, licensed under MIT License
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index f147a647080fa969fc04492233637cbe02c29922..c8409482a048ebb7255ebcc038e4641786c74626 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1247,6 +1247,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
+                 // Paper end
+ 
++                if (org.sugarcanemc.sugarcane.config.SugarcaneConfig.fixProtocolLib) org.sugarcanemc.sugarcane.util.SugarcanePreloadProtocolLib.run(); // Sugarcane - Preload ProtocolLib's Enum Wrappers
+                 org.spigotmc.WatchdogThread.tick(); // Paper
+                 org.spigotmc.WatchdogThread.hasStarted = true; // Paper
+                 Arrays.fill( recentTps, 20 );
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index c75c0de0bf7f1d331da76a31a3a21ac708587724..9869bf483dcf535a88d428bb855b9300163c1035 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -109,18 +109,11 @@ public class SugarcaneConfig {
+ 			num = 0D;
+ 		}
+ 		switch (unit) {
+-			case 'd':
+-				num *= (double) 60 * 60 * 24;
+-				break;
+-				case 'h':
+-				num *= (double) 60 * 60;
+-				break;
+-				case 'm':
+-				num *= 60;
+-				break;
+-				default:
+-				case 's':
+-					break;
++			case 'd':  num *= (double) 60 * 60 * 24;
++			case 'h':  num *= (double) 60 * 60;
++			case 'm':  num *= 60;
++			case 's':  break;
++			default: break;
+ 		}
+ 		return (int) num;
+ }
+@@ -178,6 +171,11 @@ public class SugarcaneConfig {
+ 		return config.getString(path, config.getString(path));
+ }
+ 
++	public static boolean fixProtocolLib = true;
++	private static void protocolLib() {
++		fixProtocolLib = getBoolean("settings.fix-protocollib", fixProtocolLib);
++	}
++
+ 	public static boolean disableEntityStuckChecks = false;
+ private static void disableEntityStuckChecks() {
+ 	disableEntityStuckChecks = getBoolean("settings.disableEntityStuckChecks", false);
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java b/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..a6ce21e8422dd50ae96b164b6237335cb341dab0
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java
+@@ -0,0 +1,28 @@
++package org.sugarcanemc.sugarcane.util;
++
++import net.minecraft.server.MinecraftServer;
++import org.bukkit.Bukkit;
++import org.bukkit.plugin.Plugin;
++import org.bukkit.plugin.SimplePluginManager;
++
++import java.lang.reflect.Method;
++
++public class SugarcanePreloadProtocolLib {
++
++    public synchronized static void run() {
++        try {
++            final SimplePluginManager pluginManager = (SimplePluginManager) Bukkit.getPluginManager();
++            final Plugin protocolLib = pluginManager.getPlugin("ProtocolLib");
++            if(protocolLib != null && protocolLib.isEnabled()) {
++                MinecraftServer.LOGGER.info("Sugarcane: Attempting to preload ProtocolLib's EnumWrappers");
++                final Method initialize = Class.forName("com.comphenix.protocol.wrappers.EnumWrappers", true, protocolLib.getClass().getClassLoader()).getDeclaredMethod("initialize");
++                initialize.setAccessible(true);
++                initialize.invoke(null);
++                synchronized (SugarcanePreloadProtocolLib.class) {
++                }
++            }
++        } catch (Throwable t) {
++            MinecraftServer.LOGGER.warn("Sugarcane: Failed to preload ProtocolLib's EnumWrappers", t);
++        }
++    }
++}

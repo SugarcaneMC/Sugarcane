@@ -48,7 +48,7 @@ Then, add the Sugarcane-API dependency:
 
 ```groovy
 dependencies {
-    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.17.1-R0.1-SNAPSHOT"
+    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.18-R0.1-SNAPSHOT"
 }
  ```
  
@@ -66,7 +66,7 @@ Then, add the Sugarcane-API dependency:
 
 ```kotlin
 dependencies {
-    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.18-R0.1-SNAPSHOT")
 }
 ```
 
@@ -93,7 +93,7 @@ And then add the Sugarcane-API dependency:
 <dependency>
     <groupId>org.sugarcanemc.sugarcane</groupId>
     <artifactId>sugarcane-api</artifactId>
-    <version>1.17.1-R0.1-SNAPSHOT</version>
+    <version>1.18-R0.1-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```

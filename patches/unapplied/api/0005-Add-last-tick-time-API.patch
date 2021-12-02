@@ -1,0 +1,61 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Ivan Pekov <ivan@mrivanplays.com>
+Date: Thu, 17 Jun 2021 15:44:13 +0200
+Subject: [PATCH] Add last tick time API
+
+From Yatopia
+Original patch by:
+Co-authored-by: tr7zw <tr7zw@live.de>
+
+diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
+index 2e86aa13913553306512232a72497ec6b003260c..b6dd8b29e0517c82047d05509c637eb2450d0bff 100644
+--- a/src/main/java/org/bukkit/Bukkit.java
++++ b/src/main/java/org/bukkit/Bukkit.java
+@@ -2095,6 +2095,16 @@ public final class Bukkit {
+         return server.isStopping();
+     }
+ 
++    // Sugarcane start
++    @Deprecated
++    public static long getLastTickMs() {
++        return server.getLastTickMs();
++    }
++    @NotNull public static java.time.Duration getLastTickTime() {
++        return server.getLastTickTime();
++    }
++    // Sugarcane end
++
+     /**
+      * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager
+      *
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index ac3d5a8b0af00e32c26404e2bafab41f2c7d503a..6b7f201c1a318622a55d53c7561b6e31d882dfda 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -1846,6 +1846,26 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+      */
+     boolean isStopping();
+ 
++    // Sugarcane start
++    /**
++     * Returns the time the last tick took in milliseconds.
++     *
++     * @return long time value
++     * @deprecated newer method with java's Duration and a possibility to convert it from millis to something else
++     */
++    @Deprecated
++    default long getLastTickMs() {
++        return getLastTickTime().toMillis();
++    }
++    /**
++     * Returns the time in {@link java.time.Duration} the last tick took.
++     *
++     * @return duration
++     */
++    @NotNull
++    java.time.Duration getLastTickTime();
++    // Sugarcane end
++
+     /**
+      * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager
+      *

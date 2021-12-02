@@ -30,7 +30,7 @@ body:
       label: Plugin list
       description: All plugins running on the server. You can get this by running /plugins.
     validations:
-      required: false
+      required: true
   - type: checkboxes
     attributes:
       label: Agreements
@@ -42,7 +42,7 @@ body:
           required: true
         - label: My version of Minecraft is supported by Sugarcane.
           required: true
-  - type: textarea
+    - type: textarea
     attributes:
       label: Sugarcane version
       description: |

@@ -1,0 +1,283 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Mon, 5 Jul 2021 18:52:12 +0200
+Subject: [PATCH] Implement merge behaviors
+
+
+diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
+index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f170d82c0e0 100644
+--- a/src/main/java/net/minecraft/network/FriendlyByteBuf.java
++++ b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
+@@ -491,7 +491,7 @@ public class FriendlyByteBuf extends ByteBuf {
+             Item item = stack.getItem();
+ 
+             this.writeVarInt(Item.getId(item));
+-            this.writeByte(stack.getCount());
++            this.writeByte(Math.min(stack.getCount(),127)); // Sugarcane - limit stack size to 127
+             CompoundTag nbttagcompound = null;
+ 
+             if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e872218539aeb5ed 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
+ import org.bukkit.event.player.PlayerPickupItemEvent;
+ // CraftBukkit end
+ import org.bukkit.event.player.PlayerAttemptPickupItemEvent; // Paper
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig; // Sugarcane
+ 
+ public class ItemEntity extends Entity {
+ 
+@@ -108,6 +109,20 @@ public class ItemEntity extends Entity {
+             this.discard();
+         } else {
+             super.tick();
++            // Sugarcane start - Item drop behavior
++            if(SugarcaneConfig.SplitItems && this.getItem().getCount() > 1){
++                for (int i = 0; i < this.getItem().getCount(); i++) {
++                    //spawn item
++                    Vec3 pos = this.getEyePosition();
++                    ItemEntity a = this.spawnAtLocation(new ItemStack(this.getItem().getItem(), 1));
++                    if(this.getDeltaMovement().normalize().length() == 0)
++                        a.setDeltaMovement((Math.random()*2-1)/10, Math.random(), (Math.random()*2-1)/10);
++                    else a.setDeltaMovement(this.getDeltaMovement().multiply(1+(Math.random())/10, Math.random(), 1+(Math.random())/10));
++                    a.setPickUpDelay(this.pickupDelay);
++                }
++                this.discard();
++            }
++            // Sugarcane end
+             // CraftBukkit start - Use wall time for pickup and despawn timers
+             int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
+             if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
+@@ -233,7 +248,7 @@ public class ItemEntity extends Entity {
+         if (this.isMergable()) {
+             // Paper start - avoid item merge if stack size above max stack size
+             ItemStack stack = getItem();
+-            if (stack.getCount() >= stack.getMaxStackSize()) return;
++            if (stack.getCount() >= stack.getMaxStackSize() && SugarcaneConfig.ItemMergeBehavior != 0) return; // Sugarcane - add exception for infinite stacking mode
+             // Paper end
+             // Spigot start
+             double radius = level.spigotConfig.itemMerge;
+@@ -273,8 +288,13 @@ public class ItemEntity extends Entity {
+ 
+     private boolean isMergable() {
+         ItemStack itemstack = this.getItem();
+-
+-        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize(); // Paper - respect despawn rate in pickup check.
++        // Sugarcane - add merge behavior
++ 
++        if(SugarcaneConfig.ItemMergeBehavior == -1) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize();
++        // Sugarcane - merge items infinitely
++        else if(SugarcaneConfig.ItemMergeBehavior == 0) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate();
++        // Sugarcane - limit to 1 item per stack
++        else return false; // Sugarcane - handled during tick
+     }
+ 
+     private void tryToMerge(ItemEntity other) {
+@@ -292,11 +312,15 @@ public class ItemEntity extends Entity {
+     }
+ 
+     public static boolean areMergable(ItemStack stack1, ItemStack stack2) {
+-        return !stack2.is(stack1.getItem()) ? false : (stack2.getCount() + stack1.getCount() > stack2.getMaxStackSize() ? false : (stack2.hasTag() ^ stack1.hasTag() ? false : !stack2.hasTag() || stack2.getTag().equals(stack1.getTag())));
++        // Sugarcane - item drop behavior - infinite merging
++        if(SugarcaneConfig.ItemMergeBehavior == 0) return !stack2.is(stack1.getItem()) ? false : (stack2.hasTag() ^ stack1.hasTag() ? false : !stack2.hasTag() || stack2.getTag().equals(stack1.getTag()));
++        else return !stack2.is(stack1.getItem()) ? false : (stack2.getCount() + stack1.getCount() > stack2.getMaxStackSize() ? false : (stack2.hasTag() ^ stack1.hasTag() ? false : !stack2.hasTag() || stack2.getTag().equals(stack1.getTag())));
+     }
+ 
+     public static ItemStack merge(ItemStack stack1, ItemStack stack2, int maxCount) {
+-        int j = Math.min(Math.min(stack1.getMaxStackSize(), maxCount) - stack1.getCount(), stack2.getCount());
++        // Sugarcane - item drop behavior - infinite merging
++        if(SugarcaneConfig.ItemMergeBehavior == 0) maxCount = Integer.MAX_VALUE;
++        int j = Math.min(maxCount - stack1.getCount(), stack2.getCount());
+         ItemStack itemstack2 = stack1.copy();
+ 
+         itemstack2.grow(j);
+@@ -305,8 +329,12 @@ public class ItemEntity extends Entity {
+     }
+ 
+     private static void merge(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
+-        ItemStack itemstack2 = ItemEntity.merge(stack1, stack2, 64);
+-
++        int max = 64;
++        if(SugarcaneConfig.ItemMergeBehavior == 0) max = Integer.MAX_VALUE;
++        ItemStack itemstack2 = ItemEntity.merge(stack1, stack2, max);
++        if(SugarcaneConfig.verbose) {
++            System.out.println(String.format("Item merged: %s + %s -> %s/%s", stack1.getCount(), stack2.getCount(), itemstack2.getCount(), max));
++        }
+         if (!itemstack2.isEmpty()) targetEntity.setItem(itemstack2); // CraftBukkit - don't set empty stacks
+     }
+ 
+@@ -376,6 +404,14 @@ public class ItemEntity extends Entity {
+         }
+ 
+         if (!this.getItem().isEmpty()) {
++            // Sugarcane start
++            while(this.getItem().getCount() > this.getItem().getMaxStackSize()){
++                ItemStack e = this.getItem().copy();
++                e.setCount(this.getItem().getMaxStackSize());
++                this.spawnAtLocation(e).save(new CompoundTag());
++                this.getItem().shrink(this.getItem().getMaxStackSize());
++            }
++            // Sugarcane end
+             nbt.put("Item", this.getItem().save(new CompoundTag()));
+         }
+ 
+@@ -405,92 +441,76 @@ public class ItemEntity extends Entity {
+         }
+ 
+     }
+-
++    // Sugarcane - rewrite function playerTouch (what a mess...)
+     @Override
+     public void playerTouch(Player player) {
+         if (!this.level.isClientSide) {
+             ItemStack itemstack = this.getItem();
+-            Item item = itemstack.getItem();
+-            int i = itemstack.getCount();
++            int count = itemstack.getCount();
+ 
+             // CraftBukkit start - fire PlayerPickupItemEvent
+             int canHold = player.getInventory().canHold(itemstack);
+-            int remaining = i - canHold;
++            int remaining = Math.max(count - canHold, 0);
+             boolean flyAtPlayer = false; // Paper
+-
+-            // Paper start
+-            if (this.pickupDelay <= 0) {
++            if(pickupDelay <= 0) {
++                // Sugarcane - Move paper event here
+                 PlayerAttemptPickupItemEvent attemptEvent = new PlayerAttemptPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
+                 this.level.getCraftServer().getPluginManager().callEvent(attemptEvent);
+ 
+-                flyAtPlayer = attemptEvent.getFlyAtPlayer();
+-                if (attemptEvent.isCancelled()) {
+-                    if (flyAtPlayer) {
+-                        player.take(this, i);
++                if (canHold > 0) {
++                    itemstack.setCount(canHold);
++                    // Call legacy event
++                    PlayerPickupItemEvent playerEvent = new PlayerPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
++                    this.level.getCraftServer().getPluginManager().callEvent(playerEvent);
++                    // Call newer event afterwards
++                    EntityPickupItemEvent entityEvent = new EntityPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
++                    this.level.getCraftServer().getPluginManager().callEvent(entityEvent);
++
++                    if (playerEvent.isCancelled() || entityEvent.isCancelled() || attemptEvent.isCancelled()) {
++                        itemstack.setCount(count); // SPIGOT-5294 - restore count
++                        return;
+                     }
+ 
+-                    return;
+-                }
+-            }
+-            // Paper end
+ 
+-            if (this.pickupDelay <= 0 && canHold > 0) {
+-                itemstack.setCount(canHold);
+-                // Call legacy event
+-                PlayerPickupItemEvent playerEvent = new PlayerPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
+-                playerEvent.setCancelled(!playerEvent.getPlayer().getCanPickupItems());
+-                this.level.getCraftServer().getPluginManager().callEvent(playerEvent);
+-                flyAtPlayer = playerEvent.getFlyAtPlayer(); // Paper
+-                if (playerEvent.isCancelled()) {
+-                    itemstack.setCount(i); // SPIGOT-5294 - restore count
+-                    // Paper Start
+-                    if (flyAtPlayer) {
+-                        player.take(this, i);
++                    flyAtPlayer = playerEvent.getFlyAtPlayer(); // Paper
++                    // Update the ItemStack if it was changed in the event
++                    ItemStack current = this.getItem();
++                    if (!itemstack.equals(current)) {
++                        itemstack = current;
+                     }
+-                    // Paper End
+-                    return;
+-                }
+-
+-                // Call newer event afterwards
+-                EntityPickupItemEvent entityEvent = new EntityPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) this.getBukkitEntity(), remaining);
+-                entityEvent.setCancelled(!entityEvent.getEntity().getCanPickupItems());
+-                this.level.getCraftServer().getPluginManager().callEvent(entityEvent);
+-                if (entityEvent.isCancelled()) {
+-                    itemstack.setCount(i); // SPIGOT-5294 - restore count
+-                    return;
+-                }
+-
+-                // Update the ItemStack if it was changed in the event
+-                ItemStack current = this.getItem();
+-                if (!itemstack.equals(current)) {
+-                    itemstack = current;
+-                } else {
+-                    itemstack.setCount(canHold + remaining); // = i
+-                }
+-
+-                // Possibly < 0; fix here so we do not have to modify code below
+-                this.pickupDelay = 0;
+-            } else if (this.pickupDelay == 0) {
+-                // ensure that the code below isn't triggered if canHold says we can't pick the items up
+-                this.pickupDelay = -1;
+-            }
+-            // CraftBukkit end
++                    boolean full = false;
++                    int added = 0;
++                    while(!full) {
++                        if (this.pickupDelay == 0 && (this.owner == null || this.owner.equals(player.getUUID()))) {
++                            ItemStack is = new ItemStack(this.getItem().getItem(), 1);
++                            is.setTag(this.getItem().getTag());
++
++                            if(player.getInventory().add(is)) {
++                                // Paper Start
++                                if (flyAtPlayer) {
++                                    player.take(this, 1);
++                                    added++;
++                                }
++                                // Paper End
++                                if (itemstack.isEmpty()) {
++                                    this.discard();
++                                    itemstack.setCount(count);
++                                    player.awardStat(Stats.ITEM_PICKED_UP.get(itemstack.getItem()), added);
++                                    player.onItemPickup(this);
++                                    return;
++                                }
++
++                                itemstack.shrink(1);
++                            } else {
++                                full = true;
++                            }
+ 
+-            if (this.pickupDelay == 0 && (this.owner == null || this.owner.equals(player.getUUID())) && player.getInventory().add(itemstack)) {
+-                // Paper Start
+-                if (flyAtPlayer) {
+-                    player.take(this, i);
+-                }
+-                // Paper End
+-                if (itemstack.isEmpty()) {
+-                    this.discard();
+-                    itemstack.setCount(i);
++                        }
++                    }
++                    player.awardStat(Stats.ITEM_PICKED_UP.get(itemstack.getItem()), added);
++                    player.onItemPickup(this);
+                 }
+-
+-                player.awardStat(Stats.ITEM_PICKED_UP.get(item), i);
+-                player.onItemPickup(this);
+             }
+-
+         }
+     }
+ 
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index d2ce7ef2d7fd9518a06e43567a96658388cf5c92..2b9c3bcba4621e8d7f41bb1ee08bef30b799a44a 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -201,4 +201,8 @@ private static void brandName() {
+ 	private static void itemStuckSleepTicks() {
+ 		itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
+ 	}
++
++    public static int ItemMergeBehavior = -1;
++    public static boolean SplitItems = false;
++    private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
+ }
