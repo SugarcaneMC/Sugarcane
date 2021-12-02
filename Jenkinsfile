@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Cleanup') {
             tools {
-                jdk "JDK 16"
+                jdk "JDK 17"
             }
             steps {
                 // scmSkip(deleteBuild: true, skipPattern:'.*\\[ci skip\\].*') // This breaks building
@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Decompile & apply patches') {
             tools {
-                jdk "JDK 16"
+                jdk "JDK 17"
             }
             steps {
                     sh '''
@@ -37,7 +37,7 @@ pipeline {
             }
         stage('Build') {
             tools {
-                jdk "JDK 16"
+                jdk "JDK 17"
             }
             steps {
                         sh'''
