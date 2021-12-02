@@ -5,11 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 16
+    - name: Set up JDK 17
       uses: actions/setup-java@v2
       with:
-        java-version: 16
-        distribution: 'adopt'
+        java-version: 17
+        distribution: 'temurin'
     - name: Configure Git
       run: |
           git config --global user.email "ci@github.com"
@@ -20,7 +20,7 @@ jobs:
       run: ./gradlew applyPatches
     - name: Build Sugarcane
       run: |
-          ./gradlew build paperclipJar
+          ./gradlew build copyReobfPaperclipJar
     - name: Upload Sugarcane Paperclip
       uses: actions/upload-artifact@v2
       with:
