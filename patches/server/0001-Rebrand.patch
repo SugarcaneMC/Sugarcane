@@ -112,7 +112,7 @@ index aadd6550a5892e403f7b0bbef008461c1566a1bb..82e506dfe77f608146a214adfd324dea
          try {
              int jenkinsBuild = Integer.parseInt(versionInfo);
 -            distance = fetchDistanceFromSiteApi(jenkinsBuild, getMinecraftVersion());
-+            distance = fetchDistanceFromSiteApi(jenkinsBuild, branch);
++            distance = fetchDistanceFromJenkins(jenkinsBuild, branch);
          } catch (NumberFormatException ignored) {
              versionInfo = versionInfo.replace("\"", "");
              distance = fetchDistanceFromGitHub(repo, branch, versionInfo);
