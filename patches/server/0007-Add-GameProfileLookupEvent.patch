@@ -1,15 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: tr7zw <tr7zw@live.de>
-Date: Wed, 5 Aug 2020 14:25:50 -0500
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 19:59:11 -0500
 Subject: [PATCH] Add GameProfileLookupEvent
 
-Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java b/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
-index 84551164b76bc8f064a3a0c030c3a1b47f567b6f..b0f8b11ea071fa96beefcc28cab6a552c19b2405 100644
+index 84551164b76bc8f064a3a0c030c3a1b47f567b6f..9a59382b4dacbb0418165db8d779448aa91d24fb 100644
 --- a/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
 +++ b/src/main/java/com/destroystokyo/paper/profile/CraftPlayerProfile.java
-@@ -188,9 +188,17 @@ public class CraftPlayerProfile implements PlayerProfile {
+@@ -188,9 +188,18 @@ public class CraftPlayerProfile implements PlayerProfile {
  
          boolean isCompleteFromCache = this.completeFromCache(true, onlineMode);
          if (onlineMode && (!isCompleteFromCache || textures && !hasTextures())) {
@@ -27,27 +26,28 @@ index 84551164b76bc8f064a3a0c030c3a1b47f567b6f..b0f8b11ea071fa96beefcc28cab6a552
 +                if (result != null) {
 +                    copyProfileProperties(result, this.profile, true);
 +                }
++            // Sugarcane end
              }
              if (this.profile.isComplete()) {
                  server.getProfileCache().add(this.profile);
 diff --git a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-index f61c313195c3d16d996721b2f8cd0d9a10ce1aaf..2bb0791a25b48a4bfa86d9f1e1a0650d2f3a7312 100644
+index 118472b83a21a250f398c088c91ac4560c19c749..bbc06308ced5ee56d389c866a169125dad70b27b 100644
 --- a/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
 +++ b/src/main/java/net/minecraft/world/level/block/entity/SkullBlockEntity.java
-@@ -154,7 +154,15 @@ public class SkullBlockEntity extends BlockEntity {
+@@ -152,7 +152,15 @@ public class SkullBlockEntity extends BlockEntity {
                      Util.ifElse(profile, (profilex) -> {
                          Property property = Iterables.getFirst(profilex.getProperties().get("textures"), (Property)null);
                          if (property == null) {
 -                            profilex = sessionService.fillProfileProperties(profilex, true);
-+                    // Sugarcane start
-+                    org.sugarcanemc.sugarcane.api.events.GameProfileLookupEvent event = new org.sugarcanemc.sugarcane.api.events.GameProfileLookupEvent(!org.bukkit.Bukkit.isPrimaryThread(), profilex.getId(), profilex.getName());
-+                    org.bukkit.Bukkit.getPluginManager().callEvent(event);
-+                    GameProfile eventProfile = event.getGameProfile();
-+                    if (eventProfile != null) {
-+                        profilex = eventProfile;
-+                    } else {
-+                        profilex = sessionService.fillProfileProperties(profilex, true);
-+                    }
++                            // Sugarcane start
++                            org.sugarcanemc.sugarcane.api.events.GameProfileLookupEvent event = new org.sugarcanemc.sugarcane.api.events.GameProfileLookupEvent(!org.bukkit.Bukkit.isPrimaryThread(), profilex.getId(), profilex.getName());
++                            org.bukkit.Bukkit.getPluginManager().callEvent(event);
++                            GameProfile eventProfile = event.getGameProfile();
++                            if (eventProfile != null) {
++                                profilex = eventProfile;
++                            } else {
++                                profilex = sessionService.fillProfileProperties(profilex, true);
++                            }
                          }
  
                          GameProfile gameProfile = profilex;

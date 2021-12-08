@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 19:17:10 -0500
+Subject: [PATCH] Add NBT API as a first class lib
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 5bc22032911e73d59d08ced4cbd333a22c75632e..4ac6cd97db4bca2ad5de5547c69107910a6c808e 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -104,6 +104,7 @@ relocation {
+     relocate("org.bukkit.craftbukkit" to "org.bukkit.craftbukkit.v$packageVersion") {
+         exclude("org.bukkit.craftbukkit.Main*")
+     }
++    relocate("de.tr7zw.changeme.nbtapi" to "de.tr7zw.nbtapi") // Sugarcane - Add NBT API as a first-class lib
+ }
+ 
+ tasks.shadowJar {

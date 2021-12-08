@@ -1,37 +1,36 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Ivan Pekov <ivan@mrivanplays.com>
-Date: Wed, 30 Sep 2020 18:05:45 +0300
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 20:21:46 -0500
 Subject: [PATCH] Add nspt command
 
-Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index d5d53df304d9f74ea40d80e8b00c2548674b0f11..1ff2c567c40a43dbb694913b1f09a70fdd4b19ed 100644
+index 2fda3588704536eddc5e25e1c60142c75f7973a7..caf98c91f65d6614c6f6989a865e2c5e99a7594b 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -239,6 +239,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -237,6 +237,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          }
-         net.pl3x.purpur.PurpurConfig.registerCommands();
+         org.purpurmc.purpur.PurpurConfig.registerCommands();
          // Purpur end
 +        org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager.registerCommands(); // Sugarcane
          com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
          io.papermc.paper.util.ObfHelper.INSTANCE.getClass(); // load mappings for stacktrace deobf and etc.
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 9aa6066e6e60bbc091907d49886e4feb3e948152..2deb9949d2eb3d604af431304968bb9f11c21ecc 100644
+index 41c0f03eca29cf8676e7329a050708e2cc616e3b..5c35e4c1c7bf62062192955fc3780d7339647edd 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -983,6 +983,7 @@ public final class CraftServer implements Server {
+@@ -992,6 +992,7 @@ public final class CraftServer implements Server {
          this.reloadData();
          org.spigotmc.SpigotConfig.registerCommands(); // Spigot
          com.destroystokyo.paper.PaperConfig.registerCommands(); // Paper
 +        org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager.registerCommands(); // Sugarcane
-         net.pl3x.purpur.PurpurConfig.registerCommands(); // Purpur
+         org.purpurmc.purpur.PurpurConfig.registerCommands(); // Purpur
          this.overrideAllCommandBlockCommands = this.commandsConfiguration.getStringList("command-block-overrides").contains("*");
          this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/NSPTCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/NSPTCommand.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e81be2fe730c98c79e5e9c3f529e9cad3dadc96b
+index 0000000000000000000000000000000000000000..2c8bb5604748777b0e98252a0589e5f09833e058
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/command/NSPTCommand.java
 @@ -0,0 +1,59 @@
@@ -94,11 +93,12 @@ index 0000000000000000000000000000000000000000..e81be2fe730c98c79e5e9c3f529e9cad
 +        return ChatColor.COLOR_CHAR + (avg >= 5E+7 ? "c" : avg >= (4E+7) ? "e" : "a") + avg;
 +    }
 +}
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..41267bfa19a0b5f848815c758d77f70bf9634e38
+index 0000000000000000000000000000000000000000..1dbea4a2642179f6192f51fd743387ab6bad3e59
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandManager.java
 @@ -0,0 +1,22 @@
 +package org.sugarcanemc.sugarcane.command;
 +
@@ -108,17 +108,17 @@ index 0000000000000000000000000000000000000000..41267bfa19a0b5f848815c758d77f70b
 +import net.minecraft.server.MinecraftServer;
 +
 +public class SugarcaneCommandsManager {
-+	private static Map<String, Command> commands;
++    private static Map<String, Command> commands;
 +
-+	static {
-+		commands = new HashMap<>();
-+		commands.put("nspt", new NSPTCommand("nspt"));
-+	}
++    static {
++        commands = new HashMap<>();
++        commands.put("nspt", new NSPTCommand("nspt"));
++    }
 +
-+	public static void registerCommands() {
-+		if (commands != null)
-+			for (var command : commands.entrySet()) {
-+				MinecraftServer.getServer().server.getCommandMap().register(command.getKey(), "Sugarcane", command.getValue());
-+			}
-+	}
++    public static void registerCommands() {
++        if (commands != null)
++            for (var command : commands.entrySet()) {
++                MinecraftServer.getServer().server.getCommandMap().register(command.getKey(), "Sugarcane", command.getValue());
++            }
++    }
 +}

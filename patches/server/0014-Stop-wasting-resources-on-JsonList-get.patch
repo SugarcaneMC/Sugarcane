@@ -1,37 +1,25 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Ivan Pekov <ivan@mrivanplays.com>
-Date: Fri, 4 Sep 2020 10:07:42 +0300
-Subject: [PATCH] Stop wasting resources on JsonList#get
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 20:47:17 -0500
+Subject: [PATCH] Stop wasting resources on JsonList get
 
-Original code by Yatopia, licensed under MIT License
-Previously, when a banned player attempted to join the server was removing all the stale entries.
-This caused a resource waste, which was unnoticeable to users that use ban plugins which doesn't
-use the ban list. Akarin's changes for saving it async lowered the pressure, however it was
-still pretty high.
-
-Our changes are the following:
-1. Stop removing all stale entries when JsonList#get is called.
-2. Only if a player joins and his ban has expired, remove his ban which triggers a save which then
-   triggers removing of all stale entries.
-
-Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 685834f9f62b82f23ad97a2f0e3f1432f2ab7082..161561ae4a792466daaa5e5830684090ae27d3bf 100644
+index bea1d0cf5c865b227c63b0fb74e6bbcd7c9ba865..f1cf6b88e029e79e129f95becde0b00ca633a858 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -749,14 +749,20 @@ public abstract class PlayerList {
+@@ -746,14 +746,20 @@ public abstract class PlayerList {
          if (getBans().isBanned(gameprofile) && (gameprofilebanentry = getBans().get(gameprofile)) != null) {
              // Paper end
  
 +            if (!gameprofilebanentry.hasExpired()) { // Sugarcane - Stop wasting resources on JsonList#get
              chatmessage = new TranslatableComponent("multiplayer.disconnect.banned.reason", new Object[]{gameprofilebanentry.getReason()});
              if (gameprofilebanentry.getExpires() != null) {
-                 chatmessage.append(new TranslatableComponent("multiplayer.disconnect.banned.expiration", new Object[]{PlayerList.BAN_DATE_FORMAT.format(gameprofilebanentry.getExpires())}));
+                 chatmessage.append((Component) (new TranslatableComponent("multiplayer.disconnect.banned.expiration", new Object[]{PlayerList.BAN_DATE_FORMAT.format(gameprofilebanentry.getExpires())})));
              }
  
              // return chatmessage;
-+            // Sugarcane start - Stop wasting resources on JsonList#get
++                // Sugarcane start - Stop wasting resources on JsonList#get
              event.disallow(PlayerLoginEvent.Result.KICK_BANNED, PaperAdventure.asAdventure(chatmessage)); // Paper - Adventure
 -        } else if (!this.isWhitelisted(gameprofile, event)) { // Paper
 +            } else {
@@ -43,7 +31,7 @@ index 685834f9f62b82f23ad97a2f0e3f1432f2ab7082..161561ae4a792466daaa5e5830684090
              //event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, org.spigotmc.SpigotConfig.whitelistMessage); // Spigot // Paper - moved to isWhitelisted
          } else if (this.getIpBans().isBanned(socketaddress) && getIpBans().get(socketaddress) != null && !this.getIpBans().get(socketaddress).hasExpired()) { // Paper - fix NPE with temp ip bans
 diff --git a/src/main/java/net/minecraft/server/players/StoredUserList.java b/src/main/java/net/minecraft/server/players/StoredUserList.java
-index 9152c6c9e7e5c8fdb9183c2b4f088a810621b333..8fcb7f18c4e66060e0535a22f96c9fd2b10f8242 100644
+index 8982562721c3a5a5a3305e90bd8b5bc21585a425..e96dd564de3a239e15e1ea9f7c33e76bf1c4e8ca 100644
 --- a/src/main/java/net/minecraft/server/players/StoredUserList.java
 +++ b/src/main/java/net/minecraft/server/players/StoredUserList.java
 @@ -73,9 +73,14 @@ public abstract class StoredUserList<K, V extends StoredUserEntry<K>> {
@@ -56,7 +44,7 @@ index 9152c6c9e7e5c8fdb9183c2b4f088a810621b333..8fcb7f18c4e66060e0535a22f96c9fd2
          return (V) this.map.computeIfPresent(this.getKeyForUser(key), (k, v) -> {
              return v.hasExpired() ? null : v;
          });
-+         */
++        */
 +        // Sugarcane end
          // Paper end
      }
@@ -74,7 +62,7 @@ index 9152c6c9e7e5c8fdb9183c2b4f088a810621b333..8fcb7f18c4e66060e0535a22f96c9fd2
  
          Objects.requireNonNull(jsonarray);
          stream.forEach(jsonarray::add);
-+         */
++        */
 +        for (V value : this.map.values()) {
 +            JsonObject obj = new JsonObject();
 +            value.serialize(obj);

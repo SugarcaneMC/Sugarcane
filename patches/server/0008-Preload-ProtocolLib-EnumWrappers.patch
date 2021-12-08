@@ -1,24 +1,24 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: ishland <ishlandMC@yeah.net>
-Date: Wed, 27 Jan 2021 20:16:47 +0800
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 20:05:18 -0500
 Subject: [PATCH] Preload ProtocolLib EnumWrappers
 
-Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index f147a647080fa969fc04492233637cbe02c29922..c8409482a048ebb7255ebcc038e4641786c74626 100644
+index ad1398f67c271ce4a7bb92dcc86ace56bb7bca63..55b9db9faf815f00e42b9c33e221477a77a110ad 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1247,6 +1247,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1231,6 +1231,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                  LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
                  // Paper end
  
 +                if (org.sugarcanemc.sugarcane.config.SugarcaneConfig.fixProtocolLib) org.sugarcanemc.sugarcane.util.SugarcanePreloadProtocolLib.run(); // Sugarcane - Preload ProtocolLib's Enum Wrappers
++
                  org.spigotmc.WatchdogThread.tick(); // Paper
                  org.spigotmc.WatchdogThread.hasStarted = true; // Paper
                  Arrays.fill( recentTps, 20 );
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index c75c0de0bf7f1d331da76a31a3a21ac708587724..9869bf483dcf535a88d428bb855b9300163c1035 100644
+index cce5ba02ac86bc23557d04d2d9b4a4a52e96bd02..3be8d0697fcbda15fc49945eb9bdac2d82dbac13 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -109,18 +109,11 @@ public class SugarcaneConfig {
@@ -27,16 +27,16 @@ index c75c0de0bf7f1d331da76a31a3a21ac708587724..9869bf483dcf535a88d428bb855b9300
  		switch (unit) {
 -			case 'd':
 -				num *= (double) 60 * 60 * 24;
--				break;
--				case 'h':
+-			    break;
+-			    case 'h':
 -				num *= (double) 60 * 60;
--				break;
--				case 'm':
+-			    break;
+-			    case 'm':
 -				num *= 60;
--				break;
+-                break;
 -				default:
--				case 's':
--					break;
+-			    case 's':
+-				    break;
 +			case 'd':  num *= (double) 60 * 60 * 24;
 +			case 'h':  num *= (double) 60 * 60;
 +			case 'm':  num *= 60;
@@ -59,7 +59,7 @@ index c75c0de0bf7f1d331da76a31a3a21ac708587724..9869bf483dcf535a88d428bb855b9300
  	disableEntityStuckChecks = getBoolean("settings.disableEntityStuckChecks", false);
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java b/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a6ce21e8422dd50ae96b164b6237335cb341dab0
+index 0000000000000000000000000000000000000000..c5c4a37162c26d88a7fac5bde75def39985706dc
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java
 @@ -0,0 +1,28 @@
@@ -91,3 +91,4 @@ index 0000000000000000000000000000000000000000..a6ce21e8422dd50ae96b164b6237335c
 +        }
 +    }
 +}
+\ No newline at end of file

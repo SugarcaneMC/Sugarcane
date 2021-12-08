@@ -1,15 +1,12 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: JellySquid <jellysquid+atwork@protonmail.com>
-Date: Fri, 31 Jul 2020 21:46:32 -0500
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 20:10:22 -0500
 Subject: [PATCH] lithium HashedList
 
-Patch from Yatopia
-Original code by JellySquid, licensed under GNU Lesser General Public License v3.0
-you can find the original code on https://github.com/CaffeineMC/lithium-fabric/ (Yarn mappings)
 
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/util/collections/HashedList.java b/src/main/java/me/jellysquid/mods/lithium/common/util/collections/HashedList.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2d79932dbd1fc386a94b8d6ea3526934c54c2aad
+index 0000000000000000000000000000000000000000..593f429a230b5056169be4e552791f77175d10f9
 --- /dev/null
 +++ b/src/main/java/me/jellysquid/mods/lithium/common/util/collections/HashedList.java
 @@ -0,0 +1,280 @@
@@ -293,3 +290,4 @@ index 0000000000000000000000000000000000000000..2d79932dbd1fc386a94b8d6ea3526934
 +        return new HashedList<>(list);
 +    }
 +}
+\ No newline at end of file

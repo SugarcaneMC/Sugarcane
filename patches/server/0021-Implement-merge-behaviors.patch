@@ -1,14 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: The Arcane Brony <myrainbowdash949@gmail.com>
-Date: Mon, 5 Jul 2021 18:52:12 +0200
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 21:25:16 -0500
 Subject: [PATCH] Implement merge behaviors
 
 
 diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
-index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f170d82c0e0 100644
+index 896a4237f871d46cf39b0721e909c2cc3b5fc728..66de8a0745502ce97d0aed5ae87cdda0b72e4ab2 100644
 --- a/src/main/java/net/minecraft/network/FriendlyByteBuf.java
 +++ b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
-@@ -491,7 +491,7 @@ public class FriendlyByteBuf extends ByteBuf {
+@@ -490,7 +490,7 @@ public class FriendlyByteBuf extends ByteBuf {
              Item item = stack.getItem();
  
              this.writeVarInt(Item.getId(item));
@@ -18,10 +18,10 @@ index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f17
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e872218539aeb5ed 100644
+index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b74053fd0f26 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-@@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
+@@ -37,6 +37,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
  import org.bukkit.event.player.PlayerPickupItemEvent;
  // CraftBukkit end
  import org.bukkit.event.player.PlayerAttemptPickupItemEvent; // Paper
@@ -29,7 +29,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
  
  public class ItemEntity extends Entity {
  
-@@ -108,6 +109,20 @@ public class ItemEntity extends Entity {
+@@ -109,6 +110,20 @@ public class ItemEntity extends Entity {
              this.discard();
          } else {
              super.tick();
@@ -50,7 +50,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
              // CraftBukkit start - Use wall time for pickup and despawn timers
              int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
              if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
-@@ -233,7 +248,7 @@ public class ItemEntity extends Entity {
+@@ -232,7 +247,7 @@ public class ItemEntity extends Entity {
          if (this.isMergable()) {
              // Paper start - avoid item merge if stack size above max stack size
              ItemStack stack = getItem();
@@ -59,14 +59,13 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
              // Paper end
              // Spigot start
              double radius = level.spigotConfig.itemMerge;
-@@ -273,8 +288,13 @@ public class ItemEntity extends Entity {
- 
+@@ -267,7 +282,13 @@ public class ItemEntity extends Entity {
      private boolean isMergable() {
          ItemStack itemstack = this.getItem();
--
+ 
 -        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize(); // Paper - respect despawn rate in pickup check.
 +        // Sugarcane - add merge behavior
-+ 
++
 +        if(SugarcaneConfig.ItemMergeBehavior == -1) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize();
 +        // Sugarcane - merge items infinitely
 +        else if(SugarcaneConfig.ItemMergeBehavior == 0) return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate();
@@ -75,7 +74,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
      }
  
      private void tryToMerge(ItemEntity other) {
-@@ -292,11 +312,15 @@ public class ItemEntity extends Entity {
+@@ -285,11 +306,15 @@ public class ItemEntity extends Entity {
      }
  
      public static boolean areMergable(ItemStack stack1, ItemStack stack2) {
@@ -93,22 +92,21 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
          ItemStack itemstack2 = stack1.copy();
  
          itemstack2.grow(j);
-@@ -305,8 +329,12 @@ public class ItemEntity extends Entity {
+@@ -298,7 +323,12 @@ public class ItemEntity extends Entity {
      }
  
      private static void merge(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
 -        ItemStack itemstack2 = ItemEntity.merge(stack1, stack2, 64);
--
 +        int max = 64;
 +        if(SugarcaneConfig.ItemMergeBehavior == 0) max = Integer.MAX_VALUE;
 +        ItemStack itemstack2 = ItemEntity.merge(stack1, stack2, max);
 +        if(SugarcaneConfig.verbose) {
 +            System.out.println(String.format("Item merged: %s + %s -> %s/%s", stack1.getCount(), stack2.getCount(), itemstack2.getCount(), max));
 +        }
+ 
          if (!itemstack2.isEmpty()) targetEntity.setItem(itemstack2); // CraftBukkit - don't set empty stacks
      }
- 
-@@ -376,6 +404,14 @@ public class ItemEntity extends Entity {
+@@ -369,6 +399,14 @@ public class ItemEntity extends Entity {
          }
  
          if (!this.getItem().isEmpty()) {
@@ -123,11 +121,10 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
              nbt.put("Item", this.getItem().save(new CompoundTag()));
          }
  
-@@ -405,92 +441,76 @@ public class ItemEntity extends Entity {
-         }
+@@ -399,91 +437,77 @@ public class ItemEntity extends Entity {
  
      }
--
+ 
 +    // Sugarcane - rewrite function playerTouch (what a mess...)
      @Override
      public void playerTouch(Player player) {
@@ -142,8 +139,8 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
 -            int remaining = i - canHold;
 +            int remaining = Math.max(count - canHold, 0);
              boolean flyAtPlayer = false; // Paper
--
--            // Paper start
+ 
+             // Paper start
 -            if (this.pickupDelay <= 0) {
 +            if(pickupDelay <= 0) {
 +                // Sugarcane - Move paper event here
@@ -172,6 +169,11 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
 -                }
 -            }
 -            // Paper end
++                    flyAtPlayer = playerEvent.getFlyAtPlayer(); // Paper
++                    // Update the ItemStack if it was changed in the event
++                    ItemStack current = this.getItem();
++                    if (!itemstack.equals(current)) {
++                        itemstack = current;
  
 -            if (this.pickupDelay <= 0 && canHold > 0) {
 -                itemstack.setCount(canHold);
@@ -185,11 +187,6 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
 -                    // Paper Start
 -                    if (flyAtPlayer) {
 -                        player.take(this, i);
-+                    flyAtPlayer = playerEvent.getFlyAtPlayer(); // Paper
-+                    // Update the ItemStack if it was changed in the event
-+                    ItemStack current = this.getItem();
-+                    if (!itemstack.equals(current)) {
-+                        itemstack = current;
                      }
 -                    // Paper End
 -                    return;
@@ -219,6 +216,16 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
 -                this.pickupDelay = -1;
 -            }
 -            // CraftBukkit end
+-
+-            if (this.pickupDelay == 0 && (this.owner == null || this.owner.equals(player.getUUID())) && player.getInventory().add(itemstack)) {
+-                // Paper Start
+-                if (flyAtPlayer) {
+-                    player.take(this, i);
+-                }
+-                // Paper End
+-                if (itemstack.isEmpty()) {
+-                    this.discard();
+-                    itemstack.setCount(i);
 +                    boolean full = false;
 +                    int added = 0;
 +                    while(!full) {
@@ -245,16 +252,6 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
 +                            } else {
 +                                full = true;
 +                            }
- 
--            if (this.pickupDelay == 0 && (this.owner == null || this.owner.equals(player.getUUID())) && player.getInventory().add(itemstack)) {
--                // Paper Start
--                if (flyAtPlayer) {
--                    player.take(this, i);
--                }
--                // Paper End
--                if (itemstack.isEmpty()) {
--                    this.discard();
--                    itemstack.setCount(i);
 +                        }
 +                    }
 +                    player.awardStat(Stats.ITEM_PICKED_UP.get(itemstack.getItem()), added);
@@ -269,15 +266,16 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
      }
  
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index d2ce7ef2d7fd9518a06e43567a96658388cf5c92..2b9c3bcba4621e8d7f41bb1ee08bef30b799a44a 100644
+index 5735813d72ae98aa6f72fc9e1813f08c9408cc63..8a1b8a0314d57ccdbbcbecd9f9718a238586c838 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -201,4 +201,8 @@ private static void brandName() {
+@@ -202,4 +202,8 @@ private static void brandName() {
  	private static void itemStuckSleepTicks() {
  		itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
  	}
 +
-+    public static int ItemMergeBehavior = -1;
++	public static int ItemMergeBehavior = -1;
 +    public static boolean SplitItems = false;
 +    private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
  }
+\ No newline at end of file

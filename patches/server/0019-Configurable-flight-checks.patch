@@ -1,15 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: l_MrBoom_l <admin@epserv.ru>
-Date: Wed, 30 Sep 2020 18:20:12 +0300
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 21:10:06 -0500
 Subject: [PATCH] Configurable flight checks
 
-Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-index 9dfff4e87a1cb508414b73599371517772c3454e..3b6215f282ba30d40901e8f79924c904d6bdb38a 100644
+index 361e03701ca7946a775d96c8645caffee8f84bf0..07a097418d597f822fd3254cefca2d4d89ae260c 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 +++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
-@@ -333,7 +333,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+@@ -332,7 +332,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
          ++this.tickCount;
          this.knownMovePacketCount = this.receivedMovePacketCount;
          if (this.clientIsFloating && !this.player.isSleeping()) {
@@ -18,7 +17,7 @@ index 9dfff4e87a1cb508414b73599371517772c3454e..3b6215f282ba30d40901e8f79924c904
                  ServerGamePacketListenerImpl.LOGGER.warn("{} was kicked for floating too long!", this.player.getName().getString());
                  this.disconnect(com.destroystokyo.paper.PaperConfig.flyingKickPlayerMessage, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_PLAYER); // Paper - use configurable kick message & kick event cause
                  return;
-@@ -352,7 +352,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+@@ -351,7 +351,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
              this.vehicleLastGoodY = this.lastVehicle.getY();
              this.vehicleLastGoodZ = this.lastVehicle.getZ();
              if (this.clientVehicleIsFloating && this.player.getRootVehicle().getControllingPassenger() == this.player) {
@@ -28,10 +27,10 @@ index 9dfff4e87a1cb508414b73599371517772c3454e..3b6215f282ba30d40901e8f79924c904
                      this.disconnect(com.destroystokyo.paper.PaperConfig.flyingKickVehicleMessage, org.bukkit.event.player.PlayerKickEvent.Cause.FLYING_VEHICLE); // Paper - use configurable kick message & kick event cause
                      return;
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index 8b2e8de93cafd052b509f33117673091c18310fe..ad21cad5b2d11d76e08f60b5269178e4e95ac1d4 100644
+index a77c20b6889049a911690660d897f515aa695c29..99e8eb7eaa784ecfd89ffb3dc04c8af761a24bc3 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -190,4 +190,10 @@ private static void brandName() {
+@@ -191,4 +191,10 @@ private static void brandName() {
  	brandName = getString("brand-name", brandName);
      }
  
@@ -42,3 +41,4 @@ index 8b2e8de93cafd052b509f33117673091c18310fe..ad21cad5b2d11d76e08f60b5269178e4
 +		checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
 +	}
  }
+\ No newline at end of file

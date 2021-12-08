@@ -1,29 +1,24 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: SugarcaneMC <Sugarcanemcorg@gmail.com>
-Date: Fri, 23 Oct 2020 09:20:01 -0700
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 18:48:15 -0500
 Subject: [PATCH] Utilities
 
-Original code by Yatopia, licensed under MIT License
-This patch includes all utilities required by the Sugarcane project and its patches.
-
-Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
-Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 07629526818374ffbb61c69fd0175a185d5fd360..6c0259addbf5cc99c52dd5fab72a6d47dc10ad84 100644
+index 06da774cdd97f6d8113b5696d4cc12d9e7ab6342..5bc22032911e73d59d08ced4cbd333a22c75632e 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -43,6 +43,7 @@ dependencies {
-     implementation("org.apache.logging.log4j:log4j-api:2.14.1") // Paper
+@@ -35,6 +35,7 @@ dependencies {
+     implementation("org.apache.logging.log4j:log4j-iostreams:2.14.1") // Paper
      implementation("org.ow2.asm:asm:9.2")
      implementation("org.ow2.asm:asm-commons:9.2") // Paper - ASM event executor generation
 +    implementation("org.apache.commons:commons-rng-core:1.3") // Sugarcane - Utilities
-     implementation("com.googlecode.json-simple:json-simple:1.1.1") {
-         // This includes junit transitively for whatever reason
-         isTransitive = false
+     runtimeOnly("org.xerial:sqlite-jdbc:3.36.0.3")
+     runtimeOnly("mysql:mysql-connector-java:8.0.27")
+     runtimeOnly("com.lmax:disruptor:3.4.4") // Paper
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java b/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..0b398b7c73a22718516c14b6bba38969555ef6e1
+index 0000000000000000000000000000000000000000..ed5c49d852e7437a2ee7b4b8805f3b32adeb4c3c
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java
 @@ -0,0 +1,7 @@
@@ -34,9 +29,10 @@ index 0000000000000000000000000000000000000000..0b398b7c73a22718516c14b6bba38969
 +    public static final int[] EMPTY_ARRAY = new int[0];
 +    public static final int[] ZERO_ARRAY = new int[]{0};
 +}
+\ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java b/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..08231e36b47fd0998e8578675e290fc34aba5fce
+index 0000000000000000000000000000000000000000..ea540d07eb62976613ad9d5d7c4183a594ee3073
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java
 @@ -0,0 +1,64 @@
@@ -104,9 +100,10 @@ index 0000000000000000000000000000000000000000..08231e36b47fd0998e8578675e290fc3
 +        return random.nextLong();
 +    }
 +}
+\ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..703df46706f0d0345b1b70bea1dc376aa4c19eca
+index 0000000000000000000000000000000000000000..8d82a813c7021788aee39cb016dc71c073995092
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java
 @@ -0,0 +1,27 @@
@@ -137,3 +134,4 @@ index 0000000000000000000000000000000000000000..703df46706f0d0345b1b70bea1dc376a
 +        }
 +    }
 +}
+\ No newline at end of file

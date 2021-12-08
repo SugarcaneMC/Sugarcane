@@ -1,18 +1,17 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: SugarcaneMC <sugarcanemcorg@gmail.com>
-Date: Mon, 6 Sep 2021 17:24:10 +0200
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 19:13:29 -0500
 Subject: [PATCH] Sugarcane config files
 
-also some settings from Yatopia & Sugarcane that don't deserve a patch, licensed under MIT license
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
-index c5803537b23d44bad5f447bd2f98d54226d3e80e..03d0d2fa893e88ff7074827c75828f509dcc0b2c 100644
+index 52197656e46fd159240a936fe13bfb27f2b4e9a7..0f134efac270fed93411a4fd3521870727cb7fd4 100644
 --- a/src/main/java/co/aikar/timings/TimingsExport.java
 +++ b/src/main/java/co/aikar/timings/TimingsExport.java
-@@ -232,7 +232,8 @@ public class TimingsExport extends Thread {
+@@ -231,7 +231,8 @@ public class TimingsExport extends Thread {
+             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)),
              pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
-             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Airplane
-             pair("airplane", mapAsJSON(gg.airplane.AirplaneConfig.getConfigCopy(), null)), // Airplane
+             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)),
 -            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null))
 +            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null)),
 +            pair("sugarcane", mapAsJSON(Bukkit.spigot().getSugarcaneConfig(), null))
@@ -20,41 +19,26 @@ index c5803537b23d44bad5f447bd2f98d54226d3e80e..03d0d2fa893e88ff7074827c75828f50
          ));
  
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index 81044177b491e2684d333cd405b42fa9ce05deac..83dbac21ed8e3800e619261e3bdf97b45734386f 100644
+index 130f799852c77b5eb09433fdbf03656e5cb06043..db05674216f302fb41b09ade1ba89e700c6299d5 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-@@ -217,7 +217,7 @@ public class PaperConfig {
-         timings = reallyEnableTimings;
-         // Airplane end */ // Purpur end
+@@ -233,7 +233,7 @@ public class PaperConfig {
+     private static void timings() {
+         boolean timings = getBoolean("timings.enabled", true);
          boolean verboseTimings = getBoolean("timings.verbose", true);
 -        TimingsManager.url = getString("timings.url", "https://timings.pl3x.net/");
 +        TimingsManager.url = getString("timings.url", "https://timin.gs/");
          if (!TimingsManager.url.endsWith("/")) {
              TimingsManager.url += "/";
          }
-diff --git a/src/main/java/gg/airplane/compat/ServerConfigurations.java b/src/main/java/gg/airplane/compat/ServerConfigurations.java
-index f9a71ff3edd7e7b6cda680e5a156373b5aa813c2..903317459fbc257f169ea0553f87e7e54df857c8 100644
---- a/src/main/java/gg/airplane/compat/ServerConfigurations.java
-+++ b/src/main/java/gg/airplane/compat/ServerConfigurations.java
-@@ -24,7 +24,9 @@ public class ServerConfigurations {
-       "bukkit.yml",
-       "spigot.yml",
-       "paper.yml",
--      "airplane.yml"
-+      "purpur.yml",
-+      "airplane.yml",
-+      "sugarcane.yml"
-     };
- 
-     public static Map<String, String> getCleanCopies() throws IOException {
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-index d5c61053f6af91aa5d0894750ab86372a91c9a73..d5d53df304d9f74ea40d80e8b00c2548674b0f11 100644
+index 9412a238aa3538bf958cf3b5ce2be5a9beead90f..2fda3588704536eddc5e25e1c60142c75f7973a7 100644
 --- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -245,6 +245,14 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -242,6 +242,15 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
          // Paper end
-         gg.airplane.AirplaneConfig.load(); // Airplane - config
-         gg.airplane.commands.AirplaneCommands.init(); // Airplane - command
+ 
 +        // Sugarcane start - config
 +        try {
 +            org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((java.io.File) options.valueOf("sugarcane-settings"));
@@ -63,28 +47,31 @@ index d5c61053f6af91aa5d0894750ab86372a91c9a73..d5d53df304d9f74ea40d80e8b00c2548
 +            return false;
 +        }
 +        // Sugarcane end
- 
++
          this.setPvpAllowed(dedicatedserverproperties.pvp);
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
+         this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index d04fb96a8c8c6362fe19a19a0d6c120adcb60e56..f59ac7c50acd6a64d707f22738edb75b13dffdd1 100644
+index 42463d6823b4f045af22665fd5e4685e98e484a1..19d1226f16f5a55d3d051b1241f9112f86ce1f7d 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -398,18 +398,23 @@ public abstract class LivingEntity extends Entity {
-         this.level.getProfiler().push("livingEntityBaseTick");
-         boolean flag = this instanceof net.minecraft.world.entity.player.Player;
+@@ -398,20 +398,23 @@ public abstract class LivingEntity extends Entity {
+             this.clearFire();
+         }
  
 -        if (this.isAlive()) {
+-            boolean flag = this instanceof net.minecraft.world.entity.player.Player;
+-
 -            if (this.isInWall()) {
 -                this.hurt(DamageSource.IN_WALL, 1.0F);
 -            } else if (flag && !this.level.getWorldBorder().isWithinBounds(this.getBoundingBox())) {
--                double d0 = this.level.getWorldBorder().getDistanceToBorder((Entity) this) + this.level.getWorldBorder().getDamageSafeZone();
+-                double d0 = this.level.getWorldBorder().getDistanceToBorder(this) + this.level.getWorldBorder().getDamageSafeZone();
 -
 -                if (d0 < 0.0D) {
 -                    double d1 = this.level.getWorldBorder().getDamagePerBlock();
 -
 -                    if (d1 > 0.0D) {
--                        if (level.purpurConfig.teleportIfOutsideBorder && this instanceof ServerPlayer) { ((ServerPlayer) this).teleport(MCUtil.toLocation(level, level.getSharedSpawnPos())); return; } // Purpur
+-                        if (level.purpurConfig.teleportIfOutsideBorder && this instanceof ServerPlayer) { ((ServerPlayer) this).teleport(MCUtil.toLocation(level, ((ServerLevel) level).getSharedSpawnPos())); return; } // Purpur
 -                        this.hurt(DamageSource.IN_WALL, (float) Math.max(1, Mth.floor(-d0 * d1)));
 +        if (!org.sugarcanemc.sugarcane.config.SugarcaneConfig.disableEntityStuckChecks) { // Sugarcane
 +            if (this.isAlive()) {
@@ -107,39 +94,39 @@ index d04fb96a8c8c6362fe19a19a0d6c120adcb60e56..f59ac7c50acd6a64d707f22738edb75b
                  }
              }
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 7a0462425f62ce1fb197fa2670e102286ef4c865..74e1206e0ba21b10764e574d9e12be48a1c500f6 100644
+index b86789d46a19a75fcb858a9f962ba54977de65f7..8bb245071f6e3511d7110e8665a2a44f2f0877c5 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -170,6 +170,8 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+@@ -171,6 +171,8 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
  
-     public final net.pl3x.purpur.PurpurWorldConfig purpurConfig; // Purpur
+     public final org.purpurmc.purpur.PurpurWorldConfig purpurConfig; // Purpur
  
 +    public final org.sugarcanemc.sugarcane.config.SugarcaneWorldConfig sugarcaneConfig; // Sugarcane - world config
 +
      public final co.aikar.timings.WorldTimingsHandler timings; // Paper
      public static BlockPos lastPhysicsProblem; // Spigot
      private org.spigotmc.TickLimiter entityLimiter;
-@@ -371,6 +373,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+@@ -357,6 +359,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
          this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName()); // Spigot
          this.paperConfig = new com.destroystokyo.paper.PaperWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), this.spigotConfig); // Paper
-         this.purpurConfig = new net.pl3x.purpur.PurpurWorldConfig((ServerLevel) this, ((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Purpur
+         this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig((ServerLevel) this, ((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Purpur
 +        this.sugarcaneConfig = new org.sugarcanemc.sugarcane.config.SugarcaneWorldConfig((ServerLevel) this, ((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Sugarcane - world config
          this.playerBreedingCooldowns = this.getNewBreedingCooldownCache(); // Purpur
          this.generator = gen;
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 2ff7cbf888d7fc0ce3ad34d3d79814d6322be5bf..c59cc90b82e5dbe08adae9935467937608711e95 100644
+index 18e7ef522aa6b77318f5880adfa5e2a982d66a8f..c7a2daa79e680e3cb057a245968c981b51872457 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -925,6 +925,7 @@ public final class CraftServer implements Server {
+@@ -934,6 +934,7 @@ public final class CraftServer implements Server {
          org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
          com.destroystokyo.paper.PaperConfig.init((File) console.options.valueOf("paper-settings")); // Paper
-         net.pl3x.purpur.PurpurConfig.init((File) console.options.valueOf("purpur-settings")); // Purpur
+         org.purpurmc.purpur.PurpurConfig.init((File) console.options.valueOf("purpur-settings")); // Purpur
 +        org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((File) console.options.valueOf("sugarcane-settings")); // Sugarcane - config
          for (ServerLevel world : this.console.getAllLevels()) {
              // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
              world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters, config.spawnAnimals); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
-@@ -966,6 +967,7 @@ public final class CraftServer implements Server {
+@@ -975,6 +976,7 @@ public final class CraftServer implements Server {
              world.spigotConfig.init(); // Spigot
              world.paperConfig.init(); // Paper
              world.purpurConfig.init(); // Purpur
@@ -147,9 +134,9 @@ index 2ff7cbf888d7fc0ce3ad34d3d79814d6322be5bf..c59cc90b82e5dbe08adae99354679376
          }
  
          Plugin[] pluginClone = pluginManager.getPlugins().clone(); // Paper
-@@ -2600,6 +2602,13 @@ public final class CraftServer implements Server {
+@@ -2573,6 +2575,13 @@ public final class CraftServer implements Server {
+             return org.purpurmc.purpur.PurpurConfig.config;
          }
-         // Purpur end
  
 +        // Sugarcane start - config
 +        @Override
@@ -159,13 +146,13 @@ index 2ff7cbf888d7fc0ce3ad34d3d79814d6322be5bf..c59cc90b82e5dbe08adae99354679376
 +        // Sugarcane end
 +
          @Override
-         public void restart() {
-             org.spigotmc.RestartCommand.restart();
+         public java.util.Properties getServerProperties() {
+             return getProperties().properties;
 diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
-index 56674053351962a75b2731dde137dbbc0c70dbde..920b56846b6d96c017215e46cc7ed41fba739301 100644
+index 1533e958718d695b50a3e0c46d005cba49eca6cb..d29a61a513371e4a83d4807bb9e012cbe458afd1 100644
 --- a/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -155,6 +155,14 @@ public class Main {
+@@ -161,6 +161,14 @@ public class Main {
                      .describedAs("Yml file");
                  // Purpur end
  
@@ -176,13 +163,13 @@ index 56674053351962a75b2731dde137dbbc0c70dbde..920b56846b6d96c017215e46cc7ed41f
 +                        .defaultsTo(new File("sugarcane.yml"))
 +                        .describedAs("Yml file");
 +                // Sugarcane end
-+                
++
                  // Paper start
                  acceptsAll(asList("server-name"), "Name of the server")
                          .withRequiredArg()
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..c75c0de0bf7f1d331da76a31a3a21ac708587724
+index 0000000000000000000000000000000000000000..cce5ba02ac86bc23557d04d2d9b4a4a52e96bd02
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 @@ -0,0 +1,191 @@
@@ -206,7 +193,7 @@ index 0000000000000000000000000000000000000000..c75c0de0bf7f1d331da76a31a3a21ac7
 +	private static final String HEADER = "This is the main configuration file for Sugarcane.\n"
 +			+ "Sugarcane contains many breaking changes and settings, so know what you are doing!\n"
 +			+ "You have been warned!\n"
-+                       + "Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord\n";
++            + "Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord\n";
 +	/*========================================================================*/
 +	public static YamlConfiguration config;
 +    public static int version; // since we're remapping sidestreams' configs we need this public
@@ -299,16 +286,16 @@ index 0000000000000000000000000000000000000000..c75c0de0bf7f1d331da76a31a3a21ac7
 +		switch (unit) {
 +			case 'd':
 +				num *= (double) 60 * 60 * 24;
-+				break;
-+				case 'h':
++			    break;
++			    case 'h':
 +				num *= (double) 60 * 60;
-+				break;
-+				case 'm':
++			    break;
++			    case 'm':
 +				num *= 60;
-+				break;
++                break;
 +				default:
-+				case 's':
-+					break;
++			    case 's':
++				    break;
 +		}
 +		return (int) num;
 +}
@@ -377,9 +364,10 @@ index 0000000000000000000000000000000000000000..c75c0de0bf7f1d331da76a31a3a21ac7
 +    }
 +
 +}
+\ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..002a91d44042c63e040061960c3be649d2d702ea
+index 0000000000000000000000000000000000000000..c991057c5874ed1ed83c63736dc5c98d3eb8ed68
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
 @@ -0,0 +1,79 @@
@@ -462,3 +450,4 @@ index 0000000000000000000000000000000000000000..002a91d44042c63e040061960c3be649
 +		return SugarcaneConfig.config.getList("world-settings." + worldName + "." + path, SugarcaneConfig.config.getList("world-settings.default." + path));
 +	}
 +}
+\ No newline at end of file

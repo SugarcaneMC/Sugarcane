@@ -1,17 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Ivan Pekov <ivan@mrivanplays.com>
-Date: Thu, 17 Jun 2021 15:44:13 +0200
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 19:51:11 -0500
 Subject: [PATCH] Add last tick time API
 
-Original code by Yatopia, licensed under MIT License
-Original patch by:
-Co-authored-by: tr7zw <tr7zw@live.de
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 517e1cae9697ff00d129cf8781b9b09066594530..f147a647080fa969fc04492233637cbe02c29922 100644
+index 7d0336927a08f50d5f80a8e8e922f3cd5506dc14..ad1398f67c271ce4a7bb92dcc86ace56bb7bca63 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1224,6 +1224,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1208,6 +1208,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      // Paper End
      // Spigot End
  
@@ -20,7 +17,7 @@ index 517e1cae9697ff00d129cf8781b9b09066594530..f147a647080fa969fc04492233637cbe
      protected void runServer() {
          try {
              long serverStartTime = Util.getNanos(); // Paper
-@@ -1294,7 +1296,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1278,7 +1280,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                      this.nextTickTime += 50L;
                      this.startMetricsRecordingTick();
                      this.profiler.push("tick");
@@ -31,10 +28,10 @@ index 517e1cae9697ff00d129cf8781b9b09066594530..f147a647080fa969fc04492233637cbe
                      this.mayHaveDelayedTasks = true;
                      // Purpur start - tps catchup
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index c59cc90b82e5dbe08adae9935467937608711e95..9aa6066e6e60bbc091907d49886e4feb3e948152 100644
+index c7a2daa79e680e3cb057a245968c981b51872457..41c0f03eca29cf8676e7329a050708e2cc616e3b 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2764,6 +2764,8 @@ public final class CraftServer implements Server {
+@@ -2743,6 +2743,8 @@ public final class CraftServer implements Server {
  
      // Paper end
  
@@ -44,7 +41,7 @@ index c59cc90b82e5dbe08adae9935467937608711e95..9aa6066e6e60bbc091907d49886e4feb
      @Override
      public String getServerName() {
 diff --git a/src/main/java/org/spigotmc/TicksPerSecondCommand.java b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
-index 088239d17aa8178cf8af09ec23cfd4deaaf2bbb6..af0293628904089bb87b7517e142da19b1c545ce 100644
+index 088239d17aa8178cf8af09ec23cfd4deaaf2bbb6..e36c3e5fc2ae4c7319426d0e616ac58d3f0ad1b7 100644
 --- a/src/main/java/org/spigotmc/TicksPerSecondCommand.java
 +++ b/src/main/java/org/spigotmc/TicksPerSecondCommand.java
 @@ -32,6 +32,10 @@ public class TicksPerSecondCommand extends Command
@@ -58,11 +55,10 @@ index 088239d17aa8178cf8af09ec23cfd4deaaf2bbb6..af0293628904089bb87b7517e142da19
          if (args.length > 0 && args[0].equals("mem") && sender.hasPermission("bukkit.command.tpsmemory")) {
              sender.sendMessage(ChatColor.GOLD + "Current Memory Usage: " + ChatColor.GREEN + ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024)) + "/" + (Runtime.getRuntime().totalMemory() / (1024 * 1024)) + " mb (Max: " + (Runtime.getRuntime().maxMemory() / (1024 * 1024)) + " mb)");
              if (!hasShownMemoryWarning) {
-@@ -50,4 +54,16 @@ public class TicksPerSecondCommand extends Command
+@@ -50,4 +54,15 @@ public class TicksPerSecondCommand extends Command
          return ( ( tps > 18.0 ) ? ChatColor.GREEN : ( tps > 16.0 ) ? ChatColor.YELLOW : ChatColor.RED ).toString()
                  + ( ( tps > 21.0 ) ? "*" : "" ) + Math.min( Math.round( tps * 100.0 ) / 100.0, 20.0 ); // Paper - only print * at 21, we commonly peak to 20.02 as the tick sleep is not accurate enough, stop the noise
      }
-+
 +    // Sugarcane start - Last tick time API
 +    public static String formatTo(java.time.Duration duration, java.util.concurrent.TimeUnit unit)
 +    {

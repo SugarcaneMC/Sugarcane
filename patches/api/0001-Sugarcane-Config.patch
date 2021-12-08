@@ -1,47 +1,48 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Toffikk <slodkitofik@gmail.com>
-Date: Sun, 17 Jan 2021 15:37:52 -0600
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 17:31:08 -0500
 Subject: [PATCH] Sugarcane Config
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 39dacd6b507c4afc997a7ed7b75ea83155f94708..f97975046d20139d18fb81641cdc07490d7de629 100644
+index 43ce7fe6b65488d00c69986908c788761ccd74ad..7a5c23b15dbc11edfde650a905b3840464a153f6 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -30,7 +30,9 @@ dependencies {
-     api("com.google.code.gson:gson:2.8.8") // Paper - bump
+@@ -29,8 +29,8 @@ dependencies {
      api("net.md-5:bungeecord-chat:1.16-R0.4")
      api("org.yaml:snakeyaml:1.28")
--    api("com.googlecode.json-simple:json-simple:1.1.1") // Paper
+     // Paper start
+-    api("com.googlecode.json-simple:json-simple:1.1.1") {
+-        isTransitive = false // includes junit
 +    api("com.googlecode.json-simple:json-simple:1.1.1") { // Paper // Sugarcane
 +        exclude(group = "junit", module = "junit")
-+    }
-     api("it.unimi.dsi:fastutil:8.2.2")
+     }
+     api("it.unimi.dsi:fastutil:8.5.6")
      apiAndDocs(platform("net.kyori:adventure-bom:$adventureVersion"))
-     apiAndDocs("net.kyori:adventure-api")
-@@ -71,12 +73,14 @@ configure<PublishingExtension> {
+@@ -72,14 +72,16 @@ configure<PublishingExtension> {
      }
  }
  
 -val generateApiVersioningFile by tasks.registering {
--    val pomProps = layout.buildDirectory.file("pom.properties")
 +val generateApiVersioningFile by tasks.registering { // Sugarcane
+     inputs.property("version", project.version)
+-    val pomProps = layout.buildDirectory.file("pom.properties")
 +    val pomProps: Provider<RegularFile>
 +    pomProps = layout.buildDirectory.file("pom.properties")
      outputs.file(pomProps)
+     val projectVersion = project.version
      doLast {
-         pomProps.get().asFile.writeText("version=${project.version}")
--    }
-+      }
-+  outputs.cacheIf { true }
+         pomProps.get().asFile.writeText("version=$projectVersion")
+     }
++    outputs.cacheIf { true }
  }
  
  tasks.jar {
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index ccfb8a8dcd51bf998c79298a22e38cebb2be6d39..ac3d5a8b0af00e32c26404e2bafab41f2c7d503a 100644
+index f3b6ba687e3d96fbee592465977df29338dd9a27..874599c1d97c606c2a9c2ea13482ac45f6cc8438 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1730,6 +1730,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1742,6 +1742,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
          // Purpur end
  

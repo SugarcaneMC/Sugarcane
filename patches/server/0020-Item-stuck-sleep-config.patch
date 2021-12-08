@@ -1,15 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: tr7zw <tr7zw@live.de>
-Date: Fri, 31 Jul 2020 21:48:14 -0500
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 21:12:11 -0500
 Subject: [PATCH] Item stuck sleep config
 
-Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index ad21cad5b2d11d76e08f60b5269178e4e95ac1d4..d2ce7ef2d7fd9518a06e43567a96658388cf5c92 100644
+index 99e8eb7eaa784ecfd89ffb3dc04c8af761a24bc3..5735813d72ae98aa6f72fc9e1813f08c9408cc63 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -196,4 +196,9 @@ private static void brandName() {
+@@ -197,4 +197,9 @@ private static void brandName() {
  		checkFlying = getBoolean("settings.checks.flight", checkFlying);
  		checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
  	}
@@ -19,3 +18,4 @@ index ad21cad5b2d11d76e08f60b5269178e4e95ac1d4..d2ce7ef2d7fd9518a06e43567a966583
 +		itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
 +	}
  }
+\ No newline at end of file

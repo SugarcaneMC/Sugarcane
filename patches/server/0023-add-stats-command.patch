@@ -1,14 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: The Arcane Brony <myrainbowdash949@gmail.com>
-Date: Thu, 15 Jul 2021 18:52:12 +0200
+From: Steven Tracey <steven@nevets.tech>
+Date: Tue, 7 Dec 2021 21:50:37 -0500
 Subject: [PATCH] add stats command
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 2deb9949d2eb3d604af431304968bb9f11c21ecc..8e28e5a6f5ba64d09ba337c94b2155ba5a788581 100644
+index 5c35e4c1c7bf62062192955fc3780d7339647edd..61edc58f0a91d1eb8872e3e1001f28b0fa42fdb8 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -181,6 +181,7 @@ import org.bukkit.craftbukkit.metadata.PlayerMetadataStore;
+@@ -185,6 +185,7 @@ import org.bukkit.craftbukkit.metadata.PlayerMetadataStore;
  import org.bukkit.craftbukkit.metadata.WorldMetadataStore;
  import org.bukkit.craftbukkit.potion.CraftPotionBrewer;
  import org.bukkit.craftbukkit.scheduler.CraftScheduler;
@@ -16,7 +16,7 @@ index 2deb9949d2eb3d604af431304968bb9f11c21ecc..8e28e5a6f5ba64d09ba337c94b2155ba
  import org.bukkit.craftbukkit.scoreboard.CraftScoreboardManager;
  import org.bukkit.craftbukkit.structure.CraftStructureManager;
  import org.bukkit.craftbukkit.tag.CraftBlockTag;
-@@ -1032,7 +1033,8 @@ public final class CraftServer implements Server {
+@@ -1041,7 +1042,8 @@ public final class CraftServer implements Server {
          for (BukkitWorker worker : overdueWorkers) {
              Plugin plugin = worker.getOwner();
              String author = "<NoAuthorGiven>";
@@ -28,7 +28,7 @@ index 2deb9949d2eb3d604af431304968bb9f11c21ecc..8e28e5a6f5ba64d09ba337c94b2155ba
              getLogger().log(Level.SEVERE, String.format(
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..0aa39659b11a094abf2268e4dc485461b588d791
+index 0000000000000000000000000000000000000000..03cfab0f80c1646fe9fff696f2c396c33d6eb4fe
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java
 @@ -0,0 +1,233 @@
@@ -265,20 +265,21 @@ index 0000000000000000000000000000000000000000..0aa39659b11a094abf2268e4dc485461
 +        entityBar.setProgress((double) entities / 5000);
 +    }
 +}
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
-index 41267bfa19a0b5f848815c758d77f70bf9634e38..e4fcc7f24f448b60a13231bc6819721cb88830c1 100644
---- a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
-+++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandManager.java
+index 1dbea4a2642179f6192f51fd743387ab6bad3e59..b079499c40092564d06dec5c8267964d48a0a81f 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandManager.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandManager.java
 @@ -11,6 +11,7 @@ public class SugarcaneCommandsManager {
- 	static {
- 		commands = new HashMap<>();
- 		commands.put("nspt", new NSPTCommand("nspt"));
-+		commands.put("stats", new StatsCommand("stats"));
- 	}
+     static {
+         commands = new HashMap<>();
+         commands.put("nspt", new NSPTCommand("nspt"));
++        commands.put("stats", new StatsCommand("stats"));
+     }
  
- 	public static void registerCommands() {
+     public static void registerCommands() {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Util.java b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
-index 54eb3166c2a38363e8ad8c95448a4d807d09f0e7..b7f739a525fd63f0a996680620abb41866724bcd 100644
+index 7d33e45ae72e045908abc5cd7bc7949af3eef9f8..e390f08f886b3785afb60123fbb783368e2deaaf 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
 @@ -3,6 +3,7 @@ package org.sugarcanemc.sugarcane.util;
@@ -298,3 +299,4 @@ index 54eb3166c2a38363e8ad8c95448a4d807d09f0e7..b7f739a525fd63f0a996680620abb418
 +        return String.format("[%s%s]", "=".repeat(progress), "_".repeat(ConsoleBarWidth - progress));
 +    }
  }
+\ No newline at end of file
