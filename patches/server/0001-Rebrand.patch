@@ -3,8 +3,6 @@ From: Toffikk <slodkitofik@gmail.com>
 Date: Tue, 7 Dec 2021 18:38:28 -0500
 Subject: [PATCH] Rebrand
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/.gitignore b/.gitignore
 index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21e0033d41 100644
 --- a/.gitignore

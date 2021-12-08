@@ -5,8 +5,6 @@ Subject: [PATCH] Preload ProtocolLib EnumWrappers
 
 Original code by Yatopia, licensed under MIT License
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index ad1398f67c271ce4a7bb92dcc86ace56bb7bca63..55b9db9faf815f00e42b9c33e221477a77a110ad 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java

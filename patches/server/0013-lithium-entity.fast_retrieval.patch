@@ -7,8 +7,6 @@ Patch from Yatopia
 Original code by JellySquid, licensed under GNU Lesser General Public License v3.0
 you can find the original code on https://github.com/CaffeineMC/lithium-fabric/ (Yarn mappings)
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java b/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
 index 984e940a1d8060e5945a6efd10c9f81bed2bf057..de9fa31353c246a5c372791abe437862afc5d53a 100644
 --- a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java

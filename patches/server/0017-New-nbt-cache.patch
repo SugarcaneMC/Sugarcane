@@ -8,8 +8,6 @@ The goal of this patch is to reduce I/O operations from the main thread while sa
 Original code by Yatopia, licensed under MIT License
 Co-authored-by: ishland <ishlandmc@yeah.net>
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index 55b9db9faf815f00e42b9c33e221477a77a110ad..4eebc2357dd2ecafd7a9a2c296f42192bcab1d5c 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java

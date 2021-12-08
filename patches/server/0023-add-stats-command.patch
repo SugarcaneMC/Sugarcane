@@ -3,8 +3,6 @@ From: The Arcane Brony <myrainbowdash949@gmail.com>
 Date: Tue, 7 Dec 2021 21:50:37 -0500
 Subject: [PATCH] add stats command
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 index 5c35e4c1c7bf62062192955fc3780d7339647edd..61edc58f0a91d1eb8872e3e1001f28b0fa42fdb8 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java

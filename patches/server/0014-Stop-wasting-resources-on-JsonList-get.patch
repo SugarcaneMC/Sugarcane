@@ -15,7 +15,6 @@ Our changes are the following:
    triggers removing of all stale entries.
 
 Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
-Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
 index bea1d0cf5c865b227c63b0fb74e6bbcd7c9ba865..f1cf6b88e029e79e129f95becde0b00ca633a858 100644

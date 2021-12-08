@@ -7,8 +7,6 @@ Patch from Yatopia
 Original code by JellySquid, licensed under GNU Lesser General Public License v3.0
 you can find the original code on https://github.com/CaffeineMC/lithium-fabric/ (Yarn mappings)
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/src/main/java/net/minecraft/core/Direction.java b/src/main/java/net/minecraft/core/Direction.java
 index 8aeec2132138bf4b19a9042340c8784df4afda65..f7189180f2095704e754120a5e8471224bf96801 100644
 --- a/src/main/java/net/minecraft/core/Direction.java

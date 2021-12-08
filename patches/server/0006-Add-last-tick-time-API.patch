@@ -7,8 +7,6 @@ Original code by Yatopia, licensed under MIT License
 Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de>
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index 7d0336927a08f50d5f80a8e8e922f3cd5506dc14..ad1398f67c271ce4a7bb92dcc86ace56bb7bca63 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java

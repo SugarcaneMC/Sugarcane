@@ -7,8 +7,6 @@ Subject: [PATCH] Akarin Avoid double IO operation on load player file
 Original code by Akarin-project, licensed under GNU General Public License version 3
 you can find the original code on https://github.com/Akarin-project/Akarin/
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 index 35c39aed9583275ef25d32c783715798b52bdb63..331ed6aa983714d6fc3596526fc7df0ab993062c 100644
 --- a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java

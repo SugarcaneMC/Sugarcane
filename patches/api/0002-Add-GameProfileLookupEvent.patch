@@ -5,8 +5,6 @@ Subject: [PATCH] Add GameProfileLookupEvent
 
 Original code by Yatopia, licensed under MIT License
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/build.gradle.kts b/build.gradle.kts
 index 7a5c23b15dbc11edfde650a905b3840464a153f6..6bb05ef40115760f97af8b32eed42b16acaf5be5 100644
 --- a/build.gradle.kts

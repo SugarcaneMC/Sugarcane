@@ -7,8 +7,6 @@ Original patch by:
 Co-authored-by: tr7zw <tr7zw@live.de>
 Original code by Yatopia, licensed under MIT License
 
-Updated to 1.18 by: Steven <steven@nevets.tech>
-
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
 index c98794dff18890fc2fe964238e06c0e20e58750f..ffd5863845f6d6d1c47f68f9ddd3f310005c3bba 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
