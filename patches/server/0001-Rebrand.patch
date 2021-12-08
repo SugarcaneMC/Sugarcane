@@ -138,7 +138,7 @@ index aadd6550a5892e403f7b0bbef008461c1566a1bb..82e506dfe77f608146a214adfd324dea
 -                int latest = json.getAsJsonObject("builds").getAsJsonPrimitive("latest").getAsInt(); // Purpur
 -                return latest - jenkinsBuild;
 -            } catch (JsonSyntaxException ex) {
-+            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) { // Sugarcane
++            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane-1.18/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) { // Sugarcane
 +                return Integer.decode(reader.readLine()) - jenkinsBuild;
 +            } catch (NumberFormatException ex) {
                  ex.printStackTrace();
