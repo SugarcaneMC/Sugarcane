@@ -1,8 +1,13 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: Ivan Pekov <ivan@mrivanplays.com>
 Date: Tue, 7 Dec 2021 19:51:11 -0500
 Subject: [PATCH] Add last tick time API
 
+Original code by Yatopia, licensed under MIT License
+Original patch by:
+Co-authored-by: tr7zw <tr7zw@live.de>
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index 7d0336927a08f50d5f80a8e8e922f3cd5506dc14..ad1398f67c271ce4a7bb92dcc86ace56bb7bca63 100644

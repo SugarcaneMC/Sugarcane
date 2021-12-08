@@ -1,8 +1,21 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: Ivan Pekov <ivan@mrivanplays.com>
 Date: Tue, 7 Dec 2021 20:47:17 -0500
 Subject: [PATCH] Stop wasting resources on JsonList get
 
+Original code by Yatopia, licensed under MIT License
+Previously, when a banned player attempted to join the server was removing all the stale entries.
+This caused a resource waste, which was unnoticeable to users that use ban plugins which doesn't
+use the ban list. Akarin's changes for saving it async lowered the pressure, however it was
+still pretty high.
+
+Our changes are the following:
+1. Stop removing all stale entries when JsonList#get is called.
+2. Only if a player joins and his ban has expired, remove his ban which triggers a save which then
+   triggers removing of all stale entries.
+
+Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
 index bea1d0cf5c865b227c63b0fb74e6bbcd7c9ba865..f1cf6b88e029e79e129f95becde0b00ca633a858 100644

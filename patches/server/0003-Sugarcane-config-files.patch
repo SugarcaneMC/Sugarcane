@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: SugarcaneMC <sugarcanemcorg@gmail.com>
 Date: Tue, 7 Dec 2021 19:13:29 -0500
 Subject: [PATCH] Sugarcane config files
 
+also some settings from Yatopia & Sugarcane that don't deserve a patch, licensed under MIT license
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
 index 52197656e46fd159240a936fe13bfb27f2b4e9a7..0f134efac270fed93411a4fd3521870727cb7fd4 100644

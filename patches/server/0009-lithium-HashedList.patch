@@ -1,8 +1,13 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: JellySquid <jellysquid+atwork@protonmail.com>
 Date: Tue, 7 Dec 2021 20:10:22 -0500
 Subject: [PATCH] lithium HashedList
 
+Patch from Yatopia
+Original code by JellySquid, licensed under GNU Lesser General Public License v3.0
+you can find the original code on https://github.com/CaffeineMC/lithium-fabric/ (Yarn mappings)
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/me/jellysquid/mods/lithium/common/util/collections/HashedList.java b/src/main/java/me/jellysquid/mods/lithium/common/util/collections/HashedList.java
 new file mode 100644

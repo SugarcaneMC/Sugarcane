@@ -1,8 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: The Arcane Brony <myrainbowdash949@gmail.com>
 Date: Tue, 7 Dec 2021 21:43:45 -0500
 Subject: [PATCH] Add YAML comments
 
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 index 8a1b8a0314d57ccdbbcbecd9f9718a238586c838..189644a269d2015fafbbc87e4fbe7c19fd736637 100644

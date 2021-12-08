@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: l_MrBoom_l <admin@epserv.ru>
 Date: Tue, 7 Dec 2021 21:10:06 -0500
 Subject: [PATCH] Configurable flight checks
 
+Original code by Yatopia, licensed under MIT License
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 index 361e03701ca7946a775d96c8645caffee8f84bf0..07a097418d597f822fd3254cefca2d4d89ae260c 100644

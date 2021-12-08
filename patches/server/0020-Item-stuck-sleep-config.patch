@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: tr7zw <tr7zw@live.de>
 Date: Tue, 7 Dec 2021 21:12:11 -0500
 Subject: [PATCH] Item stuck sleep config
 
+Original code by Yatopia, licensed under MIT License
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 index 99e8eb7eaa784ecfd89ffb3dc04c8af761a24bc3..5735813d72ae98aa6f72fc9e1813f08c9408cc63 100644

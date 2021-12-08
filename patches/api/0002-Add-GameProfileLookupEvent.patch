@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: tr7zw <tr7zw@live.de>
 Date: Tue, 7 Dec 2021 17:40:03 -0500
 Subject: [PATCH] Add GameProfileLookupEvent
 
+Original code by Yatopia, licensed under MIT License
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
 index 7a5c23b15dbc11edfde650a905b3840464a153f6..6bb05ef40115760f97af8b32eed42b16acaf5be5 100644

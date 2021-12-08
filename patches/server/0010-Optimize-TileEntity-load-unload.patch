@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: tr7zw <tr7zw@live.de>
 Date: Tue, 7 Dec 2021 20:12:36 -0500
 Subject: [PATCH] Optimize TileEntity load unload
 
+Original code by Yatopia, licensed under MIT License
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
 index 8bb245071f6e3511d7110e8665a2a44f2f0877c5..2380b01a6c771b6f608a7b5aa42d5d54939b8e76 100644

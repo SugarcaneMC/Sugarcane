@@ -1,8 +1,15 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: SugarcaneMC <sugarcanemcorg@gmail.com>
 Date: Tue, 7 Dec 2021 18:48:15 -0500
 Subject: [PATCH] Utilities
 
+Original code by Yatopia, licensed under MIT License
+This patch includes all utilities required by the Sugarcane project and its patches.
+
+Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
+Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
 index 06da774cdd97f6d8113b5696d4cc12d9e7ab6342..5bc22032911e73d59d08ced4cbd333a22c75632e 100644

@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: Ivan Pekov <ivan@mrivanplays.com>
 Date: Tue, 7 Dec 2021 20:21:46 -0500
 Subject: [PATCH] Add nspt command
 
+Original code by Yatopia, licensed under MIT License
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
 index 2fda3588704536eddc5e25e1c60142c75f7973a7..caf98c91f65d6614c6f6989a865e2c5e99a7594b 100644

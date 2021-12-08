@@ -1,8 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: The Arcane Brony <myrainbowdash949@gmail.com>
 Date: Tue, 7 Dec 2021 21:25:16 -0500
 Subject: [PATCH] Implement merge behaviors
 
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
 index 896a4237f871d46cf39b0721e909c2cc3b5fc728..66de8a0745502ce97d0aed5ae87cdda0b72e4ab2 100644

@@ -1,8 +1,11 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: tr7zw <tr7zw@live.de>
 Date: Tue, 7 Dec 2021 19:17:10 -0500
 Subject: [PATCH] Add NBT API as a first class lib
 
+Original code by Yatopia, licensed under MIT License
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
 index 5bc22032911e73d59d08ced4cbd333a22c75632e..4ac6cd97db4bca2ad5de5547c69107910a6c808e 100644

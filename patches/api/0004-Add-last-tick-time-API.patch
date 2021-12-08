@@ -1,8 +1,13 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: Ivan Pekov <ivan@mrivanplays.com>
 Date: Tue, 7 Dec 2021 18:02:28 -0500
 Subject: [PATCH] Add last tick time API
 
+Original patch by:
+Co-authored-by: tr7zw <tr7zw@live.de>
+Original code by Yatopia, licensed under MIT License
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
 index c98794dff18890fc2fe964238e06c0e20e58750f..ffd5863845f6d6d1c47f68f9ddd3f310005c3bba 100644

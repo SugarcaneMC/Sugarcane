@@ -1,8 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: Hugo Planque <hookwood01@gmail.com>
 Date: Tue, 7 Dec 2021 21:01:35 -0500
 Subject: [PATCH] New nbt cache
 
+The goal of this patch is to reduce I/O operations from the main thread while saving player data and also to avoid too many I/O operations while reading NBT Player file by using a cache (Which start to delete the oldest data when there is too much player compared to the map size)
+
+Original code by Yatopia, licensed under MIT License
+Co-authored-by: ishland <ishlandmc@yeah.net>
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
 index 55b9db9faf815f00e42b9c33e221477a77a110ad..4eebc2357dd2ecafd7a9a2c296f42192bcab1d5c 100644

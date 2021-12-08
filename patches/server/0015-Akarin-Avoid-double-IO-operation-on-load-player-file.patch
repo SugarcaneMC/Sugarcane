@@ -1,8 +1,13 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Steven Tracey <steven@nevets.tech>
+From: =?UTF-8?q?=E3=84=97=E3=84=A0=CB=8B=20=E3=84=91=E3=84=A7=CB=8A?=
+ <tsao-chi@the-lingo.org>
 Date: Tue, 7 Dec 2021 20:50:21 -0500
 Subject: [PATCH] Akarin Avoid double IO operation on load player file
 
+Original code by Akarin-project, licensed under GNU General Public License version 3
+you can find the original code on https://github.com/Akarin-project/Akarin/
+
+Updated to 1.18 by: Steven <steven@nevets.tech>
 
 diff --git a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
 index 35c39aed9583275ef25d32c783715798b52bdb63..331ed6aa983714d6fc3596526fc7df0ab993062c 100644
