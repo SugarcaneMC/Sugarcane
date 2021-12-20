@@ -6,10 +6,10 @@ Subject: [PATCH] Add GameProfileLookupEvent
 From Yatopia
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 5212c5894272f73624235f4a18ce8caa84655f99..04e42fd454a5316cffa7056c46da02e3b4c17f35 100644
+index 849126adc8e75324b3dae2d946092bc325064e29..340e88873af8b5188c5cd795a0a6c39275791312 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -50,6 +50,7 @@ dependencies {
+@@ -48,6 +48,7 @@ dependencies {
      compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.7.0")
      compileOnly("org.apache.maven.resolver:maven-resolver-transport-http:1.7.0")
      compileOnly("com.google.code.findbugs:jsr305:1.3.9") // Paper

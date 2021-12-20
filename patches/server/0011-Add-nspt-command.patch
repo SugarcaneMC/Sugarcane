@@ -18,7 +18,7 @@ index d5d53df304d9f74ea40d80e8b00c2548674b0f11..1ff2c567c40a43dbb694913b1f09a70f
          io.papermc.paper.util.ObfHelper.INSTANCE.getClass(); // load mappings for stacktrace deobf and etc.
          io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 9aa6066e6e60bbc091907d49886e4feb3e948152..2deb9949d2eb3d604af431304968bb9f11c21ecc 100644
+index acdfe58ca17df08ebb2fbc54d56d19c5f24f36be..b00c5b0ec109daab8b68e80f2d73f24962cebe64 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -983,6 +983,7 @@ public final class CraftServer implements Server {

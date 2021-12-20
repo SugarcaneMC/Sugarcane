@@ -17,7 +17,7 @@ Our changes are the following:
 Updated to 1.17 by: Toffikk <slodkitofik@gmail.com>
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 685834f9f62b82f23ad97a2f0e3f1432f2ab7082..161561ae4a792466daaa5e5830684090ae27d3bf 100644
+index 7f2156876398687464f7b1efc63ce4b563f99fa8..3a128beeee65a0f178ce129981368534ec0aed02 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
 @@ -749,14 +749,20 @@ public abstract class PlayerList {
@@ -43,7 +43,7 @@ index 685834f9f62b82f23ad97a2f0e3f1432f2ab7082..161561ae4a792466daaa5e5830684090
              //event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, org.spigotmc.SpigotConfig.whitelistMessage); // Spigot // Paper - moved to isWhitelisted
          } else if (this.getIpBans().isBanned(socketaddress) && getIpBans().get(socketaddress) != null && !this.getIpBans().get(socketaddress).hasExpired()) { // Paper - fix NPE with temp ip bans
 diff --git a/src/main/java/net/minecraft/server/players/StoredUserList.java b/src/main/java/net/minecraft/server/players/StoredUserList.java
-index 9152c6c9e7e5c8fdb9183c2b4f088a810621b333..8fcb7f18c4e66060e0535a22f96c9fd2b10f8242 100644
+index 9152c6c9e7e5c8fdb9183c2b4f088a810621b333..6c2e2bc3fbd27897d87a6e8d854a42bcef6821d6 100644
 --- a/src/main/java/net/minecraft/server/players/StoredUserList.java
 +++ b/src/main/java/net/minecraft/server/players/StoredUserList.java
 @@ -73,9 +73,14 @@ public abstract class StoredUserList<K, V extends StoredUserEntry<K>> {
