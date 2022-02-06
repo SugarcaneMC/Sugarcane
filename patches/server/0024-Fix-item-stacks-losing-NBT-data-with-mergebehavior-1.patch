@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Sun, 6 Feb 2022 19:34:48 +0000
+Subject: [PATCH] Fix item stacks losing NBT data with mergebehavior=1
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index f399444edcb1642e17dd6ee5e872218539aeb5ed..881baae7e820e8d7d3271bb5efe03f6d9fbe93e0 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -114,7 +114,9 @@ public class ItemEntity extends Entity {
+                 for (int i = 0; i < this.getItem().getCount(); i++) {
+                     //spawn item
+                     Vec3 pos = this.getEyePosition();
+-                    ItemEntity a = this.spawnAtLocation(new ItemStack(this.getItem().getItem(), 1));
++                    var is = this.getItem().copy();
++                    is.setCount(1);
++                    ItemEntity a = this.spawnAtLocation(is);
+                     if(this.getDeltaMovement().normalize().length() == 0)
+                         a.setDeltaMovement((Math.random()*2-1)/10, Math.random(), (Math.random()*2-1)/10);
+                     else a.setDeltaMovement(this.getDeltaMovement().multiply(1+(Math.random())/10, Math.random(), 1+(Math.random())/10));
