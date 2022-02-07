@@ -3,6 +3,7 @@ From: The Arcane Brony <myrainbowdash949@gmail.com>
 Date: Tue, 7 Dec 2021 21:25:16 -0500
 Subject: [PATCH] Implement merge behaviors
 
+
 diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
 index 896a4237f871d46cf39b0721e909c2cc3b5fc728..66de8a0745502ce97d0aed5ae87cdda0b72e4ab2 100644
 --- a/src/main/java/net/minecraft/network/FriendlyByteBuf.java
@@ -17,7 +18,7 @@ index 896a4237f871d46cf39b0721e909c2cc3b5fc728..66de8a0745502ce97d0aed5ae87cdda0
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b74053fd0f26 100644
+index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..9c5b4e775bfef0a567dca12ee0e7ef3e37ec5fc7 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -37,6 +37,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -28,7 +29,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b740
  
  public class ItemEntity extends Entity {
  
-@@ -109,6 +110,20 @@ public class ItemEntity extends Entity {
+@@ -109,6 +110,22 @@ public class ItemEntity extends Entity {
              this.discard();
          } else {
              super.tick();
@@ -37,7 +38,9 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b740
 +                for (int i = 0; i < this.getItem().getCount(); i++) {
 +                    //spawn item
 +                    Vec3 pos = this.getEyePosition();
-+                    ItemEntity a = this.spawnAtLocation(new ItemStack(this.getItem().getItem(), 1));
++                    var is = this.getItem().copy();
++                    is.setCount(1);
++                    ItemEntity a = this.spawnAtLocation(is);
 +                    if(this.getDeltaMovement().normalize().length() == 0)
 +                        a.setDeltaMovement((Math.random()*2-1)/10, Math.random(), (Math.random()*2-1)/10);
 +                    else a.setDeltaMovement(this.getDeltaMovement().multiply(1+(Math.random())/10, Math.random(), 1+(Math.random())/10));
@@ -49,7 +52,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b740
              // CraftBukkit start - Use wall time for pickup and despawn timers
              int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
              if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
-@@ -232,7 +247,7 @@ public class ItemEntity extends Entity {
+@@ -232,7 +249,7 @@ public class ItemEntity extends Entity {
          if (this.isMergable()) {
              // Paper start - avoid item merge if stack size above max stack size
              ItemStack stack = getItem();
@@ -58,7 +61,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b740
              // Paper end
              // Spigot start
              double radius = level.spigotConfig.itemMerge;
-@@ -267,7 +282,13 @@ public class ItemEntity extends Entity {
+@@ -267,7 +284,13 @@ public class ItemEntity extends Entity {
      private boolean isMergable() {
          ItemStack itemstack = this.getItem();
  
@@ -73,7 +76,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b740
      }
  
      private void tryToMerge(ItemEntity other) {
-@@ -285,11 +306,15 @@ public class ItemEntity extends Entity {
+@@ -285,11 +308,15 @@ public class ItemEntity extends Entity {
      }
  
      public static boolean areMergable(ItemStack stack1, ItemStack stack2) {
@@ -91,7 +94,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b740
          ItemStack itemstack2 = stack1.copy();
  
          itemstack2.grow(j);
-@@ -298,7 +323,12 @@ public class ItemEntity extends Entity {
+@@ -298,7 +325,12 @@ public class ItemEntity extends Entity {
      }
  
      private static void merge(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
@@ -105,7 +108,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b740
  
          if (!itemstack2.isEmpty()) targetEntity.setItem(itemstack2); // CraftBukkit - don't set empty stacks
      }
-@@ -369,6 +399,14 @@ public class ItemEntity extends Entity {
+@@ -369,6 +401,14 @@ public class ItemEntity extends Entity {
          }
  
          if (!this.getItem().isEmpty()) {
@@ -120,7 +123,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..8f24bde364d0f1930ec4fe745c31b740
              nbt.put("Item", this.getItem().save(new CompoundTag()));
          }
  
-@@ -399,91 +437,77 @@ public class ItemEntity extends Entity {
+@@ -399,91 +439,77 @@ public class ItemEntity extends Entity {
  
      }
  

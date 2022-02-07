@@ -3,6 +3,7 @@ From: chickeneer <emcchickeneer@gmail.com>
 Date: Tue, 7 Dec 2021 21:03:55 -0500
 Subject: [PATCH] EMC Do not process chat commands before player join
 
+
 diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
 index 6f7a7b988d0e548bd6521c71f6dff98ac67eeb65..361e03701ca7946a775d96c8645caffee8f84bf0 100644
 --- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java

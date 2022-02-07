@@ -3,6 +3,7 @@ From: Toffikk <slodkitofik@gmail.com>
 Date: Tue, 7 Dec 2021 18:38:28 -0500
 Subject: [PATCH] Rebrand
 
+
 diff --git a/.gitignore b/.gitignore
 index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21e0033d41 100644
 --- a/.gitignore
@@ -16,7 +17,7 @@ index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21
  # vs code
  /.vscode
 diff --git a/build.gradle.kts b/build.gradle.kts
-index c0051daa10e2d2300f8f1e551554732bdf82fe1e..06da774cdd97f6d8113b5696d4cc12d9e7ab6342 100644
+index c0051daa10e2d2300f8f1e551554732bdf82fe1e..8360ebea29febbd8f9adda6cfee62bb8b641100f 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -18,7 +18,7 @@ repositories {
@@ -33,7 +34,7 @@ index c0051daa10e2d2300f8f1e551554732bdf82fe1e..06da774cdd97f6d8113b5696d4cc12d9
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
 -            "Implementation-Version" to "git-Purpur-$implementationVersion", // Purpur
-+            "Implementation-Version" to "git-Sugarcane-$gitBranch-$implementationVersion", // Purpur // Sugarcane
++            "Implementation-Version" to "git-Sugarcane-$gitBranch-$implementationVersion", // Purpur
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
@@ -72,10 +73,10 @@ index 7bc497bcae6a6a752e3c432178cb1e3c633e0bec..2fda3b44497800a11c85a87ab7ca7a42
                  metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
                      Map<String, Map<String, Integer>> map = new HashMap<>();
 diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-index aadd6550a5892e403f7b0bbef008461c1566a1bb..82e506dfe77f608146a214adfd324deacb1d657a 100644
+index aadd6550a5892e403f7b0bbef008461c1566a1bb..281e408c3b3ac6baff44a27ba0af88eb0ccd3605 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
-@@ -15,12 +15,13 @@ import javax.annotation.Nullable;
+@@ -15,12 +15,15 @@ import javax.annotation.Nullable;
  import java.io.*;
  import java.net.HttpURLConnection;
  import java.net.URL;
@@ -87,24 +88,25 @@ index aadd6550a5892e403f7b0bbef008461c1566a1bb..82e506dfe77f608146a214adfd324dea
  public class PaperVersionFetcher implements VersionFetcher {
      private static final java.util.regex.Pattern VER_PATTERN = java.util.regex.Pattern.compile("^([0-9\\.]*)\\-.*R"); // R is an anchor, will always give '-R' at end
 -    private static final String DOWNLOAD_PAGE = "https://purpur.pl3x.net/downloads/";
--    private static final String JENKINS_URL = "https://ci.pl3x.net/job/Purpur/lastSuccessfulBuild/buildNumber"; // Purpur
++
+     private static final String JENKINS_URL = "https://ci.pl3x.net/job/Purpur/lastSuccessfulBuild/buildNumber"; // Purpur
 +    private static final String DOWNLOAD_PAGE = "https://ci.sugarcanemc.org/job/Sugarcane-1.18/";
      private static @Nullable String mcVer;
  
      @Override
-@@ -31,8 +32,9 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -31,8 +34,9 @@ public class PaperVersionFetcher implements VersionFetcher {
      @Nonnull
      @Override
      public Component getVersionMessage(@Nonnull String serverVersion) {
 -        String[] parts = serverVersion.substring("git-Purpur-".length()).split("[-\\s]"); // Airplane // Purpur
 -        final Component updateMessage = getUpdateStatusMessage("pl3xgaming/Purpur", "ver/" + getMinecraftVersion(), parts[0]); // Airplane // Purpur
-+        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]"); // Purpur // Sugarcane
++        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]"); // Airplane // Purpur // Sugarcane
 +        final @Nonnull String branch = BranchReader.getBranch();
-+        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, parts[0]); // Purpur // Sugarcane
++        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, parts[0]); // Airplane // Purpur
          final Component history = getHistory();
  
          return history != null ? TextComponent.ofChildren(updateMessage, Component.newline(), history) : updateMessage;
-@@ -56,13 +58,15 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -56,13 +60,15 @@ public class PaperVersionFetcher implements VersionFetcher {
  
      private static Component getUpdateStatusMessage(@Nonnull String repo, @Nonnull String branch, @Nonnull String versionInfo) {
          int distance;
@@ -121,7 +123,7 @@ index aadd6550a5892e403f7b0bbef008461c1566a1bb..82e506dfe77f608146a214adfd324dea
  
          switch (distance) {
              case -1:
-@@ -81,25 +85,21 @@ public class PaperVersionFetcher implements VersionFetcher {
+@@ -81,25 +87,21 @@ public class PaperVersionFetcher implements VersionFetcher {
          }
      }
  
@@ -181,7 +183,7 @@ index 85da17adb5991a79ce35b8919e242e90c4c55d21..7d0336927a08f50d5f80a8e8e922f3cd
  
      public SystemReport fillSystemReport(SystemReport details) {
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 130d295cb703e1bfe6eb4409431c4adbb7153f50..18e7ef522aa6b77318f5880adfa5e2a982d66a8f 100644
+index 130d295cb703e1bfe6eb4409431c4adbb7153f50..dd61a6306fe9bf9569d038546bf43c0b09a8bb68 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -255,7 +255,7 @@ import javax.annotation.Nullable; // Paper
@@ -189,7 +191,7 @@ index 130d295cb703e1bfe6eb4409431c4adbb7153f50..18e7ef522aa6b77318f5880adfa5e2a9
  
  public final class CraftServer implements Server {
 -    private final String serverName = "Purpur"; // Paper // Purpur
-+    private final String serverName = org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Paper // Purpur // Sugarcane
++    private final String serverName = org.sugarcanemc.sugarcane.config.SugarcaneConfig.brandName; // Paper // Pufferfish // Purpur // Sugarcane
      private final String serverVersion;
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");

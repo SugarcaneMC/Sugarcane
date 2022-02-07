@@ -19,7 +19,7 @@ index 7a5c23b15dbc11edfde650a905b3840464a153f6..6bb05ef40115760f97af8b32eed42b16
      compileOnly(annotations)
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java b/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..b226b65afc4418595b77e9f6c95a5caf4fcd8444
+index 0000000000000000000000000000000000000000..e032dd27769d4e40c8e3353cab1c33cb5090d27a
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java
 @@ -0,0 +1,51 @@
@@ -74,3 +74,4 @@ index 0000000000000000000000000000000000000000..b226b65afc4418595b77e9f6c95a5caf
 +        return handlers;
 +    }
 +}
+\ No newline at end of file

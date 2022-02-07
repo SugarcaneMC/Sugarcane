@@ -6,7 +6,7 @@ Subject: [PATCH] Add NBT API as a first class lib
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 5bc22032911e73d59d08ced4cbd333a22c75632e..4ac6cd97db4bca2ad5de5547c69107910a6c808e 100644
+index 60394f1bd091703a24ba05f017b7b8a4ae765cca..8565741adafc109e23f11ffce4746d095b0b5fd9 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -104,6 +104,7 @@ relocation {

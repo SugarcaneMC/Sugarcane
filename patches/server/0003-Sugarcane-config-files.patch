@@ -20,7 +20,7 @@ index 52197656e46fd159240a936fe13bfb27f2b4e9a7..0f134efac270fed93411a4fd35218707
          ));
  
 diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
-index 130f799852c77b5eb09433fdbf03656e5cb06043..db05674216f302fb41b09ade1ba89e700c6299d5 100644
+index 130f799852c77b5eb09433fdbf03656e5cb06043..5d41c9749752cca8fe3fad6f482f3cb8e17db9a9 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
 @@ -233,7 +233,7 @@ public class PaperConfig {
@@ -28,7 +28,7 @@ index 130f799852c77b5eb09433fdbf03656e5cb06043..db05674216f302fb41b09ade1ba89e70
          boolean timings = getBoolean("timings.enabled", true);
          boolean verboseTimings = getBoolean("timings.verbose", true);
 -        TimingsManager.url = getString("timings.url", "https://timings.pl3x.net/");
-+        TimingsManager.url = getString("timings.url", "https://timin.gs/");
++        TimingsManager.url = getString("timings.url", "https://timin.gs");
          if (!TimingsManager.url.endsWith("/")) {
              TimingsManager.url += "/";
          }
@@ -53,47 +53,18 @@ index 9412a238aa3538bf958cf3b5ce2be5a9beead90f..2fda3588704536eddc5e25e1c60142c7
          this.setFlightAllowed(dedicatedserverproperties.allowFlight);
          this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
 diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-index 42463d6823b4f045af22665fd5e4685e98e484a1..19d1226f16f5a55d3d051b1241f9112f86ce1f7d 100644
+index 42463d6823b4f045af22665fd5e4685e98e484a1..0902a45e6aabd9af7b9e979b5f7b69174c88da05 100644
 --- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
-@@ -398,20 +398,23 @@ public abstract class LivingEntity extends Entity {
+@@ -398,7 +398,7 @@ public abstract class LivingEntity extends Entity {
              this.clearFire();
          }
  
 -        if (this.isAlive()) {
--            boolean flag = this instanceof net.minecraft.world.entity.player.Player;
--
--            if (this.isInWall()) {
--                this.hurt(DamageSource.IN_WALL, 1.0F);
--            } else if (flag && !this.level.getWorldBorder().isWithinBounds(this.getBoundingBox())) {
--                double d0 = this.level.getWorldBorder().getDistanceToBorder(this) + this.level.getWorldBorder().getDamageSafeZone();
--
--                if (d0 < 0.0D) {
--                    double d1 = this.level.getWorldBorder().getDamagePerBlock();
--
--                    if (d1 > 0.0D) {
--                        if (level.purpurConfig.teleportIfOutsideBorder && this instanceof ServerPlayer) { ((ServerPlayer) this).teleport(MCUtil.toLocation(level, ((ServerLevel) level).getSharedSpawnPos())); return; } // Purpur
--                        this.hurt(DamageSource.IN_WALL, (float) Math.max(1, Mth.floor(-d0 * d1)));
-+        if (!org.sugarcanemc.sugarcane.config.SugarcaneConfig.disableEntityStuckChecks) { // Sugarcane
-+            if (this.isAlive()) {
-+                if (this.isInWall()) {
-+                    this.hurt(DamageSource.IN_WALL, 1.0F);
-+                } else if (flag && !this.level.getWorldBorder().isWithinBounds(this.getBoundingBox())) {
-+                    double d0 = this.level.getWorldBorder().getDistanceToBorder((Entity) this) + this.level.getWorldBorder().getDamageSafeZone();
-+
-+                    if (d0 < 0.0D) {
-+                        double d1 = this.level.getWorldBorder().getDamagePerBlock();
-+
-+                        if (d1 > 0.0D) {
-+                            if (level.purpurConfig.teleportIfOutsideBorder && this instanceof ServerPlayer) {
-+                                ((ServerPlayer) this).teleport(MCUtil.toLocation(level, level.getSharedSpawnPos()));
-+                                return;
-+                            } // Purpur
-+                            this.hurt(DamageSource.IN_WALL, (float) Math.max(1, Mth.floor(-d0 * d1)));
-+                        }
-                     }
-                 }
-             }
++        if (!org.sugarcanemc.sugarcane.config.SugarcaneConfig.disableEntityStuckChecks && this.isAlive()) { // Sugarcane
+             boolean flag = this instanceof net.minecraft.world.entity.player.Player;
+ 
+             if (this.isInWall()) {
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
 index b86789d46a19a75fcb858a9f962ba54977de65f7..8bb245071f6e3511d7110e8665a2a44f2f0877c5 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
@@ -116,7 +87,7 @@ index b86789d46a19a75fcb858a9f962ba54977de65f7..8bb245071f6e3511d7110e8665a2a44f
          this.generator = gen;
          this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 18e7ef522aa6b77318f5880adfa5e2a982d66a8f..c7a2daa79e680e3cb057a245968c981b51872457 100644
+index dd61a6306fe9bf9569d038546bf43c0b09a8bb68..8e7454a0cb4fa1b32d89b7b626ea3078ad74a39a 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 @@ -934,6 +934,7 @@ public final class CraftServer implements Server {
