@@ -1,0 +1,4 @@
+#!/bin/sh
+cd Sugarcane-Server
+git tag -d base
+git tag base dd206a

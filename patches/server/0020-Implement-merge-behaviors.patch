@@ -18,7 +18,7 @@ index e3b80334164ba48e83cca0b9a7f3a8ddf05dd598..07fc6f9b4125fbf3c64d374bef564f17
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e872218539aeb5ed 100644
+index c51161136bec4b4dbe10c0bff5fc197be4a30507..881baae7e820e8d7d3271bb5efe03f6d9fbe93e0 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -29,7 +29,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
  
  public class ItemEntity extends Entity {
  
-@@ -108,6 +109,20 @@ public class ItemEntity extends Entity {
+@@ -108,6 +109,22 @@ public class ItemEntity extends Entity {
              this.discard();
          } else {
              super.tick();
@@ -38,7 +38,9 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
 +                for (int i = 0; i < this.getItem().getCount(); i++) {
 +                    //spawn item
 +                    Vec3 pos = this.getEyePosition();
-+                    ItemEntity a = this.spawnAtLocation(new ItemStack(this.getItem().getItem(), 1));
++                    var is = this.getItem().copy();
++                    is.setCount(1);
++                    ItemEntity a = this.spawnAtLocation(is);
 +                    if(this.getDeltaMovement().normalize().length() == 0)
 +                        a.setDeltaMovement((Math.random()*2-1)/10, Math.random(), (Math.random()*2-1)/10);
 +                    else a.setDeltaMovement(this.getDeltaMovement().multiply(1+(Math.random())/10, Math.random(), 1+(Math.random())/10));
@@ -50,7 +52,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
              // CraftBukkit start - Use wall time for pickup and despawn timers
              int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
              if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
-@@ -233,7 +248,7 @@ public class ItemEntity extends Entity {
+@@ -233,7 +250,7 @@ public class ItemEntity extends Entity {
          if (this.isMergable()) {
              // Paper start - avoid item merge if stack size above max stack size
              ItemStack stack = getItem();
@@ -59,7 +61,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
              // Paper end
              // Spigot start
              double radius = level.spigotConfig.itemMerge;
-@@ -273,8 +288,13 @@ public class ItemEntity extends Entity {
+@@ -273,8 +290,13 @@ public class ItemEntity extends Entity {
  
      private boolean isMergable() {
          ItemStack itemstack = this.getItem();
@@ -75,7 +77,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
      }
  
      private void tryToMerge(ItemEntity other) {
-@@ -292,11 +312,15 @@ public class ItemEntity extends Entity {
+@@ -292,11 +314,15 @@ public class ItemEntity extends Entity {
      }
  
      public static boolean areMergable(ItemStack stack1, ItemStack stack2) {
@@ -93,7 +95,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
          ItemStack itemstack2 = stack1.copy();
  
          itemstack2.grow(j);
-@@ -305,8 +329,12 @@ public class ItemEntity extends Entity {
+@@ -305,8 +331,12 @@ public class ItemEntity extends Entity {
      }
  
      private static void merge(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
@@ -108,7 +110,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
          if (!itemstack2.isEmpty()) targetEntity.setItem(itemstack2); // CraftBukkit - don't set empty stacks
      }
  
-@@ -376,6 +404,14 @@ public class ItemEntity extends Entity {
+@@ -376,6 +406,14 @@ public class ItemEntity extends Entity {
          }
  
          if (!this.getItem().isEmpty()) {
@@ -123,7 +125,7 @@ index c51161136bec4b4dbe10c0bff5fc197be4a30507..f399444edcb1642e17dd6ee5e8722185
              nbt.put("Item", this.getItem().save(new CompoundTag()));
          }
  
-@@ -405,92 +441,76 @@ public class ItemEntity extends Entity {
+@@ -405,92 +443,76 @@ public class ItemEntity extends Entity {
          }
  
      }
