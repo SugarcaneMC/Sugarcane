@@ -6,16 +6,16 @@ Subject: [PATCH] Add GameProfileLookupEvent
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 7a5c23b15dbc11edfde650a905b3840464a153f6..6bb05ef40115760f97af8b32eed42b16acaf5be5 100644
+index e292faaaec5b0c751c6c2fad517910fcb980ecea..671fad2776c147977c6663009915ed46ce49b0eb 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -50,6 +50,7 @@ dependencies {
-     compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.7.0")
-     compileOnly("org.apache.maven.resolver:maven-resolver-transport-http:1.7.0")
+@@ -51,6 +51,7 @@ dependencies {
+     compileOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.7.2")
+     compileOnly("org.apache.maven.resolver:maven-resolver-transport-http:1.7.2")
      compileOnly("com.google.code.findbugs:jsr305:1.3.9") // Paper
 +    compileOnly("com.mojang:authlib:2.3.31") // Sugarcane
  
-     val annotations = "org.jetbrains:annotations:21.0.1" // Paper - we don't want Java 5 annotations...
+     val annotations = "org.jetbrains:annotations:23.0.0" // Paper - we don't want Java 5 annotations...
      compileOnly(annotations)
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java b/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java
 new file mode 100644

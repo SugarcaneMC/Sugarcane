@@ -6,10 +6,10 @@ Subject: [PATCH] add config for logging login location
 Original code by Yatopia, licensed under MIT License
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index a1d851edb0f4eb5500146bda349b19f64932f13c..bea1d0cf5c865b227c63b0fb74e6bbcd7c9ba865 100644
+index 58be46b071a32ac8d09274bf599ed921580debf1..9d02350027d3e1f3632430fae165f036c4db7ef3 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -484,7 +484,13 @@ public abstract class PlayerList {
+@@ -488,7 +488,13 @@ public abstract class PlayerList {
          // Paper end
          org.purpurmc.purpur.task.BossBarTask.addToAll(player); // Purpur
          // CraftBukkit - Moved from above, added world

@@ -10,11 +10,11 @@ Co-authored-by: Mykyta Komarnytskyy <nkomarn@hotmail.com>
 Co-authored-by: Ivan Pekov <ivan@mrivanplays.com>
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 8360ebea29febbd8f9adda6cfee62bb8b641100f..60394f1bd091703a24ba05f017b7b8a4ae765cca 100644
+index fddf13ca7b8adbb24b94974d8c522e233a6274e2..8d73bb14081b8e5170d581fa1a4d41bd635fae2a 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
-@@ -35,6 +35,7 @@ dependencies {
-     implementation("org.apache.logging.log4j:log4j-iostreams:2.14.1") // Paper
+@@ -40,6 +40,7 @@ dependencies {
+     implementation("org.apache.logging.log4j:log4j-slf4j18-impl:2.17.1") // Paper
      implementation("org.ow2.asm:asm:9.2")
      implementation("org.ow2.asm:asm-commons:9.2") // Paper - ASM event executor generation
 +    implementation("org.apache.commons:commons-rng-core:1.3") // Sugarcane - Utilities

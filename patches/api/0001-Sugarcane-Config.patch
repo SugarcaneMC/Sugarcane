@@ -5,12 +5,12 @@ Subject: [PATCH] Sugarcane Config
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 43ce7fe6b65488d00c69986908c788761ccd74ad..7a5c23b15dbc11edfde650a905b3840464a153f6 100644
+index 9203d7aa155319abfab0a65d4ef6804cb7e48769..e292faaaec5b0c751c6c2fad517910fcb980ecea 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -29,8 +29,8 @@ dependencies {
      api("net.md-5:bungeecord-chat:1.16-R0.4")
-     api("org.yaml:snakeyaml:1.28")
+     api("org.yaml:snakeyaml:1.30")
      // Paper start
 -    api("com.googlecode.json-simple:json-simple:1.1.1") {
 -        isTransitive = false // includes junit
@@ -19,7 +19,7 @@ index 43ce7fe6b65488d00c69986908c788761ccd74ad..7a5c23b15dbc11edfde650a905b38404
      }
      api("it.unimi.dsi:fastutil:8.5.6")
      apiAndDocs(platform("net.kyori:adventure-bom:$adventureVersion"))
-@@ -72,14 +72,16 @@ configure<PublishingExtension> {
+@@ -73,14 +73,16 @@ configure<PublishingExtension> {
      }
  }
  
@@ -39,10 +39,10 @@ index 43ce7fe6b65488d00c69986908c788761ccd74ad..7a5c23b15dbc11edfde650a905b38404
  
  tasks.jar {
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index f3b6ba687e3d96fbee592465977df29338dd9a27..874599c1d97c606c2a9c2ea13482ac45f6cc8438 100644
+index 1a38b9e616c6096d8d64c8abaa7178bc5f84e8d4..7fe8caa055528d6c86eba6b28540d148af01c866 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1742,6 +1742,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1805,6 +1805,14 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
          // Purpur end
  

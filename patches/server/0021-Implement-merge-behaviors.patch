@@ -18,7 +18,7 @@ index 896a4237f871d46cf39b0721e909c2cc3b5fc728..66de8a0745502ce97d0aed5ae87cdda0
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..9c5b4e775bfef0a567dca12ee0e7ef3e37ec5fc7 100644
+index ee5d8fc20dc761d71eaebb6d0a7ecbbe611bcdd4..388b4af0511a750bb13d9632d47f6e49d8f0d145 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 @@ -37,6 +37,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -61,7 +61,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..9c5b4e775bfef0a567dca12ee0e7ef3e
              // Paper end
              // Spigot start
              double radius = level.spigotConfig.itemMerge;
-@@ -267,7 +284,13 @@ public class ItemEntity extends Entity {
+@@ -273,7 +290,13 @@ public class ItemEntity extends Entity {
      private boolean isMergable() {
          ItemStack itemstack = this.getItem();
  
@@ -76,7 +76,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..9c5b4e775bfef0a567dca12ee0e7ef3e
      }
  
      private void tryToMerge(ItemEntity other) {
-@@ -285,11 +308,15 @@ public class ItemEntity extends Entity {
+@@ -291,11 +314,15 @@ public class ItemEntity extends Entity {
      }
  
      public static boolean areMergable(ItemStack stack1, ItemStack stack2) {
@@ -94,7 +94,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..9c5b4e775bfef0a567dca12ee0e7ef3e
          ItemStack itemstack2 = stack1.copy();
  
          itemstack2.grow(j);
-@@ -298,7 +325,12 @@ public class ItemEntity extends Entity {
+@@ -304,7 +331,12 @@ public class ItemEntity extends Entity {
      }
  
      private static void merge(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
@@ -108,7 +108,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..9c5b4e775bfef0a567dca12ee0e7ef3e
  
          if (!itemstack2.isEmpty()) targetEntity.setItem(itemstack2); // CraftBukkit - don't set empty stacks
      }
-@@ -369,6 +401,14 @@ public class ItemEntity extends Entity {
+@@ -375,6 +407,14 @@ public class ItemEntity extends Entity {
          }
  
          if (!this.getItem().isEmpty()) {
@@ -123,7 +123,7 @@ index c2b0add36da8ad1bfb3fbfdd180a8606f66b8478..9c5b4e775bfef0a567dca12ee0e7ef3e
              nbt.put("Item", this.getItem().save(new CompoundTag()));
          }
  
-@@ -399,91 +439,77 @@ public class ItemEntity extends Entity {
+@@ -405,91 +445,77 @@ public class ItemEntity extends Entity {
  
      }
  

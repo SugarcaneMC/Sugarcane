@@ -5,10 +5,10 @@ Subject: [PATCH] add stats command
 
 
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 2e8dfe58081b9b4ec726256aba9815c7cbb70022..e1b0f77bf284ed13c92dfdb036eed191c08e0584 100644
+index 53e69bd246798e89168cfff64841ae60168ea3e5..1edbea72eb5c0cfe7a235e5cdb2d855aadc8f93e 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -185,6 +185,7 @@ import org.bukkit.craftbukkit.metadata.PlayerMetadataStore;
+@@ -184,6 +184,7 @@ import org.bukkit.craftbukkit.metadata.PlayerMetadataStore;
  import org.bukkit.craftbukkit.metadata.WorldMetadataStore;
  import org.bukkit.craftbukkit.potion.CraftPotionBrewer;
  import org.bukkit.craftbukkit.scheduler.CraftScheduler;
@@ -16,7 +16,7 @@ index 2e8dfe58081b9b4ec726256aba9815c7cbb70022..e1b0f77bf284ed13c92dfdb036eed191
  import org.bukkit.craftbukkit.scoreboard.CraftScoreboardManager;
  import org.bukkit.craftbukkit.structure.CraftStructureManager;
  import org.bukkit.craftbukkit.tag.CraftBlockTag;
-@@ -1041,7 +1042,8 @@ public final class CraftServer implements Server {
+@@ -1060,7 +1061,8 @@ public final class CraftServer implements Server {
          for (BukkitWorker worker : overdueWorkers) {
              Plugin plugin = worker.getOwner();
              String author = "<NoAuthorGiven>";
