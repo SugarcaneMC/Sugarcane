@@ -31,7 +31,8 @@ pipeline {
                     git config user.name "Jenkins"
                     rm -rf Sugarcane-Server
                     rm -rf Sugarcane-API
-                    ./gradlew printMinecraftVersionAP applyPatches
+                    ./gradlew printMinecraftVersion
+                    ./gradlew applyPatches
                     '''
                 }
             }
@@ -41,7 +42,7 @@ pipeline {
             }
             steps {
                         sh'''
-                        ./gradlew printMinecraftVersionBD build copyReobfPaperclipJar :Sugarcane-API:publishMavenPublicationToMavenRepository publishToMavenLocal
+                        ./gradlew build paperclipJar :Sugarcane-API:publishMavenPublicationToMavenRepository publishToMavenLocal
                         mkdir -p "./target"
                         cp -v "sugarcane-paperclip.jar" "./target/sugarcane-paperclip-b$BUILD_NUMBER.jar"
                         '''

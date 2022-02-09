@@ -1,8 +1,8 @@
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "7.1.0" apply false
-    id("io.papermc.paperweight.patcher") version "1.3.1"
+    id("com.github.johnrengelman.shadow") version "7.1.2" apply false
+    id("io.papermc.paperweight.patcher") version "1.3.4"
 }
 
 repositories {
@@ -11,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    remapper("net.fabricmc:tiny-remapper:0.7.0:fat")
-    decompiler("net.minecraftforge:forgeflower:1.5.498.22")
+    remapper("net.fabricmc:tiny-remapper:0.8.1:fat")
+    decompiler("net.minecraftforge:forgeflower:1.5.498.23")
     paperclip("io.papermc:paperclip:3.0.2")
 }
 
@@ -85,9 +85,20 @@ paperweight {
     }
 }
 
+val projectName = rootProject.name
+val version = providers.gradleProperty("version").get().trim()
+
+tasks.register("paperclipJar") {
+   finalizedBy("createReobfPaperclipJar")
+}
+
+tasks.createReobfPaperclipJar {
+   finalizedBy("copyReobfPaperclipJar")
+}
+
 tasks.register<Copy>("copyReobfPaperclipJar") {
     from(tasks.createReobfPaperclipJar) {
-      rename("Sugarcane-paperclip-${providers.gradleProperty("version").get().trim()}-reobf.jar", "sugarcane-paperclip.jar")
+      rename("${projectName}-paperclip-${version}-reobf.jar", "${projectName.toLowerCase()}-paperclip.jar")
     }
     into(layout.projectDirectory)
 }
@@ -117,21 +128,10 @@ tasks.generateDevelopmentBundle {
     )
 }
 
-tasks.register("printMinecraftVersionAP") {
-    doLast {
-        println("Applying Patches to: Sugarcane for Minecraft " + providers.gradleProperty("mcVersion").get().trim())
-    }
-}
-
-tasks.register("printMinecraftVersionBD") {
-    doLast {
-        println("Building: Sugarcane for Minecraft " + providers.gradleProperty("mcVersion").get().trim())
-    }
-}
-
+val mcVersion = providers.gradleProperty("mcVersion").get().trim()
 
 tasks.register("printMinecraftVersion") {
     doLast {
-        println("Minecraft: " + providers.gradleProperty("mcVersion").get().trim())
+        println("Minecraft: $mcVersion")
     }
 }

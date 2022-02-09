@@ -62,12 +62,12 @@ which can be obtained in (most) package managers such as `apt` (Debian / Ubuntu;
 you will most likely use this for WSL), `homebrew` (macOS / Linux), and more:
 
 - `git` (package `git` everywhere);
-- A Java 16 or later JDK (packages vary, use Google/DuckDuckGo/etc.).
+- A Java 17 or later JDK (packages vary, use Google/DuckDuckGo/etc.).
   - [Adoptium](https://adoptium.net/) has builds for most operating systems.
-  - Sugarcane requires JDK 16 to build, however makes use of Gradle's
+  - Sugarcane requires JDK 17 to build, however makes use of Gradle's
     [Toolchains](https://docs.gradle.org/current/userguide/toolchains.html)
     feature to allow building with only JRE 8 or later installed. (Gradle will
-    automatically provision JDK 16 for compilation if it cannot find an existing
+    automatically provision JDK 17 for compilation if it cannot find an existing
     install).
 
 If you're on Windows, you can check
@@ -77,11 +77,11 @@ If you're compiling with Docker, you can use Adoptium's
 [`eclipse-temurin`](https://hub.docker.com/_/eclipse-temurin/) images like so:
 
 ```console
-# docker run -it -v "$(pwd)":/data --rm eclipse-temurin:16.0.2_7-jdk bash
+# docker run -it -v "$(pwd)":/data --rm eclipse-temurin:17.0.1_1-jdk bash
 Pulling image...
 
 root@abcdefg1234:/# javac -version
-javac 16.0.2
+javac 17.0.1
 ```
 
 ## Understanding Patches
@@ -210,7 +210,7 @@ need to "save" the changes.
 
 ## Rebasing PRs
 
-Steps to rebase a PR to include the latest changes from `1.17.1/dev`.  
+Steps to rebase a PR to include the latest changes from `1.18.1/dev`.  
 These steps assume the `origin` remote is your fork of this repository and `upstream` is the official SugarcaneMC repository.
 
 1. Pull the latest changes from upstreams master: `git checkout master && git pull upstream master`.
@@ -467,7 +467,7 @@ everything like usual.
 ## <a name='Guidelines'></a>Guidelines
 
 * Intentionally harmfull/Troll PRs will cause you to be blocked.
-* Pull requests are to be aimed at the 1.17.1/dev branch.
-* Ports of Fabric Mods and patches from other forks are acceptable.
+* Pull requests are to be aimed at the current dev branch.
+* Ports of Minecraft Mods and patches from other forks are acceptable.
 
-  * When porting a fabric mod that uses Yarn mappings , you can use `https://wagyourtail.xyz/Projects/Minecraft%20Mappings%20Viewer/App?version=1.17.1&mapping=yarn,yarnIntermediary,mojang` for Yarn to Mojang mappings
+  * When porting a minecraft mod that uses different mappings , you can use `https://wagyourtail.xyz/Projects/MinecraftMappingViewer/App` for easier remapping.

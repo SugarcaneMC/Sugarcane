@@ -1,7 +1,7 @@
 <div align=center>
     <img src="https://cdn.discordapp.com/attachments/517734448008134686/857649078409887784/sugar2.png" width="512">
     <br /><br />
-    <h3>✅ Highly optimized <a href="https://github.com/TECHNOVE/Airplane">Airplane</a> fork that focuses on stability and performance.</h3>
+    <h3>✅ Highly optimized <a href="https://github.com/PurpurMC/Purpur">Purpur</a> fork that focuses on stability and performance.</h3>
     <a href="https://sugarcanemc.org/discord">
         <img alt="Discord" src="https://img.shields.io/discord/855918593497759754?color=green&label=discord&logo=discord&style=for-the-badge">
     </a>
@@ -9,16 +9,15 @@
         <img alt="Website" src="https://img.shields.io/website?style=for-the-badge&up_color=red&up_message=SugarcaneMC&url=https%3A%2F%2Fsugarcanemc.org%2F">
     </a>
     <a href="https://ci.sugarcanemc.org/job/Sugarcane">
-        <img alt="Jenkins" src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.sugarcanemc.org%2Fjob%2FSugarcane%2Fjob%2F1.17.1%25252Fdev%2F&label=Jenkins%20build&logo=jenkins&logoColor=orange&style=for-the-badge">
+        <img alt="Jenkins" src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.sugarcanemc.org%2Fjob%2FSugarcane%2Fjob%2F1.18.1%25252Fdev%2F&label=Jenkins%20build&logo=jenkins&logoColor=orange&style=for-the-badge">
     </a>
 </div>
 
 # We use patches from the following projects
 
 * **[Paper](https://github.com/PaperMC/Paper)**
-* **[Tuinity](https://github.com/Tuinity/Tuinity)**
-* **[Airplane](https://github.com/TECHNOVE/Airplane)**
-* **[Purpur](https://github.com/pl3xgaming/Purpur)**
+* **[Purpur](https://github.com/PurpurMC/Purpur)**
+* **[Pufferfish](https://github.com/pufferfish-gg/Pufferfish)**
 * **NOTE: We also borrow some patches from [Yatopia](https://github.com/YatopiaMC/Yatopia).**
 
 # ❗ Reminder
@@ -48,7 +47,7 @@ Then, add the Sugarcane-API dependency:
 
 ```groovy
 dependencies {
-    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.18-R0.1-SNAPSHOT"
+    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.18.1-R0.1-SNAPSHOT"
 }
  ```
  
@@ -66,7 +65,7 @@ Then, add the Sugarcane-API dependency:
 
 ```kotlin
 dependencies {
-    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.18-R0.1-SNAPSHOT")
+    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.18.1-R0.1-SNAPSHOT")
 }
 ```
 
@@ -93,7 +92,7 @@ And then add the Sugarcane-API dependency:
 <dependency>
     <groupId>org.sugarcanemc.sugarcane</groupId>
     <artifactId>sugarcane-api</artifactId>
-    <version>1.18-R0.1-SNAPSHOT</version>
+    <version>1.18.1-R0.1-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -104,7 +103,7 @@ And then add the Sugarcane-API dependency:
 ## We also have a [Discord Server](https://sugarcanemc.org/discord) for support
 
 # Try it for yourself
-* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/)** - Download latest development builds for Minecraft 1.17.1 (**Not for production**).
+* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/)** - Download latest development builds for Minecraft 1.18.1 (**Not for production**).
 
 # Contributing
 
