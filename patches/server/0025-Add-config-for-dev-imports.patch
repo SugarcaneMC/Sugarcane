@@ -1,0 +1,251 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Tue, 8 Feb 2022 18:51:45 +0000
+Subject: [PATCH] Add config for dev imports
+
+
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..51305869a230bbdf55fd99948113079ea8614856
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java
+@@ -0,0 +1,21 @@
++package org.sugarcanemc.sugarcane.config;
++
++import net.minecraft.SharedConstants;
++import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
++
++public class SharedConstantOverridesConfig extends BaseYamlConfig {
++    public void Load(){
++        System.out.println("Loading shared constant overrides - these may break your server!");
++
++        System.out.println("Loadied shared constant overrides!");
++    }
++    public void Save(){
++        System.out.println("Saving shared constants to override config...");
++        var constants = SharedConstants.class;
++        for(var _const : constants.getDeclaredFields()){
++//        _const.
++        }
++
++        System.out.println("Saved shared constants to override config!");
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 189644a269d2015fafbbc87e4fbe7c19fd736637..1a0dc3bd62772de06036639e11151d58fa90b88a 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -10,12 +10,15 @@ import java.util.List;
+ import java.util.concurrent.TimeUnit;
+ import java.util.logging.Level;
+ import java.util.regex.Pattern;
++
++import net.minecraft.SharedConstants;
+ import org.bukkit.Bukkit;
+ import org.bukkit.configuration.InvalidConfigurationException;
+ import org.bukkit.configuration.file.YamlConfiguration;
++import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
+ import org.sugarcanemc.sugarcane.util.yaml.YamlCommenter;
+ 
+-public class SugarcaneConfig {
++public class SugarcaneConfig extends BaseYamlConfig {
+ 	public static File CONFIG_FILE;
+ 	private static final String HEADER = "This is the main configuration file for Sugarcane.\n"
+ 			+ "Sugarcane contains many breaking changes and settings, so know what you are doing!\n"
+@@ -56,6 +59,7 @@ public class SugarcaneConfig {
+ 		//add comments
+ 		c.addComment("debug", "Enable debug output for Sugarcane code!\nWarning: this WILL increase log size a lot!\nKeep in mind this is for output considered too spammy for verbose!");
+ 		c.addComment("verbose", "Enable verbose mode for Sugarcane code!\nWarning: may increase log size and/or hurt performance!");
++		c.addComment("is-running-in-ide", "Enables behavior changes related to running in IDEs.");
+ 		c.addComment("brand-name", "Set the software name the server reports to be using.");
+ 		c.addComment("ItemMergeBehavior",
+ 				"""
+@@ -90,16 +94,6 @@ public class SugarcaneConfig {
+ 		}
+ 	}
+ 
+-	protected static void logError(String s) {
+-		Bukkit.getLogger().severe(s);
+-	}
+-
+-	protected static void log(String s) {
+-		if (verbose) {
+-			Bukkit.getLogger().info(s);
+-		}
+-	}
+-
+ 	static void readConfig(Class<?> clazz, Object instance) {
+ 		for (Method method : clazz.getDeclaredMethods()) {
+ 			if (Modifier.isPrivate(method.getModifiers())) {
+@@ -124,48 +118,6 @@ public class SugarcaneConfig {
+ 		}
+ 	}
+ 
+-	private static final Pattern SPACE = Pattern.compile(" ");
+-	private static final Pattern NOT_NUMERIC = Pattern.compile("[^-\\d.]");
+-
+-	public static int getSeconds(String str) {
+-		str = SPACE.matcher(str).replaceAll("");
+-		final char unit = str.charAt(str.length() - 1);
+-		str = NOT_NUMERIC.matcher(str).replaceAll("");
+-		double num;
+-		try {
+-			num = Double.parseDouble(str);
+-		} catch (Exception e) {
+-			num = 0D;
+-		}
+-		switch (unit) {
+-			case 'd':  num *= (double) 60 * 60 * 24;
+-			case 'h':  num *= (double) 60 * 60;
+-			case 'm':  num *= 60;
+-			case 's':  break;
+-			default: break;
+-		}
+-		return (int) num;
+-}
+-
+-	protected static String timeSummary(int seconds) {
+-		String time = "";
+-
+-		if (seconds > 60 * 60 * 24) {
+-			time += TimeUnit.SECONDS.toDays(seconds) + "d";
+-			seconds %= 60 * 60 * 24;
+-		}
+-
+-		if (seconds > 60 * 60) {
+-			time += TimeUnit.SECONDS.toHours(seconds) + "h";
+-			seconds %= 60 * 60;
+-		}
+-
+-		if (seconds > 0) {
+-			time += TimeUnit.SECONDS.toMinutes(seconds) + "m";
+-		}
+-		return time;
+-}
+-
+ 	private static void set(String path, Object val) {
+ 		config.set(path, val);
+ }
+@@ -173,38 +125,48 @@ public class SugarcaneConfig {
+ 	private static boolean getBoolean(String path, boolean def) {
+ 		config.addDefault(path, def);
+ 		return config.getBoolean(path, config.getBoolean(path));
+-}
++	}
+ 
+ 	private static double getDouble(String path, double def) {
+ 	    config.addDefault(path, def);
+ 		return config.getDouble(path, config.getDouble(path));
+-}
++	}
+ 
+ 	private static float getFloat(String path, float def) {
+ 	 	// TODO: Figure out why getFloat() always returns the default value.
+ 		return (float) getDouble(path, (double) def);
+-}
++	}
+ 
+ 	private static int getInt(String path, int def) {
+ 		config.addDefault(path, def);
+ 		return config.getInt(path, config.getInt(path));
+-}
++	}
+ 
+ 	private static <T> List<T> getList(String path, List<T> def) {
+ 		config.addDefault(path, def);
+ 		return (List<T>) config.getList(path, config.getList(path));
+-}
++	}
+ 
+ 	private static String getString(String path, String def) {
+ 		config.addDefault(path, def);
+ 		return config.getString(path, config.getString(path));
+-}
++	}
+ 
+-		//define settings
++	//define settings
+ 	public static boolean debug = false;
+ 	private static void debug() {
+ 		debug = getBoolean("debug", false);
+ 	}
++	public static boolean isRunningInIDE = false;
++	private static void setIsRunningInIDE() {
++		isRunningInIDE = getBoolean("is-running-in-ide", false);
++		SharedConstants.IS_RUNNING_IN_IDE = isRunningInIDE;
++	}
++	public static boolean modSharedConstants = false;
++	private static void setModSharedConstants() {
++		isRunningInIDE = getBoolean("enable-shared-constant-overrides", false);
++	}
++
+ 	public static boolean logPlayerLoginLoc = true;
+ 	private static void general() {
+ 		logPlayerLoginLoc = getBoolean("settings.log-player-login-location", logPlayerLoginLoc);
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/BaseYamlConfig.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/BaseYamlConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..efd4b11b25d643e900cbd0c1c2f8412cb65560d0
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/BaseYamlConfig.java
+@@ -0,0 +1,61 @@
++package org.sugarcanemc.sugarcane.util.yaml;
++
++import org.bukkit.Bukkit;
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
++
++import java.util.concurrent.TimeUnit;
++import java.util.regex.Pattern;
++
++public class BaseYamlConfig {
++    protected static final Pattern SPACE = Pattern.compile(" ");
++    protected static final Pattern NOT_NUMERIC = Pattern.compile("[^-\\d.]");
++
++    protected static void logError(String s) {
++        Bukkit.getLogger().severe(s);
++    }
++
++    protected static void log(String s) {
++        if (SugarcaneConfig.verbose) {
++            Bukkit.getLogger().info(s);
++        }
++    }
++
++    public static int getSeconds(String str) {
++        str = SPACE.matcher(str).replaceAll("");
++        final char unit = str.charAt(str.length() - 1);
++        str = NOT_NUMERIC.matcher(str).replaceAll("");
++        double num;
++        try {
++            num = Double.parseDouble(str);
++        } catch (Exception e) {
++            num = 0D;
++        }
++        switch (unit) {
++            case 'd':  num *= (double) 60 * 60 * 24;
++            case 'h':  num *= (double) 60 * 60;
++            case 'm':  num *= 60;
++            case 's':  break;
++            default: break;
++        }
++        return (int) num;
++    }
++
++    protected static String timeSummary(int seconds) {
++        String time = "";
++
++        if (seconds > 60 * 60 * 24) {
++            time += TimeUnit.SECONDS.toDays(seconds) + "d";
++            seconds %= 60 * 60 * 24;
++        }
++
++        if (seconds > 60 * 60) {
++            time += TimeUnit.SECONDS.toHours(seconds) + "h";
++            seconds %= 60 * 60;
++        }
++
++        if (seconds > 0) {
++            time += TimeUnit.SECONDS.toMinutes(seconds) + "m";
++        }
++        return time;
++    }
++}

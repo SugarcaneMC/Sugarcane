@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Sun, 13 Feb 2022 17:16:46 +0000
+Subject: [PATCH] disable spawner on low tps
+
+
+diff --git a/src/main/java/net/minecraft/world/level/BaseSpawner.java b/src/main/java/net/minecraft/world/level/BaseSpawner.java
+index 76979991d2ded84161e8a0fc72cbb2d2c3c6c55e..0e534f584685ed85457aa8d45ca6ce6f62518aaa 100644
+--- a/src/main/java/net/minecraft/world/level/BaseSpawner.java
++++ b/src/main/java/net/minecraft/world/level/BaseSpawner.java
+@@ -23,6 +23,7 @@ import net.minecraft.world.entity.SpawnPlacements;
+ import net.minecraft.world.phys.AABB;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
+ 
+ public abstract class BaseSpawner {
+ 
+@@ -77,6 +78,9 @@ public abstract class BaseSpawner {
+     }
+ 
+     public void serverTick(ServerLevel world, BlockPos pos) {
++        // Sugarcane - disable mob spawners on TPS treshold
++        if(world.getServer().getAverageTickTime() <= SugarcaneConfig.DisableMobSpawnerBelowTPS) return;
++
+         // Paper start - Configurable mob spawner tick rate
+         if (spawnDelay > 0 && --tickDelay > 0) return;
+         tickDelay = world.paperConfig.mobSpawnerTickRate;
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index a557605473e6320ddde163c7bc9fe994b0b527fd..defa1d104376bbb159b8dc7b371d934d183309f7 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -72,6 +72,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 		c.addComment("config-version", "Config version, do NOT modify this!");
+ 		c.addComment("settings.checks.flight", "Toggles flight checks for players");
+ 		c.addComment("settings.checks.vehicle-flight", "Toggles flight checks for players in vehicles");
++		c.addComment("disable-mob-spawners-below-tps", "Disable mob spawners spawning mobs when TPS drops below this value.");
+ 	}
+ 
+ 	private static void removeLeftovers() {
+@@ -204,4 +205,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 	public static int ItemMergeBehavior = -1;
+     public static boolean SplitItems = false;
+     private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
++
++	public static int DisableMobSpawnerBelowTPS = 0;
++	private static void disableMobSpawnerBelowTPS(){ DisableMobSpawnerBelowTPS = getInt("disable-mob-spawners-below-tps", 0); }
+ }
+\ No newline at end of file

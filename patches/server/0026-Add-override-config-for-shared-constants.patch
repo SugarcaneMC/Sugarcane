@@ -1,0 +1,471 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Sat, 12 Feb 2022 19:31:54 +0000
+Subject: [PATCH] Add override config for shared constants
+
+
+diff --git a/src/main/java/net/minecraft/SharedConstants.java b/src/main/java/net/minecraft/SharedConstants.java
+index 9ed2f0006036aa0b393b29006a68d864041d1a3c..574a4bc2ce785ecf30809270308dbf7aa536c8bc 100644
+--- a/src/main/java/net/minecraft/SharedConstants.java
++++ b/src/main/java/net/minecraft/SharedConstants.java
+@@ -11,121 +11,121 @@ import net.minecraft.world.level.ChunkPos;
+ public class SharedConstants {
+     /** @deprecated */
+     @Deprecated
+-    public static final boolean SNAPSHOT = false;
++    public static boolean SNAPSHOT = false;
+     /** @deprecated */
+     @Deprecated
+-    public static final int WORLD_VERSION = 2865;
++    public static int WORLD_VERSION = 2865;
+     /** @deprecated */
+     @Deprecated
+-    public static final String SERIES = "main";
++    public static String SERIES = "main";
+     /** @deprecated */
+     @Deprecated
+-    public static final String VERSION_STRING = "1.18.1";
++    public static String VERSION_STRING = "1.18.1";
+     /** @deprecated */
+     @Deprecated
+-    public static final String RELEASE_TARGET = "1.18.1";
++    public static String RELEASE_TARGET = "1.18.1";
+     /** @deprecated */
+     @Deprecated
+-    public static final int RELEASE_NETWORK_PROTOCOL_VERSION = 757;
++    public static int RELEASE_NETWORK_PROTOCOL_VERSION = 757;
+     /** @deprecated */
+     @Deprecated
+-    public static final int SNAPSHOT_NETWORK_PROTOCOL_VERSION = 64;
+-    public static final int SNBT_NAG_VERSION = 2830;
+-    private static final int SNAPSHOT_PROTOCOL_BIT = 30;
++    public static int SNAPSHOT_NETWORK_PROTOCOL_VERSION = 64;
++    public static int SNBT_NAG_VERSION = 2830;
++    private static int SNAPSHOT_PROTOCOL_BIT = 30;
+     /** @deprecated */
+     @Deprecated
+-    public static final int RESOURCE_PACK_FORMAT = 8;
++    public static int RESOURCE_PACK_FORMAT = 8;
+     /** @deprecated */
+     @Deprecated
+-    public static final int DATA_PACK_FORMAT = 8;
+-    public static final String DATA_VERSION_TAG = "DataVersion";
+-    public static final boolean CNC_PART_2_ITEMS_AND_BLOCKS = false;
+-    public static final boolean USE_NEW_RENDERSYSTEM = false;
+-    public static final boolean MULTITHREADED_RENDERING = false;
+-    public static final boolean FIX_TNT_DUPE = false;
+-    public static final boolean FIX_SAND_DUPE = false;
+-    public static final boolean USE_DEBUG_FEATURES = false;
+-    public static final boolean DEBUG_OPEN_INCOMPATIBLE_WORLDS = false;
+-    public static final boolean DEBUG_ALLOW_LOW_SIM_DISTANCE = false;
+-    public static final boolean DEBUG_HOTKEYS = false;
+-    public static final boolean DEBUG_UI_NARRATION = false;
+-    public static final boolean DEBUG_RENDER = false;
+-    public static final boolean DEBUG_PATHFINDING = false;
+-    public static final boolean DEBUG_WATER = false;
+-    public static final boolean DEBUG_HEIGHTMAP = false;
+-    public static final boolean DEBUG_COLLISION = false;
+-    public static final boolean DEBUG_SHAPES = false;
+-    public static final boolean DEBUG_NEIGHBORSUPDATE = false;
+-    public static final boolean DEBUG_STRUCTURES = false;
+-    public static final boolean DEBUG_LIGHT = false;
+-    public static final boolean DEBUG_WORLDGENATTEMPT = false;
+-    public static final boolean DEBUG_SOLID_FACE = false;
+-    public static final boolean DEBUG_CHUNKS = false;
+-    public static final boolean DEBUG_GAME_EVENT_LISTENERS = false;
+-    public static final boolean DEBUG_DUMP_TEXTURE_ATLAS = false;
+-    public static final boolean DEBUG_DUMP_INTERPOLATED_TEXTURE_FRAMES = false;
+-    public static final boolean DEBUG_STRUCTURE_EDIT_MODE = false;
+-    public static final boolean DEBUG_SAVE_STRUCTURES_AS_SNBT = false;
+-    public static final boolean DEBUG_SYNCHRONOUS_GL_LOGS = false;
+-    public static final boolean DEBUG_VERBOSE_SERVER_EVENTS = false;
+-    public static final boolean DEBUG_NAMED_RUNNABLES = false;
+-    public static final boolean DEBUG_GOAL_SELECTOR = false;
+-    public static final boolean DEBUG_VILLAGE_SECTIONS = false;
+-    public static final boolean DEBUG_BRAIN = false;
+-    public static final boolean DEBUG_BEES = false;
+-    public static final boolean DEBUG_RAIDS = false;
+-    public static final boolean DEBUG_BLOCK_BREAK = false;
+-    public static final boolean DEBUG_RESOURCE_LOAD_TIMES = false;
+-    public static final boolean DEBUG_MONITOR_TICK_TIMES = false;
+-    public static final boolean DEBUG_KEEP_JIGSAW_BLOCKS_DURING_STRUCTURE_GEN = false;
+-    public static final boolean DEBUG_DONT_SAVE_WORLD = false;
+-    public static final boolean DEBUG_LARGE_DRIPSTONE = false;
+-    public static final boolean DEBUG_PACKET_SERIALIZATION = false;
+-    public static final boolean DEBUG_CARVERS = false;
+-    public static final boolean DEBUG_ORE_VEINS = false;
+-    public static final boolean DEBUG_IGNORE_LOCAL_MOB_CAP = false;
+-    public static final boolean DEBUG_SMALL_SPAWN = false;
+-    public static final boolean DEBUG_DISABLE_LIQUID_SPREADING = false;
+-    public static final boolean DEBUG_AQUIFERS = false;
+-    public static final boolean DEBUG_JFR_PROFILING_ENABLE_LEVEL_LOADING = false;
++    public static int DATA_PACK_FORMAT = 8;
++    public static String DATA_VERSION_TAG = "DataVersion";
++    public static boolean CNC_PART_2_ITEMS_AND_BLOCKS = false;
++    public static boolean USE_NEW_RENDERSYSTEM = false;
++    public static boolean MULTITHREADED_RENDERING = false;
++    public static boolean FIX_TNT_DUPE = false;
++    public static boolean FIX_SAND_DUPE = false;
++    public static boolean USE_DEBUG_FEATURES = false;
++    public static boolean DEBUG_OPEN_INCOMPATIBLE_WORLDS = false;
++    public static boolean DEBUG_ALLOW_LOW_SIM_DISTANCE = false;
++    public static boolean DEBUG_HOTKEYS = false;
++    public static boolean DEBUG_UI_NARRATION = false;
++    public static boolean DEBUG_RENDER = false;
++    public static boolean DEBUG_PATHFINDING = false;
++    public static boolean DEBUG_WATER = false;
++    public static boolean DEBUG_HEIGHTMAP = false;
++    public static boolean DEBUG_COLLISION = false;
++    public static boolean DEBUG_SHAPES = false;
++    public static boolean DEBUG_NEIGHBORSUPDATE = false;
++    public static boolean DEBUG_STRUCTURES = false;
++    public static boolean DEBUG_LIGHT = false;
++    public static boolean DEBUG_WORLDGENATTEMPT = false;
++    public static boolean DEBUG_SOLID_FACE = false;
++    public static boolean DEBUG_CHUNKS = false;
++    public static boolean DEBUG_GAME_EVENT_LISTENERS = false;
++    public static boolean DEBUG_DUMP_TEXTURE_ATLAS = false;
++    public static boolean DEBUG_DUMP_INTERPOLATED_TEXTURE_FRAMES = false;
++    public static boolean DEBUG_STRUCTURE_EDIT_MODE = false;
++    public static boolean DEBUG_SAVE_STRUCTURES_AS_SNBT = false;
++    public static boolean DEBUG_SYNCHRONOUS_GL_LOGS = false;
++    public static boolean DEBUG_VERBOSE_SERVER_EVENTS = false;
++    public static boolean DEBUG_NAMED_RUNNABLES = false;
++    public static boolean DEBUG_GOAL_SELECTOR = false;
++    public static boolean DEBUG_VILLAGE_SECTIONS = false;
++    public static boolean DEBUG_BRAIN = false;
++    public static boolean DEBUG_BEES = false;
++    public static boolean DEBUG_RAIDS = false;
++    public static boolean DEBUG_BLOCK_BREAK = false;
++    public static boolean DEBUG_RESOURCE_LOAD_TIMES = false;
++    public static boolean DEBUG_MONITOR_TICK_TIMES = false;
++    public static boolean DEBUG_KEEP_JIGSAW_BLOCKS_DURING_STRUCTURE_GEN = false;
++    public static boolean DEBUG_DONT_SAVE_WORLD = false;
++    public static boolean DEBUG_LARGE_DRIPSTONE = false;
++    public static boolean DEBUG_PACKET_SERIALIZATION = false;
++    public static boolean DEBUG_CARVERS = false;
++    public static boolean DEBUG_ORE_VEINS = false;
++    public static boolean DEBUG_IGNORE_LOCAL_MOB_CAP = false;
++    public static boolean DEBUG_SMALL_SPAWN = false;
++    public static boolean DEBUG_DISABLE_LIQUID_SPREADING = false;
++    public static boolean DEBUG_AQUIFERS = false;
++    public static boolean DEBUG_JFR_PROFILING_ENABLE_LEVEL_LOADING = false;
+     public static boolean debugGenerateSquareTerrainWithoutNoise = false;
+     public static boolean debugGenerateStripedTerrainWithoutNoise = false;
+-    public static final boolean DEBUG_ONLY_GENERATE_HALF_THE_WORLD = false;
+-    public static final boolean DEBUG_DISABLE_FLUID_GENERATION = false;
+-    public static final boolean DEBUG_DISABLE_AQUIFERS = false;
+-    public static final boolean DEBUG_DISABLE_NOISE_CAVES = false;
+-    public static final boolean DEBUG_DISABLE_SURFACE = false;
+-    public static final boolean DEBUG_DISABLE_CARVERS = false;
+-    public static final boolean DEBUG_DISABLE_STRUCTURES = false;
+-    public static final boolean DEBUG_DISABLE_FEATURES = false;
+-    public static final boolean DEBUG_DISABLE_ORE_VEINS = false;
+-    public static final boolean DEBUG_DISABLE_NOODLE_CAVES = false;
+-    public static final boolean DEBUG_DISABLE_BLENDING = false;
+-    public static final boolean DEBUG_DISABLE_BELOW_ZERO_RETROGENERATION = false;
+-    public static final int DEFAULT_MINECRAFT_PORT = 25565;
+-    public static final boolean INGAME_DEBUG_OUTPUT = false;
+-    public static final boolean DEBUG_SUBTITLES = false;
+-    public static final int FAKE_MS_LATENCY = 0;
+-    public static final int FAKE_MS_JITTER = 0;
+-    public static final Level NETTY_LEAK_DETECTION = Level.DISABLED;
+-    public static final boolean COMMAND_STACK_TRACES = false;
+-    public static final boolean DEBUG_WORLD_RECREATE = false;
+-    public static final boolean DEBUG_SHOW_SERVER_DEBUG_VALUES = false;
+-    public static final boolean DEBUG_STORE_CHUNK_STACKTRACES = false;
+-    public static final boolean DEBUG_FEATURE_COUNT = false;
+-    public static final long MAXIMUM_TICK_TIME_NANOS = Duration.ofMillis(300L).toNanos();
++    public static boolean DEBUG_ONLY_GENERATE_HALF_THE_WORLD = false;
++    public static boolean DEBUG_DISABLE_FLUID_GENERATION = false;
++    public static boolean DEBUG_DISABLE_AQUIFERS = false;
++    public static boolean DEBUG_DISABLE_NOISE_CAVES = false;
++    public static boolean DEBUG_DISABLE_SURFACE = false;
++    public static boolean DEBUG_DISABLE_CARVERS = false;
++    public static boolean DEBUG_DISABLE_STRUCTURES = false;
++    public static boolean DEBUG_DISABLE_FEATURES = false;
++    public static boolean DEBUG_DISABLE_ORE_VEINS = false;
++    public static boolean DEBUG_DISABLE_NOODLE_CAVES = false;
++    public static boolean DEBUG_DISABLE_BLENDING = false;
++    public static boolean DEBUG_DISABLE_BELOW_ZERO_RETROGENERATION = false;
++    public static int DEFAULT_MINECRAFT_PORT = 25565;
++    public static boolean INGAME_DEBUG_OUTPUT = false;
++    public static boolean DEBUG_SUBTITLES = false;
++    public static int FAKE_MS_LATENCY = 0;
++    public static int FAKE_MS_JITTER = 0;
++    public static Level NETTY_LEAK_DETECTION = Level.DISABLED;
++    public static boolean COMMAND_STACK_TRACES = false;
++    public static boolean DEBUG_WORLD_RECREATE = false;
++    public static boolean DEBUG_SHOW_SERVER_DEBUG_VALUES = false;
++    public static boolean DEBUG_STORE_CHUNK_STACKTRACES = false;
++    public static boolean DEBUG_FEATURE_COUNT = false;
++    public static long MAXIMUM_TICK_TIME_NANOS = Duration.ofMillis(300L).toNanos();
+     public static boolean CHECK_DATA_FIXER_SCHEMA = true;
+-    public static boolean IS_RUNNING_IN_IDE;
+-    public static final int WORLD_RESOLUTION = 16;
+-    public static final int MAX_CHAT_LENGTH = 256;
+-    public static final int MAX_COMMAND_LENGTH = 32500;
+-    public static final char[] ILLEGAL_FILE_CHARACTERS = new char[]{'/', '\n', '\r', '\t', '\u0000', '\f', '`', '?', '*', '\\', '<', '>', '|', '"', ':'};
+-    public static final int TICKS_PER_SECOND = 20;
+-    public static final int TICKS_PER_MINUTE = 1200;
+-    public static final int TICKS_PER_GAME_DAY = 24000;
+-    public static final float AVERAGE_GAME_TICKS_PER_RANDOM_TICK_PER_BLOCK = 1365.3334F;
+-    public static final float AVERAGE_RANDOM_TICKS_PER_BLOCK_PER_MINUTE = 0.87890625F;
+-    public static final float AVERAGE_RANDOM_TICKS_PER_BLOCK_PER_GAME_DAY = 17.578125F;
++    public static boolean IS_RUNNING_IN_IDE = true;
++    public static int WORLD_RESOLUTION = 16;
++    public static int MAX_CHAT_LENGTH = 256;
++    public static int MAX_COMMAND_LENGTH = 32500;
++    public static char[] ILLEGAL_FILE_CHARACTERS = new char[]{'/', '\n', '\r', '\t', '\u0000', '\f', '`', '?', '*', '\\', '<', '>', '|', '"', ':'};
++    public static int TICKS_PER_SECOND = 20;
++    public static int TICKS_PER_MINUTE = 1200;
++    public static int TICKS_PER_GAME_DAY = 24000;
++    public static float AVERAGE_GAME_TICKS_PER_RANDOM_TICK_PER_BLOCK = 1365.3334F;
++    public static float AVERAGE_RANDOM_TICKS_PER_BLOCK_PER_MINUTE = 0.87890625F;
++    public static float AVERAGE_RANDOM_TICKS_PER_BLOCK_PER_GAME_DAY = 17.578125F;
+     @Nullable
+     private static WorldVersion CURRENT_VERSION;
+ 
+diff --git a/src/main/java/net/minecraft/network/protocol/game/ServerboundCommandSuggestionPacket.java b/src/main/java/net/minecraft/network/protocol/game/ServerboundCommandSuggestionPacket.java
+index b8bc1b9b8e8a33df90a963f9f9769292bf595642..9dfd6167b9b78d99987a944bcf5df8ceb8b72837 100644
+--- a/src/main/java/net/minecraft/network/protocol/game/ServerboundCommandSuggestionPacket.java
++++ b/src/main/java/net/minecraft/network/protocol/game/ServerboundCommandSuggestionPacket.java
+@@ -1,5 +1,6 @@
+ package net.minecraft.network.protocol.game;
+ 
++import net.minecraft.SharedConstants;
+ import net.minecraft.network.FriendlyByteBuf;
+ import net.minecraft.network.protocol.Packet;
+ 
+@@ -20,7 +21,7 @@ public class ServerboundCommandSuggestionPacket implements Packet<ServerGamePack
+     @Override
+     public void write(FriendlyByteBuf buf) {
+         buf.writeVarInt(this.id);
+-        buf.writeUtf(this.command, 32500);
++        buf.writeUtf(this.command, SharedConstants.MAX_COMMAND_LENGTH);
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/Eula.java b/src/main/java/net/minecraft/server/Eula.java
+index 00008b0dc478cccd710b1d82f5158f02f6271f03..7c0e48c2ed73dc4b3e579a6202dd4124baf4477a 100644
+--- a/src/main/java/net/minecraft/server/Eula.java
++++ b/src/main/java/net/minecraft/server/Eula.java
+@@ -16,7 +16,7 @@ public class Eula {
+ 
+     public Eula(Path eulaFile) {
+         this.file = eulaFile;
+-        this.agreed = SharedConstants.IS_RUNNING_IN_IDE || globalEula() || this.readFile(eulaFile);
++        this.agreed = globalEula() || this.readFile(eulaFile);
+     }
+ 
+     // Sugarcane start - global eula file
+@@ -71,33 +71,30 @@ public class Eula {
+     }
+ 
+     private void saveDefaults() {
+-        if (!SharedConstants.IS_RUNNING_IN_IDE) {
+-            try {
+-                OutputStream outputStream = Files.newOutputStream(this.file);
++        try {
++            OutputStream outputStream = Files.newOutputStream(this.file);
+ 
+-                try {
+-                    Properties properties = new Properties();
+-                    properties.setProperty("eula", "false");
+-                    properties.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\nYou also agree that tacos are tasty, and the best food in the world.");  // Paper - fix lag;
+-                } catch (Throwable var5) {
+-                    if (outputStream != null) {
+-                        try {
+-                            outputStream.close();
+-                        } catch (Throwable var4) {
+-                            var5.addSuppressed(var4);
+-                        }
++            try {
++                Properties properties = new Properties();
++                properties.setProperty("eula", "false");
++                properties.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\nYou also agree that tacos are tasty, and the best food in the world.");  // Paper - fix lag;
++            } catch (Throwable var5) {
++                if (outputStream != null) {
++                    try {
++                        outputStream.close();
++                    } catch (Throwable var4) {
++                        var5.addSuppressed(var4);
+                     }
+-
+-                    throw var5;
+                 }
+ 
+-                if (outputStream != null) {
+-                    outputStream.close();
+-                }
+-            } catch (Exception var6) {
+-                LOGGER.warn("Failed to save {}", this.file, var6);
++                throw var5;
+             }
+ 
++            if (outputStream != null) {
++                outputStream.close();
++            }
++        } catch (Exception var6) {
++            LOGGER.warn("Failed to save {}", this.file, var6);
+         }
+     }
+ }
+diff --git a/src/main/java/net/minecraft/world/item/Items.java b/src/main/java/net/minecraft/world/item/Items.java
+index 1f65bba67cd4fab1dee115f24b213075c1d9c2a7..8d67ddcba8cfafef802fa71e6fac341cec9e104c 100644
+--- a/src/main/java/net/minecraft/world/item/Items.java
++++ b/src/main/java/net/minecraft/world/item/Items.java
+@@ -1,6 +1,8 @@
+ package net.minecraft.world.item;
+ 
+ import java.util.Optional;
++
++import net.minecraft.SharedConstants;
+ import net.minecraft.core.Registry;
+ import net.minecraft.resources.ResourceLocation;
+ import net.minecraft.sounds.SoundEvents;
+@@ -1118,7 +1120,7 @@ public class Items {
+     public static final Item POINTED_DRIPSTONE = registerBlock(Blocks.POINTED_DRIPSTONE, CreativeModeTab.TAB_DECORATIONS);
+ 
+     private static <T> Optional<T> ifPart2(T of) {
+-        return Optional.empty();
++        return SharedConstants.CNC_PART_2_ITEMS_AND_BLOCKS ? (Optional<T>) of :  Optional.empty();
+     }
+ 
+     private static Item registerBlock(Block block) {
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java
+index 51305869a230bbdf55fd99948113079ea8614856..8c5a82643721df79ad7cbf9b790221392fb7c7f9 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java
+@@ -1,21 +1,82 @@
+ package org.sugarcanemc.sugarcane.config;
+ 
++import com.google.common.base.Throwables;
++import io.netty.util.ResourceLeakDetector;
+ import net.minecraft.SharedConstants;
++import net.minecraft.world.level.storage.DataVersion;
++import org.bukkit.Bukkit;
++import org.bukkit.configuration.InvalidConfigurationException;
++import org.bukkit.configuration.file.YamlConfiguration;
+ import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
+ 
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.Field;
++import java.lang.reflect.Modifier;
++import java.util.logging.Level;
++
+ public class SharedConstantOverridesConfig extends BaseYamlConfig {
+-    public void Load(){
++    public static File CONFIG_FILE;
++    public static YamlConfiguration config;
++
++    private static final String HEADER = "This is the overrides configuration for Minecraft's Shared Constants file.\n"
++            + "Many of these may break your server or simply not work, so know what you are doing!\n"
++            + "You have been warned!\n"
++            + "We are not responsible for any effects caused by modifying these!\n"
++            + "Regards, the Sugarcane team.\n";
++
++    private static void init(File configFile) {
++        CONFIG_FILE = configFile;
++        config = new YamlConfiguration();
++    }
++
++    public static void Load() {
+         System.out.println("Loading shared constant overrides - these may break your server!");
++        init(new File("shared-constant-overrides.yml"));
++        config = new YamlConfiguration();
++        try {
++            config.load(CONFIG_FILE);
++        } catch (IOException ex) {
++        } catch (InvalidConfigurationException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load shared-constant-overrides.yml, please correct your syntax errors", ex);
++            throw Throwables.propagate(ex);
++        }
+ 
+-        System.out.println("Loadied shared constant overrides!");
++
++        System.out.println("Loaded shared constant overrides!");
++        Save();
+     }
+-    public void Save(){
++
++    public static void Save() {
+         System.out.println("Saving shared constants to override config...");
+         var constants = SharedConstants.class;
+-        for(var _const : constants.getDeclaredFields()){
+-//        _const.
++        var inst = new SharedConstants();
++        for (var _const : constants.getDeclaredFields()) {
++            if (_const.canAccess(Modifier.isStatic(_const.getModifiers()) ? null : inst))
++                try {
++                    var val = _const.get(inst);
++                    if(!(
++                        val instanceof ResourceLeakDetector.Level ||
++                        val instanceof char[] ||
++                        val instanceof DataVersion
++                    ))
++                        config.set(fieldToKey(_const), val);
++                } catch (IllegalAccessException e) {
++                    e.printStackTrace();
++                }
+         }
+ 
++        try {
++            config.save(CONFIG_FILE);
++        } catch (IOException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, "Could not save " + CONFIG_FILE, ex);
++        }
+         System.out.println("Saved shared constants to override config!");
+     }
++
++    private static String fieldToKey(Field field) {
++        if (Modifier.isFinal(field.getModifiers())) throw new IllegalStateException("Field is final!");
++
++        return String.format("%s%s.%s", Modifier.isStatic(field.getModifiers()) ? "static." : "", field.getType().getSimpleName(), field.getName());
++    }
+ }
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index 1a0dc3bd62772de06036639e11151d58fa90b88a..a557605473e6320ddde163c7bc9fe994b0b527fd 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -59,7 +59,8 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 		//add comments
+ 		c.addComment("debug", "Enable debug output for Sugarcane code!\nWarning: this WILL increase log size a lot!\nKeep in mind this is for output considered too spammy for verbose!");
+ 		c.addComment("verbose", "Enable verbose mode for Sugarcane code!\nWarning: may increase log size and/or hurt performance!");
+-		c.addComment("is-running-in-ide", "Enables behavior changes related to running in IDEs.");
++		c.addComment("is-running-in-ide", "Enables behavior changes related to running in IDEs.\nWe override this to true during startup, but will be set to this value (default: false) when this file is loaded.");
++		c.addComment("is-running-in-ide", "Enables overriding vanilla's built in developer toggles. Most of these do not work!");
+ 		c.addComment("brand-name", "Set the software name the server reports to be using.");
+ 		c.addComment("ItemMergeBehavior",
+ 				"""
+@@ -164,7 +165,8 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 	}
+ 	public static boolean modSharedConstants = false;
+ 	private static void setModSharedConstants() {
+-		isRunningInIDE = getBoolean("enable-shared-constant-overrides", false);
++		modSharedConstants = getBoolean("enable-shared-constant-overrides", false);
++		if(modSharedConstants) SharedConstantOverridesConfig.Load();
+ 	}
+ 
+ 	public static boolean logPlayerLoginLoc = true;
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
+index c991057c5874ed1ed83c63736dc5c98d3eb8ed68..45428aea898630e05270a6ccfbcc687d79109e77 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
+@@ -8,13 +8,12 @@ import java.util.Map;
+ import java.util.function.Predicate;
+ 
+ import net.minecraft.server.level.ServerLevel;
++import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
+ 
+ import java.util.List;
+ 
+-import static org.sugarcanemc.sugarcane.config.SugarcaneConfig.log;
+-
+ @SuppressWarnings("unused")
+-public class SugarcaneWorldConfig {
++public class SugarcaneWorldConfig extends BaseYamlConfig {
+ 
+ 	private final ServerLevel level;
+ 	private final String worldName;

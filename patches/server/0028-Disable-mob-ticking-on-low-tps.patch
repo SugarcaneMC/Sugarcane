@@ -1,0 +1,1565 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Sun, 13 Feb 2022 23:19:23 +0000
+Subject: [PATCH] Disable mob ticking on low tps
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 06c1e42b06f07d71621fa59b88fd01a2893d8ac7..45101467a44eff016197142b2af9ce0eecf53494 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -69,6 +69,10 @@ dependencies {
+     testImplementation("io.github.classgraph:classgraph:4.8.47") // Paper - mob goal test
+     testImplementation("junit:junit:4.13.2")
+     testImplementation("org.hamcrest:hamcrest-library:1.3")
++
++    // Sugarcane start
++    implementation("org.reflections:reflections:0.10.2")
++    // Sugarcane end
+ }
+ 
+ tasks.jar {
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 5eb081f9c9790b64bb8218a0858c5b273a552664..645f8f42aad46b88e3635882123c5a5c070ed093 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -185,6 +185,7 @@ import org.bukkit.event.server.ServerLoadEvent;
+ 
+ import co.aikar.timings.MinecraftTimings; // Paper
+ import org.spigotmc.SlackActivityAccountant; // Spigot
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTask> implements CommandSource, AutoCloseable {
+ 
+@@ -1265,6 +1266,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                         tps1.add(currentTps, diff);
+                         tps5.add(currentTps, diff);
+                         tps15.add(currentTps, diff);
++                        MobTPSTresholds.CurrentTPS = (int) tps5s.getAverage(); //Sugarcane
+                         // Backwards compat with bad plugins
+                         // Purpur start
+                         this.recentTps[0] = tps5s.getAverage();
+diff --git a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
+index a069035f9bfc821d5bb52a654aec5842f433b3fc..ee1922459b7466bdf1af63c493ce50980b3088f3 100644
+--- a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
++++ b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
+@@ -24,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
+ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+ import org.bukkit.event.entity.EntityTargetEvent;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public class ExperienceOrb extends Entity {
+@@ -113,6 +114,7 @@ public class ExperienceOrb extends Entity {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ExperienceOrbTickTreshold) return; //sugarcane
+         super.tick();
+         Player prevTarget = this.followingPlayer;// CraftBukkit - store old target
+         this.xo = this.getX();
+diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
+index 9f8153496f173de6b8ee26ae765255a1ba2b3073..fd2e0aa4599b89c7c17cf0d5c17e2b01656b0276 100644
+--- a/src/main/java/net/minecraft/world/entity/ambient/Bat.java
++++ b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
+@@ -30,6 +30,7 @@ import net.minecraft.world.level.LevelAccessor;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.phys.Vec3;
+ import org.bukkit.craftbukkit.event.CraftEventFactory; // CraftBukkit
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Bat extends AmbientCreature {
+ 
+@@ -184,6 +185,7 @@ public class Bat extends AmbientCreature {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.BatTickTreshold) return; //sugarcane
+         super.tick();
+         if (this.isResting()) {
+             this.setDeltaMovement(Vec3.ZERO);
+diff --git a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
+index 87d072bbf95ec15cbd5664f5138f7c8473764d68..376c64ea91b30e6fac2fb8440c89412b43c77d0f 100644
+--- a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
++++ b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
+@@ -63,6 +63,7 @@ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ import org.bukkit.event.entity.EntityRegainHealthEvent;
+ import org.bukkit.event.entity.EntityTargetEvent;
+ import org.bukkit.event.entity.ExplosionPrimeEvent;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public class WitherBoss extends Monster implements PowerableMob, RangedAttackMob {
+@@ -101,6 +102,12 @@ public class WitherBoss extends Monster implements PowerableMob, RangedAttackMob
+         this.xpReward = 50;
+     }
+ 
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.WitherBossTickTreshold) return; //sugarcane
++        super.tick();
++    }
++
+     @Override
+     protected PathNavigation createNavigation(Level world) {
+         FlyingPathNavigation navigationflying = new FlyingPathNavigation(this, world);
+diff --git a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
+index 8634431cabae82b71f409f02c84dda2d8eca8504..2024c0ebd917759be2601fd36037ea68254b2001 100644
+--- a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
++++ b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
+@@ -46,6 +46,7 @@ import org.bukkit.craftbukkit.CraftEquipmentSlot;
+ import org.bukkit.craftbukkit.inventory.CraftItemStack;
+ import org.bukkit.entity.Player;
+ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public class ArmorStand extends LivingEntity {
+@@ -677,6 +678,7 @@ public class ArmorStand extends LivingEntity {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ArmorStandTickTreshold) return; //sugarcane
+         maxUpStep = level.purpurConfig.armorstandStepHeight;
+         // Paper start
+         if (!this.canTick) {
+diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+index 92a9869dbabcaa704a0da8bc86f7578661197903..34f4e626dd65fe56cf5a35d6f9df0763309e96fb 100644
+--- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
+@@ -45,6 +45,7 @@ import net.minecraft.world.phys.BlockHitResult;
+ import net.minecraft.world.phys.HitResult;
+ import net.minecraft.world.phys.Vec3;
+ import org.bukkit.craftbukkit.event.CraftEventFactory; // CraftBukkit
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class FallingBlockEntity extends Entity {
+ 
+@@ -110,6 +111,7 @@ public class FallingBlockEntity extends Entity {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.FallingBlockEntityTickTreshold) return; //sugarcane
+         // Paper start - fix sand duping
+         if (this.level.purpurConfig.fixSandDuping && this.isRemoved()) { // Purpur
+             return;
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index 1ea66613df431d0431d0e6bc4fe82362c3d8e28c..d04d52ac6793041f9ce4a126f9f4e8bc219618d0 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -36,6 +36,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
+ import org.bukkit.event.player.PlayerPickupItemEvent;
+ // CraftBukkit end
+ import org.bukkit.event.player.PlayerAttemptPickupItemEvent; // Paper
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ import org.sugarcanemc.sugarcane.config.SugarcaneConfig; // Sugarcane
+ 
+ public class ItemEntity extends Entity {
+@@ -153,6 +154,7 @@ public class ItemEntity extends Entity {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ItemEntityTickTreshold) return; //sugarcane
+         if (this.getItem().isEmpty()) {
+             this.discard();
+         } else {
+diff --git a/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java b/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
+index 114ea3c898a23575bb2b06bf5c754330c38495e7..bb9238e8b5df7cefa216ff7fce7cbad5c023caeb 100644
+--- a/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
++++ b/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
+@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Pose;
+ import net.minecraft.world.level.Explosion;
+ import net.minecraft.world.level.Level;
+ import org.bukkit.event.entity.ExplosionPrimeEvent; // CraftBukkit
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class PrimedTnt extends Entity {
+ 
+@@ -62,6 +63,7 @@ public class PrimedTnt extends Entity {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.PrimedTntTickTreshold) return; //sugarcane
+         if (level.spigotConfig.currentPrimedTnt++ > level.spigotConfig.maxTntTicksPerTick) { return; } // Spigot
+         if (!this.isNoGravity()) {
+             this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Blaze.java b/src/main/java/net/minecraft/world/entity/monster/Blaze.java
+index d91b24400c31a2824320ba89369a9851040a867f..00b8e4c5262160241a22708321bdb4ac7d93244c 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Blaze.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Blaze.java
+@@ -24,6 +24,7 @@ import net.minecraft.world.entity.projectile.SmallFireball;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.pathfinder.BlockPathTypes;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Blaze extends Monster {
+     private float allowedHeightOffset = 0.5F;
+@@ -191,6 +192,12 @@ public class Blaze extends Monster {
+         return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
+     }
+ 
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.BlazeTickTreshold) return; //sugarcane
++        super.tick();
++    }
++
+     void setCharged(boolean fireActive) {
+         byte b = this.entityData.get(DATA_FLAGS_ID);
+         if (fireActive) {
+diff --git a/src/main/java/net/minecraft/world/entity/monster/EnderMan.java b/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
+index 8fd2721aaaee8148798f49fdc5b239dcdc86a2bb..d398151816a63333aaca6931b77216f6b33a5e7e 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
++++ b/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
+@@ -65,6 +65,7 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
+ import net.minecraft.world.phys.AABB;
+ import net.minecraft.world.phys.BlockHitResult;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class EnderMan extends Monster implements NeutralMob {
+ 
+@@ -472,6 +473,12 @@ public class EnderMan extends Monster implements NeutralMob {
+         return super.requiresCustomPersistence() || (!this.level.purpurConfig.endermanDespawnEvenWithBlock && this.getCarriedBlock() != null); // Purpur
+     }
+ 
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.EnderManTickTreshold) return; //sugarcane
++        super.tick();
++    }
++
+     private static class EndermanFreezeWhenLookedAt extends Goal {
+ 
+         private final EnderMan enderman;
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Ghast.java b/src/main/java/net/minecraft/world/entity/monster/Ghast.java
+index 130c83e7161a555ba34270a45be38cad5e8e4e5d..4cbb633d5f6abb5e079bb82fe35de20497e5bc70 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Ghast.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Ghast.java
+@@ -32,6 +32,7 @@ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.LevelAccessor;
+ import net.minecraft.world.phys.AABB;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Ghast extends FlyingMob implements Enemy {
+ 
+@@ -193,6 +194,12 @@ public class Ghast extends FlyingMob implements Enemy {
+ 
+     }
+ 
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.GhastTickTreshold) return; //sugarcane
++        super.tick();
++    }
++
+     @Override
+     protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+         return 2.6F;
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Giant.java b/src/main/java/net/minecraft/world/entity/monster/Giant.java
+index 5cd408392e8afbbb58a4b808af92631c59ab9339..44b00e13788ee5dd3234b063fc7f40aa149e9c62 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Giant.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Giant.java
+@@ -29,6 +29,7 @@ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.LevelReader;
+ import net.minecraft.world.level.ServerLevelAccessor;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ import javax.annotation.Nullable;
+ 
+@@ -132,4 +133,10 @@ public class Giant extends Monster {
+     public float getWalkTargetValue(BlockPos pos, LevelReader world) {
+         return super.getWalkTargetValue(pos, world); // Purpur - fix light requirements for natural spawns
+     }
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.GiantTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Guardian.java b/src/main/java/net/minecraft/world/entity/monster/Guardian.java
+index 69ce21cae8e097a6028eba7b842d325784f457af..ccf1b30e76cc7706bf68565460b9a7d0e4b87862 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Guardian.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Guardian.java
+@@ -43,6 +43,7 @@ import net.minecraft.world.level.LevelAccessor;
+ import net.minecraft.world.level.LevelReader;
+ import net.minecraft.world.level.pathfinder.BlockPathTypes;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Guardian extends Monster {
+     protected static final int ATTACK_TIME = 80;
+@@ -384,6 +385,12 @@ public class Guardian extends Monster {
+ 
+     }
+ 
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.GuardianTickTreshold) return; //sugarcane
++        super.tick();
++    }
++
+     static class GuardianAttackGoal extends Goal {
+         private final Guardian guardian;
+         private int attackTime;
+diff --git a/src/main/java/net/minecraft/world/entity/monster/MagmaCube.java b/src/main/java/net/minecraft/world/entity/monster/MagmaCube.java
+index 23e702df207e931e3f41e6094495aea397f32321..873bc72639cb061581ca3623393d5639d533e1f3 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/MagmaCube.java
++++ b/src/main/java/net/minecraft/world/entity/monster/MagmaCube.java
+@@ -21,6 +21,7 @@ import net.minecraft.world.level.LevelReader;
+ import net.minecraft.world.level.material.Fluid;
+ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class MagmaCube extends Slime {
+     public MagmaCube(EntityType<? extends MagmaCube> type, Level world) {
+@@ -182,4 +183,10 @@ public class MagmaCube extends Slime {
+     protected SoundEvent getJumpSound() {
+         return SoundEvents.MAGMA_CUBE_JUMP;
+     }
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.MagmaCubeTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Phantom.java b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
+index b9bb5be18259a05f6fdde1485591a3b518ccf42b..2e30bd5d25492fa37c3b2b5780c6a0142e093b66 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Phantom.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
+@@ -40,6 +40,7 @@ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.ServerLevelAccessor;
+ import net.minecraft.world.level.levelgen.Heightmap;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Phantom extends FlyingMob implements Enemy {
+ 
+@@ -237,6 +238,7 @@ public class Phantom extends FlyingMob implements Enemy {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.PhantomTickTreshold) return; //sugarcane
+         super.tick();
+         if (this.level.isClientSide) {
+             float f = Mth.cos((float) (this.getUniqueFlapTickOffset() + this.tickCount) * 7.448451F * 0.017453292F + 3.1415927F);
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Slime.java b/src/main/java/net/minecraft/world/entity/monster/Slime.java
+index d8a21a982b4ebb133f6208fded11ba5f588d9f1f..b12ac6ed4d07abdb0a2f4168d0a78495e2646997 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Slime.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Slime.java
+@@ -56,6 +56,7 @@ import java.util.List;
+ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ import org.bukkit.event.entity.EntityTransformEvent;
+ import org.bukkit.event.entity.SlimeSplitEvent;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public class Slime extends Mob implements Enemy {
+@@ -224,6 +225,7 @@ public class Slime extends Mob implements Enemy {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SlimeTickTreshold) return; //sugarcane
+         this.squish += (this.targetSquish - this.squish) * 0.5F;
+         this.oSquish = this.squish;
+         super.tick();
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Spider.java b/src/main/java/net/minecraft/world/entity/monster/Spider.java
+index 07dc3b10a275895f23fcf50720ef25faea358c58..df75d8f8d3d0d6c34e87de36716da7beebe4177c 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Spider.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Spider.java
+@@ -41,6 +41,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Spider extends Monster {
+ 
+@@ -116,6 +117,7 @@ public class Spider extends Monster {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SpiderTickTreshold) return; //sugarcane
+         super.tick();
+         if (!this.level.isClientSide) {
+             this.setClimbing(this.horizontalCollision && (this.level.purpurConfig.spiderCanClimbWorldBorder || !this.collidingWithWorldBorder)); // Purpur
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Vex.java b/src/main/java/net/minecraft/world/entity/monster/Vex.java
+index c8934f1b0fbac164ce110d44f7697e06834ca275..041965b82b58f3851556848e878f9c780a95003c 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Vex.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Vex.java
+@@ -38,6 +38,7 @@ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.ServerLevelAccessor;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Vex extends Monster {
+ 
+@@ -130,6 +131,7 @@ public class Vex extends Monster {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.VexTickTreshold) return; //sugarcane
+         this.noPhysics = getRider() == null || !this.isControllable(); // Purpur
+         super.tick();
+         this.noPhysics = false;
+diff --git a/src/main/java/net/minecraft/world/entity/monster/Zoglin.java b/src/main/java/net/minecraft/world/entity/monster/Zoglin.java
+index b99419b712b9af385988f1a1271b28f41e5a05a0..a04b91cdd928ecdf2ffc149a434ef617d9a31101 100644
+--- a/src/main/java/net/minecraft/world/entity/monster/Zoglin.java
++++ b/src/main/java/net/minecraft/world/entity/monster/Zoglin.java
+@@ -46,6 +46,7 @@ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.entity.schedule.Activity;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.state.BlockState;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Zoglin extends Monster implements Enemy, HoglinBase {
+     private static final EntityDataAccessor<Boolean> DATA_BABY_ID = SynchedEntityData.defineId(Zoglin.class, EntityDataSerializers.BOOLEAN);
+@@ -68,6 +69,12 @@ public class Zoglin extends Monster implements Enemy, HoglinBase {
+         this.xpReward = 5;
+     }
+ 
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ZoglinTickTreshold) return; //sugarcane
++        super.tick();
++    }
++
+     // Purpur start
+     @Override
+     public boolean isRidable() {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/Arrow.java b/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
+index 29e97cfec599e19eb85b81e49c997b562c8d3a6b..f0b106c52c0ee056a9b14525fec55c2cb6af0ef7 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
+@@ -21,6 +21,7 @@ import net.minecraft.world.item.alchemy.Potion;
+ import net.minecraft.world.item.alchemy.PotionUtils;
+ import net.minecraft.world.item.alchemy.Potions;
+ import net.minecraft.world.level.Level;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Arrow extends AbstractArrow {
+ 
+@@ -109,6 +110,7 @@ public class Arrow extends AbstractArrow {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ArrowTickTreshold) return; //sugarcane
+         super.tick();
+         if (this.level.isClientSide) {
+             if (this.inGround) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/Fireball.java b/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
+index 7f4e3dfab421591151fda7ec39d9c00b464d62de..454fbeb35788bef1558ac3ad63d3184f631b8ce5 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
+@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.Level;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public abstract class Fireball extends AbstractHurtingProjectile implements ItemSupplier {
+ 
+@@ -70,4 +71,10 @@ public abstract class Fireball extends AbstractHurtingProjectile implements Item
+ 
+         if (!itemstack.isEmpty()) this.setItem(itemstack); // CraftBukkit - SPIGOT-5474 probably came from bugged earlier versions
+     }
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.FireballTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java b/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
+index f51ea103238b4a50439f5162a248cd9aa7f1a19b..f031aa44b3ad43706f0e8eab0fbf72c79b1b6c82 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
+@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
+ import net.minecraft.world.phys.EntityHitResult;
+ import net.minecraft.world.phys.HitResult;
+ import org.bukkit.event.entity.ExplosionPrimeEvent; // CraftBukkit
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class LargeFireball extends Fireball {
+ 
+@@ -84,4 +85,11 @@ public class LargeFireball extends Fireball {
+         return this.level.purpurConfig.largeFireballDespawnRate;
+     }
+     // Purpur end
++
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.LargeFireballTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java b/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
+index e2a652277f2a63e0f0501db4137d7813e2d603c4..8cabd060874679af2a9d68dca8b063b8b057ef2e 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
+@@ -13,6 +13,7 @@ import net.minecraft.world.phys.BlockHitResult;
+ import net.minecraft.world.phys.EntityHitResult;
+ import net.minecraft.world.phys.HitResult;
+ import org.bukkit.event.entity.EntityCombustByEntityEvent; // CraftBukkit
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class SmallFireball extends Fireball {
+ 
+@@ -105,4 +106,11 @@ public class SmallFireball extends Fireball {
+         return this.level.purpurConfig.smallFireballDespawnRate;
+     }
+     // Purpur end
++
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SmallFireballTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/Snowball.java b/src/main/java/net/minecraft/world/entity/projectile/Snowball.java
+index ef265cec066ef3b84c2b3a4929af518308a409c3..7c4eb0c24dbf2b28850242769414b1d25f93fa57 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/Snowball.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/Snowball.java
+@@ -14,6 +14,7 @@ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.phys.EntityHitResult;
+ import net.minecraft.world.phys.HitResult;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class Snowball extends ThrowableItemProjectile {
+     public Snowball(EntityType<? extends Snowball> type, Level world) {
+@@ -104,4 +105,11 @@ public class Snowball extends ThrowableItemProjectile {
+         return this.level.purpurConfig.snowballDespawnRate;
+     }
+     // Purpur end
++
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SnowballTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java b/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
+index 28b3aed97723e073b77e14cfcbe77a7cb31ff2ea..a559de291d30f65b7ddc0ff7950216baf692ed18 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
+@@ -9,6 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.item.Items;
+ import net.minecraft.world.level.Level;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class SpectralArrow extends AbstractArrow {
+ 
+@@ -28,6 +29,7 @@ public class SpectralArrow extends AbstractArrow {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SpectralArrowTickTreshold) return; //sugarcane
+         super.tick();
+         if (this.level.isClientSide && !this.inGround) {
+             this.level.addParticle(ParticleTypes.INSTANT_EFFECT, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrowableItemProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/ThrowableItemProjectile.java
+index 74dccb5151a021af8b2e274f665447f54c4d0364..934c7086a00c28446fcea6e6fdc75f697b0d7078 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrowableItemProjectile.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrowableItemProjectile.java
+@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
+ import net.minecraft.world.item.Item;
+ import net.minecraft.world.item.ItemStack;
+ import net.minecraft.world.level.Level;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public abstract class ThrowableItemProjectile extends ThrowableProjectile implements ItemSupplier {
+ 
+@@ -78,4 +79,10 @@ public abstract class ThrowableItemProjectile extends ThrowableProjectile implem
+ 
+         this.setItem(itemstack);
+     }
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrowableItemProjectileTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
+index 8c6243aab556c993b43ab52e216bcb0a70d1a686..968b8a4f721bd3989b1c69d9759f2f7dd00011ac 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
+@@ -15,6 +15,7 @@ import org.bukkit.entity.Ageable;
+ import org.bukkit.entity.EntityType;
+ import org.bukkit.entity.Player;
+ import org.bukkit.event.player.PlayerEggThrowEvent;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public class ThrownEgg extends ThrowableItemProjectile {
+@@ -114,4 +115,11 @@ public class ThrownEgg extends ThrowableItemProjectile {
+         return this.level.purpurConfig.eggDespawnRate;
+     }
+     // Purpur end
++
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownEggTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
+index 1fe20aab5b0c129470c1563d5c0710f2a23895d2..c787c29eb7ef771e5d16121af58ea009a9584565 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
+@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
+ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ import org.bukkit.event.entity.CreatureSpawnEvent;
+ import org.bukkit.event.player.PlayerTeleportEvent;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public class ThrownEnderpearl extends ThrowableItemProjectile {
+@@ -101,6 +102,7 @@ public class ThrownEnderpearl extends ThrowableItemProjectile {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownEnderpearlTickTreshold) return; //sugarcane
+         Entity entity = this.getOwner();
+ 
+         if (entity instanceof Player && !entity.isAlive()) {
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
+index d6b522aa7c7ce87caf55f91ee9d661e055506c01..b32a25853ab45d555cf304839fab6b6d78bc1fa4 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
+@@ -10,6 +10,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
+ import net.minecraft.world.item.alchemy.Potions;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.phys.HitResult;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class ThrownExperienceBottle extends ThrowableItemProjectile {
+ 
+@@ -63,4 +64,11 @@ public class ThrownExperienceBottle extends ThrowableItemProjectile {
+         return this.level.purpurConfig.expBottleDespawnRate;
+     }
+     // Purpur end
++
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownExperienceBottleTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
+index 7cb922be9b976eb06ba06f25a50599d80c385bc8..d306111d5b01dcf9dfa986761dba21a66e4fe3d2 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
+@@ -39,6 +39,7 @@ import net.minecraft.world.phys.HitResult;
+ import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+ import org.bukkit.craftbukkit.event.CraftEventFactory;
+ import org.bukkit.entity.LivingEntity;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public class ThrownPotion extends ThrowableItemProjectile implements ItemSupplier {
+@@ -313,4 +314,11 @@ public class ThrownPotion extends ThrowableItemProjectile implements ItemSupplie
+         return this.level.purpurConfig.potionDespawnRate;
+     }
+     // Purpur end
++
++
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownPotionTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
+index 52d41fb8d0495f61346c718c8f2395bc622027af..53ed0493d04668ef7ca44ad7751e3b2c87b08041 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
+@@ -22,6 +22,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
+ import net.minecraft.world.level.Level;
+ import net.minecraft.world.phys.EntityHitResult;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class ThrownTrident extends AbstractArrow {
+ 
+@@ -53,6 +54,7 @@ public class ThrownTrident extends AbstractArrow {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownTridentTickTreshold) return; //sugarcane
+         if (this.inGroundTime > 4) {
+             this.dealtDamage = true;
+         }
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
+index 6cf8b12e94c17a8111eef5cc0157e4df594f15dc..8e3da698cb0724f8973170e7bbfe1a3b2c3f372a 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
+@@ -21,6 +21,7 @@ import net.minecraft.world.level.material.FluidState;
+ import net.minecraft.world.phys.EntityHitResult;
+ import net.minecraft.world.phys.HitResult;
+ import org.bukkit.event.entity.ExplosionPrimeEvent; // CraftBukkit
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class WitherSkull extends AbstractHurtingProjectile {
+ 
+@@ -143,4 +144,10 @@ public class WitherSkull extends AbstractHurtingProjectile {
+         return this.level.purpurConfig.witherSkullDespawnRate;
+     }
+     // Purpur end
++
++    @Override
++    public void tick(){
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.WitherSkullTickTreshold) return; //sugarcane
++        super.tick();
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/vehicle/AbstractMinecart.java b/src/main/java/net/minecraft/world/entity/vehicle/AbstractMinecart.java
+index 0e6f2d1d48910c573ec2237002a02f334a5d05b0..4f5fe1f1d0ee627e91c462742745e9ed81068ca8 100644
+--- a/src/main/java/net/minecraft/world/entity/vehicle/AbstractMinecart.java
++++ b/src/main/java/net/minecraft/world/entity/vehicle/AbstractMinecart.java
+@@ -55,6 +55,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
+ import org.bukkit.event.vehicle.VehicleDestroyEvent;
+ import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
+ import org.bukkit.util.Vector;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public abstract class AbstractMinecart extends Entity {
+@@ -327,6 +328,7 @@ public abstract class AbstractMinecart extends Entity {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.MinecartTickTreshold) return; //sugarcane
+         // Purpur start
+         if (storedMaxSpeed != level.purpurConfig.minecartMaxSpeed) {
+             maxSpeed = storedMaxSpeed = level.purpurConfig.minecartMaxSpeed;
+diff --git a/src/main/java/net/minecraft/world/entity/vehicle/Boat.java b/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
+index fe5bf9557b58bdc7aac319491bf2e0e58c5bd7fd..81f0121155dcae221a97e89fd43110a90900f405 100644
+--- a/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
++++ b/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
+@@ -58,6 +58,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
+ import org.bukkit.event.vehicle.VehicleDestroyEvent;
+ import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
+ import org.bukkit.event.vehicle.VehicleMoveEvent;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ // CraftBukkit end
+ 
+ public class Boat extends Entity {
+@@ -325,6 +326,7 @@ public class Boat extends Entity {
+     private Location lastLocation; // CraftBukkit
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.BoatTickTreshold) return; //sugarcane
+         this.oldStatus = this.status;
+         this.status = this.getStatus();
+         if (this.status != Boat.Status.UNDER_WATER && this.status != Boat.Status.UNDER_FLOWING_WATER) {
+diff --git a/src/main/java/net/minecraft/world/entity/vehicle/MinecartCommandBlock.java b/src/main/java/net/minecraft/world/entity/vehicle/MinecartCommandBlock.java
+index 7df7c1b9a7b83768c2e2994ab02b966811619949..556bf6c066c877a916ea7745da0f42a0df40e7d1 100644
+--- a/src/main/java/net/minecraft/world/entity/vehicle/MinecartCommandBlock.java
++++ b/src/main/java/net/minecraft/world/entity/vehicle/MinecartCommandBlock.java
+@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.phys.Vec3;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class MinecartCommandBlock extends AbstractMinecart {
+ 
+@@ -55,6 +56,12 @@ public class MinecartCommandBlock extends AbstractMinecart {
+         this.commandBlock.save(nbt);
+     }
+ 
++    @Override
++    public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.MinecartCommandBlockTickTreshold) return; //sugarcane
++        super.tick();
++    }
++
+     @Override
+     public AbstractMinecart.Type getMinecartType() {
+         return AbstractMinecart.Type.COMMAND_BLOCK;
+diff --git a/src/main/java/net/minecraft/world/entity/vehicle/MinecartTNT.java b/src/main/java/net/minecraft/world/entity/vehicle/MinecartTNT.java
+index 4572a3cf0a067b64f2bd6c31139a773cddf4e872..0b6d1d059125913d2659997119da145cdc8ad704 100644
+--- a/src/main/java/net/minecraft/world/entity/vehicle/MinecartTNT.java
++++ b/src/main/java/net/minecraft/world/entity/vehicle/MinecartTNT.java
+@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
+ import net.minecraft.world.level.block.Blocks;
+ import net.minecraft.world.level.block.state.BlockState;
+ import net.minecraft.world.level.material.FluidState;
++import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+ 
+ public class MinecartTNT extends AbstractMinecart {
+     private static final byte EVENT_PRIME = 10;
+@@ -43,6 +44,7 @@ public class MinecartTNT extends AbstractMinecart {
+ 
+     @Override
+     public void tick() {
++        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.MinecartTNTTickTreshold) return; //sugarcane
+         super.tick();
+         if (this.fuse > 0) {
+             // Paper start - Configurable TNT entity height nerf
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSTresholds.java b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSTresholds.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..6a9bc6857693e19754994dfc82f07aaad9279249
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSTresholds.java
+@@ -0,0 +1,463 @@
++package org.sugarcanemc.sugarcane.config;
++
++public class MobTPSTresholds {
++    public static int CurrentTPS = 20;
++    //Tresholds for FallingBlockEntity:
++    public static int FallingBlockEntityTickTreshold = 10;
++    //Tresholds for ExperienceOrb:
++    public static int ExperienceOrbTickTreshold = 10;
++    //Tresholds for PrimedTnt:
++    public static int PrimedTntTickTreshold = 10;
++    //Tresholds for ItemEntity:
++    public static int ItemEntityTickTreshold = 10;
++    //Tresholds for Boat:
++    public static int BoatTickTreshold = 10;
++    //Tresholds for Marker:
++    public static int MarkerTickTreshold = 10;
++    //Tresholds for ArmorStand:
++    public static int ArmorStandTickTreshold = 10;
++    //Tresholds for ItemFrame:
++    public static int ItemFrameSpawnTreshold = 7;
++    public static int ItemFrameTickTreshold = 10;
++    //Tresholds for Painting:
++    public static int PaintingSpawnTreshold = 7;
++    public static int PaintingTickTreshold = 10;
++    //Tresholds for MinecartTNT:
++    public static int MinecartTNTTickTreshold = 10;
++    //Tresholds for MinecartCommandBlock:
++    public static int MinecartCommandBlockTickTreshold = 10;
++    //Tresholds for MinecartFurnace:
++    public static int MinecartFurnaceTickTreshold = 10;
++    //Tresholds for MinecartSpawner:
++    public static int MinecartSpawnerTickTreshold = 10;
++    //Tresholds for Minecart:
++    public static int MinecartTickTreshold = 10;
++    //Tresholds for Slime:
++    public static int SlimeSpawnTreshold = 7;
++    public static int SlimeTickTreshold = 10;
++    //Tresholds for MinecartHopper:
++    public static int MinecartHopperTickTreshold = 10;
++    //Tresholds for MinecartChest:
++    public static int MinecartChestTickTreshold = 10;
++    //Tresholds for Arrow:
++    public static int ArrowTickTreshold = 10;
++    //Tresholds for ThrownTrident:
++    public static int ThrownTridentTickTreshold = 10;
++    //Tresholds for SpectralArrow:
++    public static int SpectralArrowTickTreshold = 10;
++    //Tresholds for WitherSkull:
++    public static int WitherSkullSpawnTreshold = 7;
++    public static int WitherSkullTickTreshold = 10;
++    //Tresholds for Fireball:
++    public static int FireballTickTreshold = 10;
++    //Tresholds for ThrowableItemProjectile:
++    public static int ThrowableItemProjectileTickTreshold = 10;
++    //Tresholds for Phantom:
++    public static int PhantomSpawnTreshold = 7;
++    public static int PhantomTickTreshold = 10;
++    //Tresholds for Ghast:
++    public static int GhastSpawnTreshold = 7;
++    public static int GhastTickTreshold = 10;
++    //Tresholds for Bat:
++    public static int BatSpawnTreshold = 7;
++    public static int BatTickTreshold = 10;
++    //Tresholds for MagmaCube:
++    public static int MagmaCubeSpawnTreshold = 7;
++    public static int MagmaCubeTickTreshold = 10;
++    //Tresholds for SmallFireball:
++    public static int SmallFireballTickTreshold = 10;
++    //Tresholds for LargeFireball:
++    public static int LargeFireballTickTreshold = 10;
++    //Tresholds for ThrownPotion:
++    public static int ThrownPotionTickTreshold = 10;
++    //Tresholds for ThrownEgg:
++    public static int ThrownEggSpawnTreshold = 7;
++    public static int ThrownEggTickTreshold = 10;
++    //Tresholds for ThrownEnderpearl:
++    public static int ThrownEnderpearlSpawnTreshold = 7;
++    public static int ThrownEnderpearlTickTreshold = 10;
++    //Tresholds for ThrownExperienceBottle:
++    public static int ThrownExperienceBottleTickTreshold = 10;
++    //Tresholds for Snowball:
++    public static int SnowballSpawnTreshold = 7;
++    public static int SnowballTickTreshold = 10;
++    //Tresholds for Blaze:
++    public static int BlazeSpawnTreshold = 7;
++    public static int BlazeTickTreshold = 10;
++    //Tresholds for Spider:
++    public static int SpiderSpawnTreshold = 7;
++    public static int SpiderTickTreshold = 10;
++    //Tresholds for Giant:
++    public static int GiantTickTreshold = 10;
++    //Tresholds for WitherBoss:
++    public static int WitherBossTickTreshold = 10;
++    //Tresholds for Vex:
++    public static int VexTickTreshold = 10;
++    //Tresholds for EnderMan:
++    public static int EnderManSpawnTreshold = 7;
++    public static int EnderManTickTreshold = 10;
++    //Tresholds for Guardian:
++    public static int GuardianSpawnTreshold = 7;
++    public static int GuardianTickTreshold = 10;
++    //Tresholds for Endermite:
++    public static int EndermiteSpawnTreshold = 7;
++    public static int EndermiteTickTreshold = 10;
++    //Tresholds for Zoglin:
++    public static int ZoglinSpawnTreshold = 7;
++    public static int ZoglinTickTreshold = 10;
++    //Tresholds for Zombie:
++    public static int ZombieSpawnTreshold = 7;
++    public static int ZombieTickTreshold = 10;
++    //Tresholds for Creeper:
++    public static int CreeperSpawnTreshold = 7;
++    public static int CreeperTickTreshold = 10;
++    //Tresholds for Silverfish:
++    public static int SilverfishTickTreshold = 10;
++    //Tresholds for Squid:
++    public static int SquidSpawnTreshold = 7;
++    public static int SquidTickTreshold = 10;
++    //Tresholds for Dolphin:
++    public static int DolphinSpawnTreshold = 7;
++    public static int DolphinTickTreshold = 10;
++    //Tresholds for IronGolem:
++    public static int IronGolemSpawnTreshold = 7;
++    public static int IronGolemTickTreshold = 10;
++    //Tresholds for SnowGolem:
++    public static int SnowGolemSpawnTreshold = 7;
++    public static int SnowGolemTickTreshold = 10;
++    //Tresholds for Shulker:
++    public static int ShulkerSpawnTreshold = 7;
++    public static int ShulkerTickTreshold = 10;
++    //Tresholds for CaveSpider:
++    public static int CaveSpiderTickTreshold = 10;
++    //Tresholds for ElderGuardian:
++    public static int ElderGuardianSpawnTreshold = 7;
++    public static int ElderGuardianTickTreshold = 10;
++    //Tresholds for PiglinBrute:
++    public static int PiglinBruteSpawnTreshold = 7;
++    public static int PiglinBruteTickTreshold = 10;
++    //Tresholds for Piglin:
++    public static int PiglinSpawnTreshold = 7;
++    public static int PiglinTickTreshold = 10;
++    //Tresholds for Drowned:
++    public static int DrownedSpawnTreshold = 7;
++    public static int DrownedTickTreshold = 10;
++    //Tresholds for ZombieVillager:
++    public static int ZombieVillagerSpawnTreshold = 7;
++    public static int ZombieVillagerTickTreshold = 10;
++    //Tresholds for ZombifiedPiglin:
++    public static int ZombifiedPiglinSpawnTreshold = 7;
++    public static int ZombifiedPiglinTickTreshold = 10;
++    //Tresholds for Husk:
++    public static int HuskSpawnTreshold = 7;
++    public static int HuskTickTreshold = 10;
++    //Tresholds for WitherSkeleton:
++    public static int WitherSkeletonSpawnTreshold = 7;
++    public static int WitherSkeletonTickTreshold = 10;
++    //Tresholds for Skeleton:
++    public static int SkeletonSpawnTreshold = 7;
++    public static int SkeletonTickTreshold = 10;
++    //Tresholds for Stray:
++    public static int StraySpawnTreshold = 7;
++    public static int StrayTickTreshold = 10;
++    //Tresholds for Raider:
++    public static int RaiderSpawnTreshold = 7;
++    public static int RaiderTickTreshold = 10;
++    //Tresholds for GlowSquid:
++    public static int GlowSquidSpawnTreshold = 7;
++    public static int GlowSquidTickTreshold = 10;
++    //Tresholds for Pufferfish:
++    public static int PufferfishSpawnTreshold = 7;
++    public static int PufferfishTickTreshold = 10;
++    //Tresholds for Fox:
++    public static int FoxSpawnTreshold = 7;
++    public static int FoxTickTreshold = 10;
++    //Tresholds for Pig:
++    public static int PigSpawnTreshold = 7;
++    public static int PigTickTreshold = 10;
++    //Tresholds for Strider:
++    public static int StriderSpawnTreshold = 7;
++    public static int StriderTickTreshold = 10;
++    //Tresholds for Ocelot:
++    public static int OcelotSpawnTreshold = 7;
++    public static int OcelotTickTreshold = 10;
++    //Tresholds for Panda:
++    public static int PandaSpawnTreshold = 7;
++    public static int PandaTickTreshold = 10;
++    //Tresholds for Goat:
++    public static int GoatSpawnTreshold = 7;
++    public static int GoatTickTreshold = 10;
++    //Tresholds for Cow:
++    public static int CowSpawnTreshold = 7;
++    public static int CowTickTreshold = 10;
++    //Tresholds for Hoglin:
++    public static int HoglinSpawnTreshold = 7;
++    public static int HoglinTickTreshold = 10;
++    //Tresholds for Rabbit:
++    public static int RabbitSpawnTreshold = 7;
++    public static int RabbitTickTreshold = 10;
++    //Tresholds for Chicken:
++    public static int ChickenSpawnTreshold = 7;
++    public static int ChickenTickTreshold = 10;
++    //Tresholds for Bee:
++    public static int BeeSpawnTreshold = 7;
++    public static int BeeTickTreshold = 10;
++    //Tresholds for Axolotl:
++    public static int AxolotlSpawnTreshold = 7;
++    public static int AxolotlTickTreshold = 10;
++    //Tresholds for Turtle:
++    public static int TurtleSpawnTreshold = 7;
++    public static int TurtleTickTreshold = 10;
++    //Tresholds for PolarBear:
++    public static int PolarBearSpawnTreshold = 7;
++    public static int PolarBearTickTreshold = 10;
++    //Tresholds for Sheep:
++    public static int SheepSpawnTreshold = 7;
++    public static int SheepTickTreshold = 10;
++    //Tresholds for WanderingTrader:
++    public static int WanderingTraderSpawnTreshold = 7;
++    public static int WanderingTraderTickTreshold = 10;
++    //Tresholds for Villager:
++    public static int VillagerTickTreshold = 10;
++    //Tresholds for Witch:
++    public static int WitchSpawnTreshold = 7;
++    public static int WitchTickTreshold = 10;
++    //Tresholds for Ravager:
++    public static int RavagerSpawnTreshold = 7;
++    public static int RavagerTickTreshold = 10;
++    //Tresholds for Cod:
++    public static int CodSpawnTreshold = 7;
++    public static int CodTickTreshold = 10;
++    //Tresholds for Salmon:
++    public static int SalmonSpawnTreshold = 7;
++    public static int SalmonTickTreshold = 10;
++    //Tresholds for TropicalFish:
++    public static int TropicalFishSpawnTreshold = 7;
++    public static int TropicalFishTickTreshold = 10;
++    //Tresholds for MushroomCow:
++    public static int MushroomCowSpawnTreshold = 7;
++    public static int MushroomCowTickTreshold = 10;
++    //Tresholds for Horse:
++    public static int HorseSpawnTreshold = 7;
++    public static int HorseTickTreshold = 10;
++    //Tresholds for ZombieHorse:
++    public static int ZombieHorseTickTreshold = 10;
++    //Tresholds for SkeletonHorse:
++    public static int SkeletonHorseTickTreshold = 10;
++    //Tresholds for Wolf:
++    public static int WolfSpawnTreshold = 7;
++    public static int WolfTickTreshold = 10;
++    //Tresholds for Cat:
++    public static int CatSpawnTreshold = 7;
++    public static int CatTickTreshold = 10;
++    //Tresholds for Pillager:
++    public static int PillagerSpawnTreshold = 7;
++    public static int PillagerTickTreshold = 10;
++    //Tresholds for SpellcasterIllager:
++    public static int SpellcasterIllagerSpawnTreshold = 7;
++    public static int SpellcasterIllagerTickTreshold = 10;
++    //Tresholds for Vindicator:
++    public static int VindicatorSpawnTreshold = 7;
++    public static int VindicatorTickTreshold = 10;
++    //Tresholds for Mule:
++    public static int MuleSpawnTreshold = 7;
++    public static int MuleTickTreshold = 10;
++    //Tresholds for Llama:
++    public static int LlamaSpawnTreshold = 7;
++    public static int LlamaTickTreshold = 10;
++    //Tresholds for Donkey:
++    public static int DonkeySpawnTreshold = 7;
++    public static int DonkeyTickTreshold = 10;
++    //Tresholds for Parrot:
++    public static int ParrotSpawnTreshold = 7;
++    public static int ParrotTickTreshold = 10;
++    //Tresholds for Illusioner:
++    public static int IllusionerSpawnTreshold = 7;
++    public static int IllusionerTickTreshold = 10;
++    //Tresholds for Evoker:
++    public static int EvokerSpawnTreshold = 7;
++    public static int EvokerTickTreshold = 10;
++    //Tresholds for TraderLlama:
++    public static int TraderLlamaTickTreshold = 10;
++
++    // Config class loading:
++    public static void loadMobTresholds() {
++        var stime = System.nanoTime();
++        System.out.println("Loading mob tresholds...");
++//        FallingBlockEntityTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.fallingblockentity.tick", FallingBlockEntityTickTreshold);
++//        ExperienceOrbTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.experienceorb.tick", ExperienceOrbTickTreshold);
++//        PrimedTntTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.primedtnt.tick", PrimedTntTickTreshold);
++//        ItemEntityTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.itementity.tick", ItemEntityTickTreshold);
++//        BoatTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.boat.tick", BoatTickTreshold);
++//        MarkerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.marker.tick", MarkerTickTreshold);
++//        ArmorStandTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.armorstand.tick", ArmorStandTickTreshold);
++//        ItemFrameSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.itemframe.spawn", ItemFrameSpawnTreshold);
++//        ItemFrameTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.itemframe.tick", ItemFrameTickTreshold);
++//        PaintingSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.painting.spawn", PaintingSpawnTreshold);
++//        PaintingTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.painting.tick", PaintingTickTreshold);
++//        MinecartTNTTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecarttnt.tick", MinecartTNTTickTreshold);
++//        MinecartCommandBlockTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecartcommandblock.tick", MinecartCommandBlockTickTreshold);
++//        MinecartFurnaceTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecartfurnace.tick", MinecartFurnaceTickTreshold);
++//        MinecartSpawnerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecartspawner.tick", MinecartSpawnerTickTreshold);
++//        MinecartTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecart.tick", MinecartTickTreshold);
++//        SlimeSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.slime.spawn", SlimeSpawnTreshold);
++//        SlimeTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.slime.tick", SlimeTickTreshold);
++//        MinecartHopperTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecarthopper.tick", MinecartHopperTickTreshold);
++//        MinecartChestTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecartchest.tick", MinecartChestTickTreshold);
++//        ArrowTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.arrow.tick", ArrowTickTreshold);
++//        ThrownTridentTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.throwntrident.tick", ThrownTridentTickTreshold);
++//        SpectralArrowTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spectralarrow.tick", SpectralArrowTickTreshold);
++//        WitherSkullSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherskull.spawn", WitherSkullSpawnTreshold);
++//        WitherSkullTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherskull.tick", WitherSkullTickTreshold);
++//        FireballTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.fireball.tick", FireballTickTreshold);
++//        ThrowableItemProjectileTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.throwableitemprojectile.tick", ThrowableItemProjectileTickTreshold);
++//        PhantomSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.phantom.spawn", PhantomSpawnTreshold);
++//        PhantomTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.phantom.tick", PhantomTickTreshold);
++//        GhastSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ghast.spawn", GhastSpawnTreshold);
++//        GhastTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ghast.tick", GhastTickTreshold);
++//        BatSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.bat.spawn", BatSpawnTreshold);
++//        BatTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.bat.tick", BatTickTreshold);
++//        MagmaCubeSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.magmacube.spawn", MagmaCubeSpawnTreshold);
++//        MagmaCubeTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.magmacube.tick", MagmaCubeTickTreshold);
++//        SmallFireballTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.smallfireball.tick", SmallFireballTickTreshold);
++//        LargeFireballTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.largefireball.tick", LargeFireballTickTreshold);
++//        ThrownPotionTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownpotion.tick", ThrownPotionTickTreshold);
++//        ThrownEggSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownegg.spawn", ThrownEggSpawnTreshold);
++//        ThrownEggTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownegg.tick", ThrownEggTickTreshold);
++//        ThrownEnderpearlSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownenderpearl.spawn", ThrownEnderpearlSpawnTreshold);
++//        ThrownEnderpearlTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownenderpearl.tick", ThrownEnderpearlTickTreshold);
++//        ThrownExperienceBottleTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownexperiencebottle.tick", ThrownExperienceBottleTickTreshold);
++//        SnowballSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.snowball.spawn", SnowballSpawnTreshold);
++//        SnowballTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.snowball.tick", SnowballTickTreshold);
++//        BlazeSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.blaze.spawn", BlazeSpawnTreshold);
++//        BlazeTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.blaze.tick", BlazeTickTreshold);
++//        SpiderSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spider.spawn", SpiderSpawnTreshold);
++//        SpiderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spider.tick", SpiderTickTreshold);
++//        GiantTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.giant.tick", GiantTickTreshold);
++//        WitherBossTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherboss.tick", WitherBossTickTreshold);
++//        VexTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.vex.tick", VexTickTreshold);
++//        EnderManSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.enderman.spawn", EnderManSpawnTreshold);
++//        EnderManTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.enderman.tick", EnderManTickTreshold);
++//        GuardianSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.guardian.spawn", GuardianSpawnTreshold);
++//        GuardianTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.guardian.tick", GuardianTickTreshold);
++//        EndermiteSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.endermite.spawn", EndermiteSpawnTreshold);
++//        EndermiteTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.endermite.tick", EndermiteTickTreshold);
++//        ZoglinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zoglin.spawn", ZoglinSpawnTreshold);
++//        ZoglinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zoglin.tick", ZoglinTickTreshold);
++//        ZombieSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombie.spawn", ZombieSpawnTreshold);
++//        ZombieTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombie.tick", ZombieTickTreshold);
++//        CreeperSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.creeper.spawn", CreeperSpawnTreshold);
++//        CreeperTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.creeper.tick", CreeperTickTreshold);
++//        SilverfishTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.silverfish.tick", SilverfishTickTreshold);
++//        SquidSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.squid.spawn", SquidSpawnTreshold);
++//        SquidTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.squid.tick", SquidTickTreshold);
++//        DolphinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.dolphin.spawn", DolphinSpawnTreshold);
++//        DolphinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.dolphin.tick", DolphinTickTreshold);
++//        IronGolemSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.irongolem.spawn", IronGolemSpawnTreshold);
++//        IronGolemTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.irongolem.tick", IronGolemTickTreshold);
++//        SnowGolemSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.snowgolem.spawn", SnowGolemSpawnTreshold);
++//        SnowGolemTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.snowgolem.tick", SnowGolemTickTreshold);
++//        ShulkerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.shulker.spawn", ShulkerSpawnTreshold);
++//        ShulkerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.shulker.tick", ShulkerTickTreshold);
++//        CaveSpiderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cavespider.tick", CaveSpiderTickTreshold);
++//        ElderGuardianSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.elderguardian.spawn", ElderGuardianSpawnTreshold);
++//        ElderGuardianTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.elderguardian.tick", ElderGuardianTickTreshold);
++//        PiglinBruteSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.piglinbrute.spawn", PiglinBruteSpawnTreshold);
++//        PiglinBruteTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.piglinbrute.tick", PiglinBruteTickTreshold);
++//        PiglinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.piglin.spawn", PiglinSpawnTreshold);
++//        PiglinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.piglin.tick", PiglinTickTreshold);
++//        DrownedSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.drowned.spawn", DrownedSpawnTreshold);
++//        DrownedTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.drowned.tick", DrownedTickTreshold);
++//        ZombieVillagerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombievillager.spawn", ZombieVillagerSpawnTreshold);
++//        ZombieVillagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombievillager.tick", ZombieVillagerTickTreshold);
++//        ZombifiedPiglinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombifiedpiglin.spawn", ZombifiedPiglinSpawnTreshold);
++//        ZombifiedPiglinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombifiedpiglin.tick", ZombifiedPiglinTickTreshold);
++//        HuskSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.husk.spawn", HuskSpawnTreshold);
++//        HuskTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.husk.tick", HuskTickTreshold);
++//        WitherSkeletonSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherskeleton.spawn", WitherSkeletonSpawnTreshold);
++//        WitherSkeletonTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherskeleton.tick", WitherSkeletonTickTreshold);
++//        SkeletonSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.skeleton.spawn", SkeletonSpawnTreshold);
++//        SkeletonTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.skeleton.tick", SkeletonTickTreshold);
++//        StraySpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.stray.spawn", StraySpawnTreshold);
++//        StrayTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.stray.tick", StrayTickTreshold);
++//        RaiderSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.raider.spawn", RaiderSpawnTreshold);
++//        RaiderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.raider.tick", RaiderTickTreshold);
++//        GlowSquidSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.glowsquid.spawn", GlowSquidSpawnTreshold);
++//        GlowSquidTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.glowsquid.tick", GlowSquidTickTreshold);
++//        PufferfishSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pufferfish.spawn", PufferfishSpawnTreshold);
++//        PufferfishTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pufferfish.tick", PufferfishTickTreshold);
++//        FoxSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.fox.spawn", FoxSpawnTreshold);
++//        FoxTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.fox.tick", FoxTickTreshold);
++//        PigSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pig.spawn", PigSpawnTreshold);
++//        PigTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pig.tick", PigTickTreshold);
++//        StriderSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.strider.spawn", StriderSpawnTreshold);
++//        StriderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.strider.tick", StriderTickTreshold);
++//        OcelotSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ocelot.spawn", OcelotSpawnTreshold);
++//        OcelotTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ocelot.tick", OcelotTickTreshold);
++//        PandaSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.panda.spawn", PandaSpawnTreshold);
++//        PandaTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.panda.tick", PandaTickTreshold);
++//        GoatSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.goat.spawn", GoatSpawnTreshold);
++//        GoatTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.goat.tick", GoatTickTreshold);
++//        CowSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cow.spawn", CowSpawnTreshold);
++//        CowTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cow.tick", CowTickTreshold);
++//        HoglinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.hoglin.spawn", HoglinSpawnTreshold);
++//        HoglinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.hoglin.tick", HoglinTickTreshold);
++//        RabbitSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.rabbit.spawn", RabbitSpawnTreshold);
++//        RabbitTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.rabbit.tick", RabbitTickTreshold);
++//        ChickenSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.chicken.spawn", ChickenSpawnTreshold);
++//        ChickenTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.chicken.tick", ChickenTickTreshold);
++//        BeeSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.bee.spawn", BeeSpawnTreshold);
++//        BeeTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.bee.tick", BeeTickTreshold);
++//        AxolotlSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.axolotl.spawn", AxolotlSpawnTreshold);
++//        AxolotlTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.axolotl.tick", AxolotlTickTreshold);
++//        TurtleSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.turtle.spawn", TurtleSpawnTreshold);
++//        TurtleTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.turtle.tick", TurtleTickTreshold);
++//        PolarBearSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.polarbear.spawn", PolarBearSpawnTreshold);
++//        PolarBearTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.polarbear.tick", PolarBearTickTreshold);
++//        SheepSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.sheep.spawn", SheepSpawnTreshold);
++//        SheepTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.sheep.tick", SheepTickTreshold);
++//        WanderingTraderSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.wanderingtrader.spawn", WanderingTraderSpawnTreshold);
++//        WanderingTraderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.wanderingtrader.tick", WanderingTraderTickTreshold);
++//        VillagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.villager.tick", VillagerTickTreshold);
++//        WitchSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witch.spawn", WitchSpawnTreshold);
++//        WitchTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witch.tick", WitchTickTreshold);
++//        RavagerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ravager.spawn", RavagerSpawnTreshold);
++//        RavagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ravager.tick", RavagerTickTreshold);
++//        CodSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cod.spawn", CodSpawnTreshold);
++//        CodTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cod.tick", CodTickTreshold);
++//        SalmonSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.salmon.spawn", SalmonSpawnTreshold);
++//        SalmonTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.salmon.tick", SalmonTickTreshold);
++//        TropicalFishSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.tropicalfish.spawn", TropicalFishSpawnTreshold);
++//        TropicalFishTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.tropicalfish.tick", TropicalFishTickTreshold);
++//        MushroomCowSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.mushroomcow.spawn", MushroomCowSpawnTreshold);
++//        MushroomCowTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.mushroomcow.tick", MushroomCowTickTreshold);
++//        HorseSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.horse.spawn", HorseSpawnTreshold);
++//        HorseTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.horse.tick", HorseTickTreshold);
++//        ZombieHorseTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombiehorse.tick", ZombieHorseTickTreshold);
++//        SkeletonHorseTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.skeletonhorse.tick", SkeletonHorseTickTreshold);
++//        WolfSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.wolf.spawn", WolfSpawnTreshold);
++//        WolfTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.wolf.tick", WolfTickTreshold);
++//        CatSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cat.spawn", CatSpawnTreshold);
++//        CatTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cat.tick", CatTickTreshold);
++//        PillagerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pillager.spawn", PillagerSpawnTreshold);
++//        PillagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pillager.tick", PillagerTickTreshold);
++//        SpellcasterIllagerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spellcasterillager.spawn", SpellcasterIllagerSpawnTreshold);
++//        SpellcasterIllagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spellcasterillager.tick", SpellcasterIllagerTickTreshold);
++//        VindicatorSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.vindicator.spawn", VindicatorSpawnTreshold);
++//        VindicatorTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.vindicator.tick", VindicatorTickTreshold);
++//        MuleSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.mule.spawn", MuleSpawnTreshold);
++//        MuleTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.mule.tick", MuleTickTreshold);
++//        LlamaSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.llama.spawn", LlamaSpawnTreshold);
++//        LlamaTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.llama.tick", LlamaTickTreshold);
++//        DonkeySpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.donkey.spawn", DonkeySpawnTreshold);
++//        DonkeyTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.donkey.tick", DonkeyTickTreshold);
++//        ParrotSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.parrot.spawn", ParrotSpawnTreshold);
++//        ParrotTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.parrot.tick", ParrotTickTreshold);
++//        IllusionerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.illusioner.spawn", IllusionerSpawnTreshold);
++//        IllusionerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.illusioner.tick", IllusionerTickTreshold);
++//        EvokerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.evoker.spawn", EvokerSpawnTreshold);
++//        EvokerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.evoker.tick", EvokerTickTreshold);
++//        TraderLlamaTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.traderllama.tick", TraderLlamaTickTreshold);
++        System.out.printf("Loaded mob TPS tresholds in %s ms\n", (System.nanoTime() - stime) / 1000000d);
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+index defa1d104376bbb159b8dc7b371d934d183309f7..30f6b9d4364ca0578c613eb20f29f8b1aa3089ff 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -15,6 +15,7 @@ import net.minecraft.SharedConstants;
+ import org.bukkit.Bukkit;
+ import org.bukkit.configuration.InvalidConfigurationException;
+ import org.bukkit.configuration.file.YamlConfiguration;
++import org.sugarcanemc.sugarcane.util.ClassGenerators;
+ import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
+ import org.sugarcanemc.sugarcane.util.yaml.YamlCommenter;
+ 
+@@ -42,7 +43,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 			throw Throwables.propagate(ex);
+ 		}
+ 		config.options().copyDefaults(true);
+-		verbose = getBoolean("verbose", false);
++		verbose = getBoolean("dev.verbose", false);
+ 		version = getInt("config-version", 2);
+ 		set("config-version", 2);
+ 		removeLeftovers();
+@@ -57,10 +58,14 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 				You have been warned!
+ 				Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord""");
+ 		//add comments
+-		c.addComment("debug", "Enable debug output for Sugarcane code!\nWarning: this WILL increase log size a lot!\nKeep in mind this is for output considered too spammy for verbose!");
+-		c.addComment("verbose", "Enable verbose mode for Sugarcane code!\nWarning: may increase log size and/or hurt performance!");
+-		c.addComment("is-running-in-ide", "Enables behavior changes related to running in IDEs.\nWe override this to true during startup, but will be set to this value (default: false) when this file is loaded.");
+-		c.addComment("is-running-in-ide", "Enables overriding vanilla's built in developer toggles. Most of these do not work!");
++		// section: developer toggles
++		c.addComment("dev", "These settings are only useful for Sugarcane developers. You shouldn't ever need to touch these!");
++		c.addComment("dev.debug", "Enable debug output for Sugarcane code!\nWarning: this WILL increase log size a lot!\nKeep in mind this is for output considered too spammy for verbose!");
++		c.addComment("dev.verbose", "Enable verbose mode for Sugarcane code!\nWarning: may increase log size and/or hurt performance!");
++		c.addComment("dev.is-running-in-ide", "Enables behavior changes related to running in IDEs.\nWe override this to true during startup, but will be set to this value (default: false) when this file is loaded.");
++		c.addComment("dev.enable-shared-constant-overrides", "Enables overriding vanilla's built in developer toggles. Most of these do not work!");
++		c.addComment("dev.enable-class-generators", "Enables generation of class files, useful when updating/patching them!");
++		// section: user toggles
+ 		c.addComment("brand-name", "Set the software name the server reports to be using.");
+ 		c.addComment("ItemMergeBehavior",
+ 				"""
+@@ -72,7 +77,9 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 		c.addComment("config-version", "Config version, do NOT modify this!");
+ 		c.addComment("settings.checks.flight", "Toggles flight checks for players");
+ 		c.addComment("settings.checks.vehicle-flight", "Toggles flight checks for players in vehicles");
+-		c.addComment("disable-mob-spawners-below-tps", "Disable mob spawners spawning mobs when TPS drops below this value.");
++		c.addComment("performance.disable-mob-spawners-below-tps", "Disable mob spawners spawning mobs when TPS drops below this value.");
++		c.addComment("performance.disable-mob-spawning-below-tps", "Disable spawning mobs when TPS drops below this value.");
++		c.addComment("performance.tps-treshold", "Disable these features when TPS drops below this value");
+ 	}
+ 
+ 	private static void removeLeftovers() {
+@@ -111,7 +118,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 				}
+ 			}
+ 		}
+-
++		MobTPSTresholds.loadMobTresholds();
+ 		try {
+ 			config.save(CONFIG_FILE);
+ 			c.saveComments(CONFIG_FILE);
+@@ -139,7 +146,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 		return (float) getDouble(path, (double) def);
+ 	}
+ 
+-	private static int getInt(String path, int def) {
++	static int getInt(String path, int def) {
+ 		config.addDefault(path, def);
+ 		return config.getInt(path, config.getInt(path));
+ 	}
+@@ -155,18 +162,20 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 	}
+ 
+ 	//define settings
++	private static void classGenerators(){ if(getBoolean("dev.enable-class-generators", false)) ClassGenerators.Generate(); }
++
+ 	public static boolean debug = false;
+ 	private static void debug() {
+-		debug = getBoolean("debug", false);
++		debug = getBoolean("dev.debug", false);
+ 	}
+ 	public static boolean isRunningInIDE = false;
+ 	private static void setIsRunningInIDE() {
+-		isRunningInIDE = getBoolean("is-running-in-ide", false);
++		isRunningInIDE = getBoolean("dev.is-running-in-ide", false);
+ 		SharedConstants.IS_RUNNING_IN_IDE = isRunningInIDE;
+ 	}
+ 	public static boolean modSharedConstants = false;
+ 	private static void setModSharedConstants() {
+-		modSharedConstants = getBoolean("enable-shared-constant-overrides", false);
++		modSharedConstants = getBoolean("dev.enable-shared-constant-overrides", false);
+ 		if(modSharedConstants) SharedConstantOverridesConfig.Load();
+ 	}
+ 
+@@ -207,5 +216,5 @@ public class SugarcaneConfig extends BaseYamlConfig {
+     private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
+ 
+ 	public static int DisableMobSpawnerBelowTPS = 0;
+-	private static void disableMobSpawnerBelowTPS(){ DisableMobSpawnerBelowTPS = getInt("disable-mob-spawners-below-tps", 0); }
++	private static void disableMobSpawnerBelowTPS(){ DisableMobSpawnerBelowTPS = getInt("performance.tps-treshold.mob-spawners", 0); }
+ }
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java b/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..2a17b72f659b4ec2a829fe0fef4c14a6fa3ca8f4
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java
+@@ -0,0 +1,98 @@
++package org.sugarcanemc.sugarcane.util;
++
++import net.minecraft.world.entity.Entity;
++import org.reflections.Reflections;
++
++import java.io.File;
++import java.io.FileWriter;
++import java.io.IOException;
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Set;
++
++public class ClassGenerators {
++    private static final String cd = "generated_classes";
++
++    public static void Generate() {
++        System.out.println("Generating classes...");
++        new File(cd).mkdir();
++        GenerateMobSpawnTresholds();
++    }
++
++    public static void GenerateMobSpawnTresholds() {
++        var stime = System.nanoTime();
++        var fullBlacklist = Arrays.stream(("LightningBolt EndCrystal LivingEntity HangingEntity " +
++                "AbstractMinecart EnderDragon EyeOfEnder Mob Player LeashFenceKnotEntity AbstractMinecartContainer " +
++                "FireworkRocketEntity AbstractArrow ShulkerBullet FishingHook LlamaSpit AbstractHurtingProjectile " +
++                "ThrowableProjectile FlyingMob EnderDragonPart Projectile EvokerFangs PathfinderMob AmbientCreature " +
++                "ServerPlayer GlowItemFrame WaterAnimal Monster AbstractGolem AgeableMob AbstractPiglin AbstractSkeleton " +
++                "PatrollingMonster AbstractFish Animal AbstractVillager AbstractSchoolingFish AbstractHorse TamableAnimal " +
++                "AbstractIllager AbstractChestedHorse ShoulderRidingEntity AreaEffectCloud DragonFireball Marker ItemFrame " +
++                "Painting Endermite").split(" ")).toList();
++        var spawnBlacklist = Arrays.stream(("FallingBlockEntity ExperienceOrb PrimedTnt ItemEntity Boat Marker " +
++                "ArmorStand Minecart MinecartFurnace MinecartTNT MinecartCommandBlock MinecartFurnace MinecartSpawner " +
++                "ThrownTrident DragonFireball SpectralArrow Fireball ThrowableItemProjectile SmallFireball LargeFireball " +
++                "ThrownPotion ThrownEggThrownEnderPearl ThrownExperienceBottle Giant WitherBoss Vex Silverfish CaveSpider " +
++                "Villager ZombieHorse SkeletonHorse TraderLlama MinecartHopper MinecartChest Arrow ThrownEnderpearl" +
++                "ThrownEgg ItemFrame ThrownEgg Snowball").split(" ")).toList();
++        var tickBlacklist = Arrays.stream("".split(" ")).toList();
++        ArrayList<String> configClass = new ArrayList<>();
++        configClass.add("\n\t// Config class loading:");
++        configClass.add("\tpublic static void loadMobTresholds() {");
++        configClass.add("\t\tvar stime = System.nanoTime();");
++        configClass.add("\t\tSystem.out.println(\"Loading mob tresholds...\");");
++
++        var file = openFile(cd + "/MobTPSTresholds.java");
++        try {
++            //write header
++            file.write("""
++                    package org.sugarcanemc.sugarcane.config;
++
++                    public class MobTPSTresholds {
++                    """);
++            //write vars
++            Reflections reflections = new Reflections("net.minecraft");
++            Set<Class<? extends Entity>> classes = reflections.getSubTypesOf(Entity.class);
++            for (var i : classes) {
++                System.out.println(i.getSimpleName());
++                if (i.getSimpleName() != "") {
++                    if (!fullBlacklist.contains(i.getSimpleName())) {
++                        file.write(String.format("\t//Tresholds for %s:\n", i.getSimpleName()));
++                        file.flush();
++                        if (!spawnBlacklist.contains(i.getSimpleName())) {
++                            file.write(String.format("\tpublic static int %sSpawnTreshold = 7;\n", i.getSimpleName()));
++                            configClass.add("\t\t%SSpawnTreshold = SugarcaneConfig.getInt(\"performance.tps-treshold.%s.spawn\", %SSpawnTreshold);".replace("%s", i.getSimpleName().toLowerCase()).replace("%S", i.getSimpleName()));
++                        }
++                        if (!tickBlacklist.contains(i.getSimpleName())) {
++                            file.write(String.format("\tpublic static int %sTickTreshold = 10;\n", i.getSimpleName()));
++                            configClass.add("\t\t%STickTreshold = SugarcaneConfig.getInt(\"performance.tps-treshold.%s.tick\", %STickTreshold);".replace("%s", i.getSimpleName().toLowerCase()).replace("%S", i.getSimpleName()));
++                        }
++                    }
++                }
++            }
++            configClass.add("\t\tSystem.out.printf(\"Loaded mob TPS tresholds in %s ms\\n\", (System.nanoTime() - stime) / 1000000d);");
++            configClass.add("\t}\n");
++            file.write(String.join("\n", configClass));
++            file.write("}");
++            file.flush();
++            file.close();
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++        System.out.printf("Generated mob TPS treshold class in %s ms\n", (System.nanoTime() - stime) / 1000000d);
++    }
++
++    private static FileWriter openFile(String name) {
++        var file = new File(name);
++        file.delete();
++        try {
++            file.createNewFile();
++            return new FileWriter(name);
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++        System.out.println("Couldn't open %s for writing, exiting!");
++        System.exit(0);
++        return null;
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
+index 8f30dae59cd8027e027948fbba62626b378c32dd..3bb7cfebfd6e50ec8e4477402251932dbea9cc75 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
+@@ -7,6 +7,8 @@ import java.nio.file.Files;
+ import java.util.ArrayList;
+ import java.util.HashMap;
+ import java.util.Map;
++
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
+ import org.sugarcanemc.sugarcane.util.Util;
+ 
+ public class YamlCommenter {
+@@ -40,21 +42,33 @@ public class YamlCommenter {
+      * @throws IOException
+      */
+     public void saveComments(File file) throws IOException {
++        ld("Saving comments...");
+         ArrayList<String> lines = (ArrayList<String>) Files.readAllLines(file.toPath());
+-        lines.removeIf(s -> s.trim().startsWith("#") || s.trim().length() <= 4);
++        lines.removeIf(s -> s.trim().startsWith("#") || s.trim().length() <= 3);
+         lines.add(0, "# " + Header.replace("\n", "\n# ") + "\n");
+         for (Map.Entry<String, String> _comment : comments.entrySet()) {
++            ld(_comment.getKey());
+             int line = YamlUtils.findKey(lines, _comment.getKey());
++            if(line == -1) {
++                System.out.printf("Couldn't find key %s in sugarcane.yml! Are you sure this key exists?\n", _comment.getKey());
++                //System.exit(1);
++                continue;
++            }
+             String prefix = " ".repeat(Util.getIndentation(lines.get(line))) + "# ";
+             boolean noNewline = Util.getIndentation(lines.get(line)) > Util.getIndentation(lines.get(line-1));
+             if (line >= 0)
+                 lines.add(line, (noNewline ?"":"\n") + prefix + _comment.getValue().replace("\n", "\n" + prefix));
+             else System.out.printf("Failed to find key %s in %s!", _comment.getKey(), file);
++            //String text = String.join("\n", lines);
++            //ld(text);
+         }
+         String text = String.join("\n", lines);
+-        Util.logDebug(text);
++        //Util.logDebug(text);
+         FileWriter fw = new FileWriter(file);
+         fw.write(text);
+         fw.close();
+     }
++    private static void ld(String s) {
++        //if(SugarcaneConfig.debug) System.out.println(s);
++    }
+ }
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
+index 5d8e30a955dcf9305bfa6ec2d83f0c4d13656436..401be66f99b956d9d807d8c870e9834579211794 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
+@@ -7,17 +7,17 @@ import org.sugarcanemc.sugarcane.util.Util;
+ public class YamlUtils {
+     public static int findKey(List<String> lines, String key) {
+         String[] parts = key.split("\\.");
+-        Util.logDebug("Starting to look for " + String.join(".", parts) + "...");
++        //Util.logDebug("Starting to look for " + String.join(".", parts) + "...");
+         int _line = 0;
+         int indent = 0;
+         List<String> _cpath = new ArrayList<>();
+         for (String part : parts) {
+             _cpath.add(part);
+-            Util.logDebug("Looking for " + String.join(".", _cpath) + "...");
++            //Util.logDebug("Looking for " + String.join(".", _cpath) + "...");
+             for (int i = _line; i < lines.size(); i++) {
+                 if (lines.get(i).trim().startsWith(part)) {
+                     _line = i;
+-                    Util.logDebug(String.format("Found key %s at line %d with %d indents (%s)%n", String.join(".", _cpath), i, indent, lines.get(i)));
++                    //Util.logDebug(String.format("Found key %s at line %d with %d indents (%s)%n", String.join(".", _cpath), i, indent, lines.get(i)));
+                     if (String.join(".", _cpath).equals(key)) {
+                         return _line;
+                     }
