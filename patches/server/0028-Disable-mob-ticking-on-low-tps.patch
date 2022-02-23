@@ -19,1275 +19,1655 @@ index 06c1e42b06f07d71621fa59b88fd01a2893d8ac7..45101467a44eff016197142b2af9ce0e
  }
  
  tasks.jar {
+diff --git a/out/production/resources/branch-info.properties b/out/production/resources/branch-info.properties
+new file mode 100644
+index 0000000000000000000000000000000000000000..a2e36505ac4af29d98a3f5d9c9b3e3a42d67379e
+--- /dev/null
++++ b/out/production/resources/branch-info.properties
+@@ -0,0 +1 @@
++branch=1.18.1/dev
+\ No newline at end of file
+diff --git a/out/production/resources/configurations/bukkit.yml b/out/production/resources/configurations/bukkit.yml
+new file mode 100644
+index 0000000000000000000000000000000000000000..6ef7d5436c850e619566e00efdfa32590d0256fb
+--- /dev/null
++++ b/out/production/resources/configurations/bukkit.yml
+@@ -0,0 +1,42 @@
++# This is the main configuration file for Bukkit.
++# As you can see, there's actually not that much to configure without any plugins.
++# For a reference for any variable inside this file, check out the Bukkit Wiki at
++# https://www.spigotmc.org/go/bukkit-yml
++# 
++# If you need help on this file, feel free to join us on Discord or leave a message
++# on the forums asking for advice.
++# 
++# Discord: https://www.spigotmc.org/go/discord
++# Forums: https://www.spigotmc.org/
++# Bug tracker: https://www.spigotmc.org/go/bugs
++
++
++settings:
++    allow-end: true
++    warn-on-overload: true
++    permissions-file: permissions.yml
++    update-folder: update
++    plugin-profiling: false
++    connection-throttle: 4000
++    query-plugins: true
++    deprecated-verbose: default
++    shutdown-message: Server closed
++    minimum-api: none
++spawn-limits:
++    monsters: 70
++    animals: 10
++    water-animals: 5
++    water-ambient: 20
++    water-underground-creature: 5
++    ambient: 15
++chunk-gc:
++    period-in-ticks: 600
++ticks-per:
++    animal-spawns: 400
++    monster-spawns: 1
++    water-spawns: 1
++    water-ambient-spawns: 1
++    water-underground-creature-spawns: 1
++    ambient-spawns: 1
++    autosave: 6000
++aliases: now-in-commands.yml
+diff --git a/out/production/resources/configurations/commands.yml b/out/production/resources/configurations/commands.yml
+new file mode 100644
+index 0000000000000000000000000000000000000000..18f54571200e2eca09a39b88f170fe7b99d8618f
+--- /dev/null
++++ b/out/production/resources/configurations/commands.yml
+@@ -0,0 +1,16 @@
++# This is the commands configuration file for Bukkit.
++# For documentation on how to make use of this file, check out the Bukkit Wiki at
++# https://www.spigotmc.org/go/commands-yml
++# 
++# If you need help on this file, feel free to join us on Discord or leave a message
++# on the forums asking for advice.
++# 
++# Discord: https://www.spigotmc.org/go/discord
++# Forums: https://www.spigotmc.org/
++# Bug tracker: https://www.spigotmc.org/go/bugs
++
++command-block-overrides: []
++ignore-vanilla-permissions: false
++aliases:
++    icanhasbukkit:
++      - "version $1-"
+diff --git a/out/production/resources/configurations/help.yml b/out/production/resources/configurations/help.yml
+new file mode 100644
+index 0000000000000000000000000000000000000000..15c3d07070624ad453032a02d8d4d3f26bd6cb8d
+--- /dev/null
++++ b/out/production/resources/configurations/help.yml
+@@ -0,0 +1,55 @@
++# This is the help configuration file for Bukkit.
++# 
++# By default you do not need to modify this file. Help topics for all plugin commands are automatically provided by
++# or extracted from your installed plugins. You only need to modify this file if you wish to add new help pages to
++# your server or override the help pages of existing plugin commands.
++# 
++# This file is divided up into the following parts:
++# -- general-topics: lists admin defined help topics
++# -- index-topics:   lists admin defined index topics
++# -- amend-topics:   lists topic amendments to apply to existing help topics
++# -- ignore-plugins: lists any plugins that should be excluded from help
++# 
++# Examples are given below. When amending command topic, the string <text> will be replaced with the existing value
++# in the help topic. Color codes can be used in topic text. The color code character is & followed by 0-F.
++# ================================================================
++# 
++# Set this to true to list the individual command help topics in the master help.
++# command-topics-in-master-index: true
++# 
++# Each general topic will show up as a separate topic in the help index along with all the plugin command topics.
++# general-topics:
++#     Rules:
++#         shortText: Rules of the server
++#         fullText: |
++#             &61. Be kind to your fellow players.
++#             &B2. No griefing.
++#             &D3. No swearing.
++#         permission: topics.rules
++# 
++# Each index topic will show up as a separate sub-index in the help index along with all the plugin command topics.
++# To override the default help index (displayed when the user executes /help), name the index topic "Default".
++# index-topics:
++#     Ban Commands:
++#         shortText: Player banning commands
++#         preamble: Moderator - do not abuse these commands
++#         permission: op
++#         commands:
++#             - /ban
++#             - /ban-ip
++#             - /banlist
++# 
++# Topic amendments are used to change the content of automatically generated plugin command topics.
++# amended-topics:
++#     /stop:
++#         shortText: Stops the server cold....in its tracks!
++#         fullText: <text> - This kills the server.
++#         permission: you.dont.have
++# 
++# Any plugin in the ignored plugins list will be excluded from help. The name must match the name displayed by
++# the /plugins command. Ignore "Bukkit" to remove the standard bukkit commands from the index. Ignore "All"
++# to completely disable automatic help topic generation.
++# ignore-plugins:
++#    - PluginNameOne
++#    - PluginNameTwo
++#    - PluginNameThree
+diff --git a/out/production/resources/log4j2.component.properties b/out/production/resources/log4j2.component.properties
+new file mode 100644
+index 0000000000000000000000000000000000000000..0694b21465fb9e4164e71862ff24b62241b191f2
+--- /dev/null
++++ b/out/production/resources/log4j2.component.properties
+@@ -0,0 +1 @@
++log4j.skipJansi=true
+diff --git a/out/production/resources/log4j2.xml b/out/production/resources/log4j2.xml
+new file mode 100644
+index 0000000000000000000000000000000000000000..74ccc67e3c12dc5182602fb691ef3ddeb5b53280
+--- /dev/null
++++ b/out/production/resources/log4j2.xml
+@@ -0,0 +1,54 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<Configuration status="WARN" packages="com.mojang.util" shutdownHook="disable">
++    <Appenders>
++        <Queue name="ServerGuiConsole">
++            <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n" />
++        </Queue>
++        <TerminalConsole name="TerminalConsole">
++            <PatternLayout>
++                <LoggerNamePatternSelector defaultPattern="%highlightError{[%d{HH:mm:ss} %level]: [%logger] %paperMinecraftFormatting{%msg}%n%xEx{full}}">
++                    <!-- Log root, Minecraft, Mojang and Bukkit loggers without prefix -->
++                    <!-- Disable prefix for various plugins that bypass the plugin logger -->
++                    <PatternMatch key=",net.minecraft.,Minecraft,com.mojang.,com.sk89q.,ru.tehkode.,Minecraft.AWE"
++                                  pattern="%highlightError{[%d{HH:mm:ss} %level]: %paperMinecraftFormatting{%msg}%n%xEx{full}}" />
++                </LoggerNamePatternSelector>
++            </PatternLayout>
++        </TerminalConsole>
++        <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
++            <PatternLayout>
++                <LoggerNamePatternSelector defaultPattern="[%d{HH:mm:ss}] [%t/%level]: [%logger] %paperMinecraftFormatting{%msg}{strip}%n%xEx{full}">
++                    <!-- Log root, Minecraft, Mojang and Bukkit loggers without prefix -->
++                    <!-- Disable prefix for various plugins that bypass the plugin logger -->
++                    <PatternMatch key=",net.minecraft.,Minecraft,com.mojang.,com.sk89q.,ru.tehkode.,Minecraft.AWE"
++                                  pattern="[%d{HH:mm:ss}] [%t/%level]: %paperMinecraftFormatting{%msg}{strip}%n%xEx{full}" />
++                </LoggerNamePatternSelector>
++            </PatternLayout>
++            <Policies>
++                <TimeBasedTriggeringPolicy />
++                <OnStartupTriggeringPolicy />
++            </Policies>
++            <DefaultRolloverStrategy max="1000"/>
++        </RollingRandomAccessFile>
++        <Async name="Async">
++            <AppenderRef ref="rewrite"/>
++        </Async>
++        <Rewrite name="rewrite">
++            <StacktraceDeobfuscatingRewritePolicy />
++            <AppenderRef ref="rewrite2"/>
++        </Rewrite>
++        <Rewrite name="rewrite2">
++            <ExtraClassInfoRewritePolicy />
++            <AppenderRef ref="File"/>
++            <AppenderRef ref="TerminalConsole" level="info"/>
++            <AppenderRef ref="ServerGuiConsole" level="info"/>
++        </Rewrite>
++    </Appenders>
++    <Loggers>
++        <Root level="info">
++            <filters>
++                <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL" />
++            </filters>
++            <AppenderRef ref="Async"/>
++        </Root>
++    </Loggers>
++</Configuration>
+diff --git a/out/production/resources/logo.png b/out/production/resources/logo.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..843ed018c98d02ef9b35547e36f1e6f563284b7f
+GIT binary patch
+literal 43179
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/src/main/java/net/minecraft/commands/Commands.java b/src/main/java/net/minecraft/commands/Commands.java
+index a4ec8c35c1870810c11e81e79c3b191c4f440f35..6e2997add4d802179856d49c7f3bddd58b2dfa9a 100644
+--- a/src/main/java/net/minecraft/commands/Commands.java
++++ b/src/main/java/net/minecraft/commands/Commands.java
+@@ -113,6 +113,7 @@ import java.util.Collection;
+ import java.util.LinkedHashSet;
+ import org.bukkit.event.player.PlayerCommandSendEvent;
+ import org.bukkit.event.server.ServerCommandEvent;
++import org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager;
+ // CraftBukkit end
+ 
+ public class Commands {
+@@ -228,6 +229,9 @@ public class Commands {
+             // CommandDispatcher.LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", this.dispatcher.getPath(commandnode1), this.dispatcher.getPath(commandnode2), collection); // CraftBukkit
+         });
+         // CraftBukkit start
++
++        //Sugarcane
++        SugarcaneCommandsManager.registerWithDispatcher(this.dispatcher);
+     }
+ 
+     public Commands() {
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 5eb081f9c9790b64bb8218a0858c5b273a552664..645f8f42aad46b88e3635882123c5a5c070ed093 100644
+index 5eb081f9c9790b64bb8218a0858c5b273a552664..c96987e9ae6037281a64ef2adbe8e1cbfa01618f 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -185,6 +185,7 @@ import org.bukkit.event.server.ServerLoadEvent;
+@@ -185,6 +185,8 @@ import org.bukkit.event.server.ServerLoadEvent;
  
  import co.aikar.timings.MinecraftTimings; // Paper
  import org.spigotmc.SlackActivityAccountant; // Spigot
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
++import org.sugarcanemc.sugarcane.config.MobTPSThresholds;
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
  
  public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTask> implements CommandSource, AutoCloseable {
  
-@@ -1265,6 +1266,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1265,6 +1267,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                          tps1.add(currentTps, diff);
                          tps5.add(currentTps, diff);
                          tps15.add(currentTps, diff);
-+                        MobTPSTresholds.CurrentTPS = (int) tps5s.getAverage(); //Sugarcane
++                        MobTPSThresholds.CurrentTPS = currentTps.intValue(); //Sugarcane
                          // Backwards compat with bad plugins
                          // Purpur start
                          this.recentTps[0] = tps5s.getAverage();
-diff --git a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
-index a069035f9bfc821d5bb52a654aec5842f433b3fc..ee1922459b7466bdf1af63c493ce50980b3088f3 100644
---- a/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
-+++ b/src/main/java/net/minecraft/world/entity/ExperienceOrb.java
-@@ -24,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
- import org.bukkit.craftbukkit.event.CraftEventFactory;
- import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
- import org.bukkit.event.entity.EntityTargetEvent;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+@@ -1300,7 +1303,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                         this.delayedTasksMaxNextTickTime = this.nextTickTime = curTime / 1000000L + 50L;
+                     }
+                     // Purpur end - tps catchup
+-                    this.waitUntilNextTick();
++                    if(!SugarcaneConfig.UncapTPS) this.waitUntilNextTick();
+                     this.profiler.pop();
+                     this.endMetricsRecordingTick();
+                     this.isReady = true;
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index 72909d206e6535a0f7f896bdf28b78266bb46878..2066e851eaf0b63742e3f9203eef3eb7e85da9f3 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -166,6 +166,7 @@ import org.bukkit.event.weather.LightningStrikeEvent;
+ import org.bukkit.event.world.TimeSkipEvent;
  // CraftBukkit end
+ import it.unimi.dsi.fastutil.ints.IntArrayList; // Paper
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
  
- public class ExperienceOrb extends Entity {
-@@ -113,6 +114,7 @@ public class ExperienceOrb extends Entity {
+ public class ServerLevel extends Level implements WorldGenLevel {
+ 
+@@ -656,6 +657,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+         timings.doSounds.stopTiming(); // Spigot
+         this.handlingTick = false;
+         gameprofilerfiller.pop();
++        if(!SugarcaneConfig.DisableEntityTicking) {
+         boolean flag = true || !this.players.isEmpty() || !this.getForcedChunks().isEmpty(); // CraftBukkit - this prevents entity cleanup, other issues on servers with no players
+ 
+         if (flag) {
+@@ -674,14 +676,14 @@ public class ServerLevel extends Level implements WorldGenLevel {
+             org.spigotmc.ActivationRange.activateEntities(this); // Spigot
+             timings.entityTick.startTiming(); // Spigot
+             this.entityTickList.forEach((entity) -> {
+-                if (!entity.isRemoved()) {
++                if (!entity.isRemoved() && entity.shouldTick()) {
+                     if (false && this.shouldDiscardEntity(entity)) { // CraftBukkit - We prevent spawning in general, so this butchering is not needed
+                         entity.discard();
+                     } else {
+                         gameprofilerfiller.push("checkDespawn");
+                         entity.checkDespawn();
+                         gameprofilerfiller.pop();
+-                        if (true || this.chunkSource.chunkMap.getDistanceManager().inEntityTickingRange(entity.chunkPosition().toLong())) { // Paper - now always true if in the ticking list
++                        if (SugarcaneConfig.TickAllEntities || this.chunkSource.chunkMap.getDistanceManager().inEntityTickingRange(entity.chunkPosition().toLong())) { // Paper - now always true if in the ticking list
+                             Entity entity1 = entity.getVehicle();
+ 
+                             if (entity1 != null) {
+@@ -721,6 +723,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+         gameprofilerfiller.push("entityManagement");
+         this.entityManager.tick();
+         gameprofilerfiller.pop();
++        }
+     }
  
      @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ExperienceOrbTickTreshold) return; //sugarcane
-         super.tick();
-         Player prevTarget = this.followingPlayer;// CraftBukkit - store old target
-         this.xo = this.getX();
-diff --git a/src/main/java/net/minecraft/world/entity/ambient/Bat.java b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-index 9f8153496f173de6b8ee26ae765255a1ba2b3073..fd2e0aa4599b89c7c17cf0d5c17e2b01656b0276 100644
---- a/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-+++ b/src/main/java/net/minecraft/world/entity/ambient/Bat.java
-@@ -30,6 +30,7 @@ import net.minecraft.world.level.LevelAccessor;
- import net.minecraft.world.level.block.state.BlockState;
- import net.minecraft.world.phys.Vec3;
- import org.bukkit.craftbukkit.event.CraftEventFactory; // CraftBukkit
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Bat extends AmbientCreature {
- 
-@@ -184,6 +185,7 @@ public class Bat extends AmbientCreature {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.BatTickTreshold) return; //sugarcane
-         super.tick();
-         if (this.isResting()) {
-             this.setDeltaMovement(Vec3.ZERO);
-diff --git a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
-index 87d072bbf95ec15cbd5664f5138f7c8473764d68..376c64ea91b30e6fac2fb8440c89412b43c77d0f 100644
---- a/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
-+++ b/src/main/java/net/minecraft/world/entity/boss/wither/WitherBoss.java
-@@ -63,6 +63,7 @@ import org.bukkit.craftbukkit.event.CraftEventFactory;
- import org.bukkit.event.entity.EntityRegainHealthEvent;
- import org.bukkit.event.entity.EntityTargetEvent;
- import org.bukkit.event.entity.ExplosionPrimeEvent;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 547158e80c501aec66f4ffc96c0a496a346e0dd3..20225d197cc9896fd07769b62ef35d36f7d9e7bf 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -46,6 +46,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+ import org.bukkit.event.player.PlayerPreLoginEvent;
  // CraftBukkit end
+ import io.netty.buffer.Unpooled; // Paper
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
  
- public class WitherBoss extends Monster implements PowerableMob, RangedAttackMob {
-@@ -101,6 +102,12 @@ public class WitherBoss extends Monster implements PowerableMob, RangedAttackMob
-         this.xpReward = 50;
-     }
+ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener {
  
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.WitherBossTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
-+
-     @Override
-     protected PathNavigation createNavigation(Level world) {
-         FlyingPathNavigation navigationflying = new FlyingPathNavigation(this, world);
-diff --git a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
-index 8634431cabae82b71f409f02c84dda2d8eca8504..2024c0ebd917759be2601fd36037ea68254b2001 100644
---- a/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
-+++ b/src/main/java/net/minecraft/world/entity/decoration/ArmorStand.java
-@@ -46,6 +46,7 @@ import org.bukkit.craftbukkit.CraftEquipmentSlot;
- import org.bukkit.craftbukkit.inventory.CraftItemStack;
- import org.bukkit.entity.Player;
- import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- // CraftBukkit end
- 
- public class ArmorStand extends LivingEntity {
-@@ -677,6 +678,7 @@ public class ArmorStand extends LivingEntity {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ArmorStandTickTreshold) return; //sugarcane
-         maxUpStep = level.purpurConfig.armorstandStepHeight;
-         // Paper start
-         if (!this.canTick) {
-diff --git a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
-index 92a9869dbabcaa704a0da8bc86f7578661197903..34f4e626dd65fe56cf5a35d6f9df0763309e96fb 100644
---- a/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
-+++ b/src/main/java/net/minecraft/world/entity/item/FallingBlockEntity.java
-@@ -45,6 +45,7 @@ import net.minecraft.world.phys.BlockHitResult;
- import net.minecraft.world.phys.HitResult;
- import net.minecraft.world.phys.Vec3;
- import org.bukkit.craftbukkit.event.CraftEventFactory; // CraftBukkit
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class FallingBlockEntity extends Entity {
- 
-@@ -110,6 +111,7 @@ public class FallingBlockEntity extends Entity {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.FallingBlockEntityTickTreshold) return; //sugarcane
-         // Paper start - fix sand duping
-         if (this.level.purpurConfig.fixSandDuping && this.isRemoved()) { // Purpur
-             return;
-diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index 1ea66613df431d0431d0e6bc4fe82362c3d8e28c..d04d52ac6793041f9ce4a126f9f4e8bc219618d0 100644
---- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-+++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-@@ -36,6 +36,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
- import org.bukkit.event.player.PlayerPickupItemEvent;
- // CraftBukkit end
- import org.bukkit.event.player.PlayerAttemptPickupItemEvent; // Paper
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- import org.sugarcanemc.sugarcane.config.SugarcaneConfig; // Sugarcane
- 
- public class ItemEntity extends Entity {
-@@ -153,6 +154,7 @@ public class ItemEntity extends Entity {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ItemEntityTickTreshold) return; //sugarcane
-         if (this.getItem().isEmpty()) {
-             this.discard();
-         } else {
-diff --git a/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java b/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
-index 114ea3c898a23575bb2b06bf5c754330c38495e7..bb9238e8b5df7cefa216ff7fce7cbad5c023caeb 100644
---- a/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
-+++ b/src/main/java/net/minecraft/world/entity/item/PrimedTnt.java
-@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Pose;
- import net.minecraft.world.level.Explosion;
- import net.minecraft.world.level.Level;
- import org.bukkit.event.entity.ExplosionPrimeEvent; // CraftBukkit
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class PrimedTnt extends Entity {
- 
-@@ -62,6 +63,7 @@ public class PrimedTnt extends Entity {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.PrimedTntTickTreshold) return; //sugarcane
-         if (level.spigotConfig.currentPrimedTnt++ > level.spigotConfig.maxTntTicksPerTick) { return; } // Spigot
-         if (!this.isNoGravity()) {
-             this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Blaze.java b/src/main/java/net/minecraft/world/entity/monster/Blaze.java
-index d91b24400c31a2824320ba89369a9851040a867f..00b8e4c5262160241a22708321bdb4ac7d93244c 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Blaze.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Blaze.java
-@@ -24,6 +24,7 @@ import net.minecraft.world.entity.projectile.SmallFireball;
- import net.minecraft.world.level.Level;
- import net.minecraft.world.level.pathfinder.BlockPathTypes;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Blaze extends Monster {
-     private float allowedHeightOffset = 0.5F;
-@@ -191,6 +192,12 @@ public class Blaze extends Monster {
-         return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
-     }
- 
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.BlazeTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
-+
-     void setCharged(boolean fireActive) {
-         byte b = this.entityData.get(DATA_FLAGS_ID);
-         if (fireActive) {
-diff --git a/src/main/java/net/minecraft/world/entity/monster/EnderMan.java b/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
-index 8fd2721aaaee8148798f49fdc5b239dcdc86a2bb..d398151816a63333aaca6931b77216f6b33a5e7e 100644
---- a/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/EnderMan.java
-@@ -65,6 +65,7 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
- import net.minecraft.world.phys.AABB;
- import net.minecraft.world.phys.BlockHitResult;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class EnderMan extends Monster implements NeutralMob {
- 
-@@ -472,6 +473,12 @@ public class EnderMan extends Monster implements NeutralMob {
-         return super.requiresCustomPersistence() || (!this.level.purpurConfig.endermanDespawnEvenWithBlock && this.getCarriedBlock() != null); // Purpur
-     }
- 
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.EnderManTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
-+
-     private static class EndermanFreezeWhenLookedAt extends Goal {
- 
-         private final EnderMan enderman;
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Ghast.java b/src/main/java/net/minecraft/world/entity/monster/Ghast.java
-index 130c83e7161a555ba34270a45be38cad5e8e4e5d..4cbb633d5f6abb5e079bb82fe35de20497e5bc70 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Ghast.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Ghast.java
-@@ -32,6 +32,7 @@ import net.minecraft.world.level.Level;
- import net.minecraft.world.level.LevelAccessor;
- import net.minecraft.world.phys.AABB;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Ghast extends FlyingMob implements Enemy {
- 
-@@ -193,6 +194,12 @@ public class Ghast extends FlyingMob implements Enemy {
- 
-     }
- 
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.GhastTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
-+
-     @Override
-     protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
-         return 2.6F;
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Giant.java b/src/main/java/net/minecraft/world/entity/monster/Giant.java
-index 5cd408392e8afbbb58a4b808af92631c59ab9339..44b00e13788ee5dd3234b063fc7f40aa149e9c62 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Giant.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Giant.java
-@@ -29,6 +29,7 @@ import net.minecraft.world.item.Items;
- import net.minecraft.world.level.Level;
- import net.minecraft.world.level.LevelReader;
- import net.minecraft.world.level.ServerLevelAccessor;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- import javax.annotation.Nullable;
- 
-@@ -132,4 +133,10 @@ public class Giant extends Monster {
-     public float getWalkTargetValue(BlockPos pos, LevelReader world) {
-         return super.getWalkTargetValue(pos, world); // Purpur - fix light requirements for natural spawns
-     }
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.GiantTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Guardian.java b/src/main/java/net/minecraft/world/entity/monster/Guardian.java
-index 69ce21cae8e097a6028eba7b842d325784f457af..ccf1b30e76cc7706bf68565460b9a7d0e4b87862 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Guardian.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Guardian.java
-@@ -43,6 +43,7 @@ import net.minecraft.world.level.LevelAccessor;
- import net.minecraft.world.level.LevelReader;
- import net.minecraft.world.level.pathfinder.BlockPathTypes;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Guardian extends Monster {
-     protected static final int ATTACK_TIME = 80;
-@@ -384,6 +385,12 @@ public class Guardian extends Monster {
- 
-     }
- 
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.GuardianTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
-+
-     static class GuardianAttackGoal extends Goal {
-         private final Guardian guardian;
-         private int attackTime;
-diff --git a/src/main/java/net/minecraft/world/entity/monster/MagmaCube.java b/src/main/java/net/minecraft/world/entity/monster/MagmaCube.java
-index 23e702df207e931e3f41e6094495aea397f32321..873bc72639cb061581ca3623393d5639d533e1f3 100644
---- a/src/main/java/net/minecraft/world/entity/monster/MagmaCube.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/MagmaCube.java
-@@ -21,6 +21,7 @@ import net.minecraft.world.level.LevelReader;
- import net.minecraft.world.level.material.Fluid;
- import net.minecraft.world.level.storage.loot.BuiltInLootTables;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class MagmaCube extends Slime {
-     public MagmaCube(EntityType<? extends MagmaCube> type, Level world) {
-@@ -182,4 +183,10 @@ public class MagmaCube extends Slime {
-     protected SoundEvent getJumpSound() {
-         return SoundEvents.MAGMA_CUBE_JUMP;
-     }
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.MagmaCubeTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Phantom.java b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
-index b9bb5be18259a05f6fdde1485591a3b518ccf42b..2e30bd5d25492fa37c3b2b5780c6a0142e093b66 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Phantom.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Phantom.java
-@@ -40,6 +40,7 @@ import net.minecraft.world.level.Level;
- import net.minecraft.world.level.ServerLevelAccessor;
- import net.minecraft.world.level.levelgen.Heightmap;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Phantom extends FlyingMob implements Enemy {
- 
-@@ -237,6 +238,7 @@ public class Phantom extends FlyingMob implements Enemy {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.PhantomTickTreshold) return; //sugarcane
-         super.tick();
-         if (this.level.isClientSide) {
-             float f = Mth.cos((float) (this.getUniqueFlapTickOffset() + this.tickCount) * 7.448451F * 0.017453292F + 3.1415927F);
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Slime.java b/src/main/java/net/minecraft/world/entity/monster/Slime.java
-index d8a21a982b4ebb133f6208fded11ba5f588d9f1f..b12ac6ed4d07abdb0a2f4168d0a78495e2646997 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Slime.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Slime.java
-@@ -56,6 +56,7 @@ import java.util.List;
- import org.bukkit.craftbukkit.event.CraftEventFactory;
- import org.bukkit.event.entity.EntityTransformEvent;
- import org.bukkit.event.entity.SlimeSplitEvent;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- // CraftBukkit end
- 
- public class Slime extends Mob implements Enemy {
-@@ -224,6 +225,7 @@ public class Slime extends Mob implements Enemy {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SlimeTickTreshold) return; //sugarcane
-         this.squish += (this.targetSquish - this.squish) * 0.5F;
-         this.oSquish = this.squish;
-         super.tick();
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Spider.java b/src/main/java/net/minecraft/world/entity/monster/Spider.java
-index 07dc3b10a275895f23fcf50720ef25faea358c58..df75d8f8d3d0d6c34e87de36716da7beebe4177c 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Spider.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Spider.java
-@@ -41,6 +41,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
- import net.minecraft.world.level.block.Blocks;
- import net.minecraft.world.level.block.state.BlockState;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Spider extends Monster {
- 
-@@ -116,6 +117,7 @@ public class Spider extends Monster {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SpiderTickTreshold) return; //sugarcane
-         super.tick();
-         if (!this.level.isClientSide) {
-             this.setClimbing(this.horizontalCollision && (this.level.purpurConfig.spiderCanClimbWorldBorder || !this.collidingWithWorldBorder)); // Purpur
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Vex.java b/src/main/java/net/minecraft/world/entity/monster/Vex.java
-index c8934f1b0fbac164ce110d44f7697e06834ca275..041965b82b58f3851556848e878f9c780a95003c 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Vex.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Vex.java
-@@ -38,6 +38,7 @@ import net.minecraft.world.item.Items;
- import net.minecraft.world.level.Level;
- import net.minecraft.world.level.ServerLevelAccessor;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Vex extends Monster {
- 
-@@ -130,6 +131,7 @@ public class Vex extends Monster {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.VexTickTreshold) return; //sugarcane
-         this.noPhysics = getRider() == null || !this.isControllable(); // Purpur
-         super.tick();
-         this.noPhysics = false;
-diff --git a/src/main/java/net/minecraft/world/entity/monster/Zoglin.java b/src/main/java/net/minecraft/world/entity/monster/Zoglin.java
-index b99419b712b9af385988f1a1271b28f41e5a05a0..a04b91cdd928ecdf2ffc149a434ef617d9a31101 100644
---- a/src/main/java/net/minecraft/world/entity/monster/Zoglin.java
-+++ b/src/main/java/net/minecraft/world/entity/monster/Zoglin.java
-@@ -46,6 +46,7 @@ import net.minecraft.world.entity.player.Player;
- import net.minecraft.world.entity.schedule.Activity;
- import net.minecraft.world.level.Level;
- import net.minecraft.world.level.block.state.BlockState;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Zoglin extends Monster implements Enemy, HoglinBase {
-     private static final EntityDataAccessor<Boolean> DATA_BABY_ID = SynchedEntityData.defineId(Zoglin.class, EntityDataSerializers.BOOLEAN);
-@@ -68,6 +69,12 @@ public class Zoglin extends Monster implements Enemy, HoglinBase {
-         this.xpReward = 5;
-     }
- 
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ZoglinTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
-+
-     // Purpur start
-     @Override
-     public boolean isRidable() {
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/Arrow.java b/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
-index 29e97cfec599e19eb85b81e49c997b562c8d3a6b..f0b106c52c0ee056a9b14525fec55c2cb6af0ef7 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/Arrow.java
-@@ -21,6 +21,7 @@ import net.minecraft.world.item.alchemy.Potion;
- import net.minecraft.world.item.alchemy.PotionUtils;
- import net.minecraft.world.item.alchemy.Potions;
- import net.minecraft.world.level.Level;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Arrow extends AbstractArrow {
- 
-@@ -109,6 +110,7 @@ public class Arrow extends AbstractArrow {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ArrowTickTreshold) return; //sugarcane
-         super.tick();
-         if (this.level.isClientSide) {
-             if (this.inGround) {
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/Fireball.java b/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
-index 7f4e3dfab421591151fda7ec39d9c00b464d62de..454fbeb35788bef1558ac3ad63d3184f631b8ce5 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/Fireball.java
-@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
- import net.minecraft.world.item.ItemStack;
- import net.minecraft.world.item.Items;
- import net.minecraft.world.level.Level;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public abstract class Fireball extends AbstractHurtingProjectile implements ItemSupplier {
- 
-@@ -70,4 +71,10 @@ public abstract class Fireball extends AbstractHurtingProjectile implements Item
- 
-         if (!itemstack.isEmpty()) this.setItem(itemstack); // CraftBukkit - SPIGOT-5474 probably came from bugged earlier versions
-     }
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.FireballTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java b/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
-index f51ea103238b4a50439f5162a248cd9aa7f1a19b..f031aa44b3ad43706f0e8eab0fbf72c79b1b6c82 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/LargeFireball.java
-@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
- import net.minecraft.world.phys.EntityHitResult;
- import net.minecraft.world.phys.HitResult;
- import org.bukkit.event.entity.ExplosionPrimeEvent; // CraftBukkit
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class LargeFireball extends Fireball {
- 
-@@ -84,4 +85,11 @@ public class LargeFireball extends Fireball {
-         return this.level.purpurConfig.largeFireballDespawnRate;
-     }
-     // Purpur end
-+
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.LargeFireballTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java b/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
-index e2a652277f2a63e0f0501db4137d7813e2d603c4..8cabd060874679af2a9d68dca8b063b8b057ef2e 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/SmallFireball.java
-@@ -13,6 +13,7 @@ import net.minecraft.world.phys.BlockHitResult;
- import net.minecraft.world.phys.EntityHitResult;
- import net.minecraft.world.phys.HitResult;
- import org.bukkit.event.entity.EntityCombustByEntityEvent; // CraftBukkit
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class SmallFireball extends Fireball {
- 
-@@ -105,4 +106,11 @@ public class SmallFireball extends Fireball {
-         return this.level.purpurConfig.smallFireballDespawnRate;
-     }
-     // Purpur end
-+
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SmallFireballTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/Snowball.java b/src/main/java/net/minecraft/world/entity/projectile/Snowball.java
-index ef265cec066ef3b84c2b3a4929af518308a409c3..7c4eb0c24dbf2b28850242769414b1d25f93fa57 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/Snowball.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/Snowball.java
-@@ -14,6 +14,7 @@ import net.minecraft.world.item.Items;
- import net.minecraft.world.level.Level;
- import net.minecraft.world.phys.EntityHitResult;
- import net.minecraft.world.phys.HitResult;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class Snowball extends ThrowableItemProjectile {
-     public Snowball(EntityType<? extends Snowball> type, Level world) {
-@@ -104,4 +105,11 @@ public class Snowball extends ThrowableItemProjectile {
-         return this.level.purpurConfig.snowballDespawnRate;
-     }
-     // Purpur end
-+
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SnowballTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java b/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
-index 28b3aed97723e073b77e14cfcbe77a7cb31ff2ea..a559de291d30f65b7ddc0ff7950216baf692ed18 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/SpectralArrow.java
-@@ -9,6 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
- import net.minecraft.world.item.ItemStack;
- import net.minecraft.world.item.Items;
- import net.minecraft.world.level.Level;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class SpectralArrow extends AbstractArrow {
- 
-@@ -28,6 +29,7 @@ public class SpectralArrow extends AbstractArrow {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.SpectralArrowTickTreshold) return; //sugarcane
-         super.tick();
-         if (this.level.isClientSide && !this.inGround) {
-             this.level.addParticle(ParticleTypes.INSTANT_EFFECT, this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrowableItemProjectile.java b/src/main/java/net/minecraft/world/entity/projectile/ThrowableItemProjectile.java
-index 74dccb5151a021af8b2e274f665447f54c4d0364..934c7086a00c28446fcea6e6fdc75f697b0d7078 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/ThrowableItemProjectile.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/ThrowableItemProjectile.java
-@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
- import net.minecraft.world.item.Item;
- import net.minecraft.world.item.ItemStack;
- import net.minecraft.world.level.Level;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public abstract class ThrowableItemProjectile extends ThrowableProjectile implements ItemSupplier {
- 
-@@ -78,4 +79,10 @@ public abstract class ThrowableItemProjectile extends ThrowableProjectile implem
- 
-         this.setItem(itemstack);
-     }
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrowableItemProjectileTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
-index 8c6243aab556c993b43ab52e216bcb0a70d1a686..968b8a4f721bd3989b1c69d9759f2f7dd00011ac 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownEgg.java
-@@ -15,6 +15,7 @@ import org.bukkit.entity.Ageable;
- import org.bukkit.entity.EntityType;
- import org.bukkit.entity.Player;
- import org.bukkit.event.player.PlayerEggThrowEvent;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- // CraftBukkit end
- 
- public class ThrownEgg extends ThrowableItemProjectile {
-@@ -114,4 +115,11 @@ public class ThrownEgg extends ThrowableItemProjectile {
-         return this.level.purpurConfig.eggDespawnRate;
-     }
-     // Purpur end
-+
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownEggTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
-index 1fe20aab5b0c129470c1563d5c0710f2a23895d2..c787c29eb7ef771e5d16121af58ea009a9584565 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownEnderpearl.java
-@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
- import org.bukkit.craftbukkit.event.CraftEventFactory;
- import org.bukkit.event.entity.CreatureSpawnEvent;
- import org.bukkit.event.player.PlayerTeleportEvent;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- // CraftBukkit end
- 
- public class ThrownEnderpearl extends ThrowableItemProjectile {
-@@ -101,6 +102,7 @@ public class ThrownEnderpearl extends ThrowableItemProjectile {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownEnderpearlTickTreshold) return; //sugarcane
-         Entity entity = this.getOwner();
- 
-         if (entity instanceof Player && !entity.isAlive()) {
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
-index d6b522aa7c7ce87caf55f91ee9d661e055506c01..b32a25853ab45d555cf304839fab6b6d78bc1fa4 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownExperienceBottle.java
-@@ -10,6 +10,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
- import net.minecraft.world.item.alchemy.Potions;
- import net.minecraft.world.level.Level;
- import net.minecraft.world.phys.HitResult;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class ThrownExperienceBottle extends ThrowableItemProjectile {
- 
-@@ -63,4 +64,11 @@ public class ThrownExperienceBottle extends ThrowableItemProjectile {
-         return this.level.purpurConfig.expBottleDespawnRate;
-     }
-     // Purpur end
-+
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownExperienceBottleTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
-index 7cb922be9b976eb06ba06f25a50599d80c385bc8..d306111d5b01dcf9dfa986761dba21a66e4fe3d2 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownPotion.java
-@@ -39,6 +39,7 @@ import net.minecraft.world.phys.HitResult;
- import org.bukkit.craftbukkit.entity.CraftLivingEntity;
- import org.bukkit.craftbukkit.event.CraftEventFactory;
- import org.bukkit.entity.LivingEntity;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- // CraftBukkit end
- 
- public class ThrownPotion extends ThrowableItemProjectile implements ItemSupplier {
-@@ -313,4 +314,11 @@ public class ThrownPotion extends ThrowableItemProjectile implements ItemSupplie
-         return this.level.purpurConfig.potionDespawnRate;
-     }
-     // Purpur end
-+
-+
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownPotionTickTreshold) return; //sugarcane
-+        super.tick();
-+    }
- }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java b/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
-index 52d41fb8d0495f61346c718c8f2395bc622027af..53ed0493d04668ef7ca44ad7751e3b2c87b08041 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/ThrownTrident.java
-@@ -22,6 +22,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
- import net.minecraft.world.level.Level;
- import net.minecraft.world.phys.EntityHitResult;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class ThrownTrident extends AbstractArrow {
- 
-@@ -53,6 +54,7 @@ public class ThrownTrident extends AbstractArrow {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.ThrownTridentTickTreshold) return; //sugarcane
-         if (this.inGroundTime > 4) {
-             this.dealtDamage = true;
+@@ -98,7 +99,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener
+             }
          }
-diff --git a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
-index 6cf8b12e94c17a8111eef5cc0157e4df594f15dc..8e3da698cb0724f8973170e7bbfe1a3b2c3f372a 100644
---- a/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
-+++ b/src/main/java/net/minecraft/world/entity/projectile/WitherSkull.java
-@@ -21,6 +21,7 @@ import net.minecraft.world.level.material.FluidState;
- import net.minecraft.world.phys.EntityHitResult;
- import net.minecraft.world.phys.HitResult;
- import org.bukkit.event.entity.ExplosionPrimeEvent; // CraftBukkit
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
  
- public class WitherSkull extends AbstractHurtingProjectile {
+-        if (this.tick++ == 600) {
++        if (this.tick++ == 600 && !SugarcaneConfig.UncapTPS) {
+             this.disconnect(new TranslatableComponent("multiplayer.disconnect.slow_login"));
+         }
  
-@@ -143,4 +144,10 @@ public class WitherSkull extends AbstractHurtingProjectile {
-         return this.level.purpurConfig.witherSkullDespawnRate;
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index 44e693e88e03cd34ac0fd293e611a0ebf1221f53..6c425f80826abfaebf610f8c307a05bf3bcd6d3c 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -146,6 +146,8 @@ import org.bukkit.event.entity.EntityPortalEvent;
+ import org.bukkit.event.entity.EntityPoseChangeEvent;
+ import org.bukkit.event.player.PlayerTeleportEvent;
+ import org.bukkit.plugin.PluginManager;
++import org.sugarcanemc.sugarcane.config.MobTPSThresholds;
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
+ // CraftBukkit end
+ 
+ public abstract class Entity implements Nameable, EntityAccess, CommandSource, io.papermc.paper.util.KeyedObject { // Paper
+@@ -4472,4 +4474,16 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource, i
+         return false;
      }
      // Purpur end
 +
-+    @Override
-+    public void tick(){
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.WitherSkullTickTreshold) return; //sugarcane
-+        super.tick();
++    // Sugarcane
++    @Nullable
++    public Integer TickThreshold = null;
++    public boolean shouldTick(){
++        if(TickThreshold == null) {
++            TickThreshold = MobTPSThresholds.getTickThreshold(this.getClass());
++            //if(SugarcaneConfig.debug) System.out.printf("%s: Loaded tick treshold: %s\n", this.getClass(), TickThreshold);
++        }
++
++        return MobTPSThresholds.CurrentTPS >= TickThreshold;
 +    }
  }
-diff --git a/src/main/java/net/minecraft/world/entity/vehicle/AbstractMinecart.java b/src/main/java/net/minecraft/world/entity/vehicle/AbstractMinecart.java
-index 0e6f2d1d48910c573ec2237002a02f334a5d05b0..4f5fe1f1d0ee627e91c462742745e9ed81068ca8 100644
---- a/src/main/java/net/minecraft/world/entity/vehicle/AbstractMinecart.java
-+++ b/src/main/java/net/minecraft/world/entity/vehicle/AbstractMinecart.java
-@@ -55,6 +55,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
- import org.bukkit.event.vehicle.VehicleDestroyEvent;
- import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
- import org.bukkit.util.Vector;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- // CraftBukkit end
- 
- public abstract class AbstractMinecart extends Entity {
-@@ -327,6 +328,7 @@ public abstract class AbstractMinecart extends Entity {
- 
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.MinecartTickTreshold) return; //sugarcane
-         // Purpur start
-         if (storedMaxSpeed != level.purpurConfig.minecartMaxSpeed) {
-             maxSpeed = storedMaxSpeed = level.purpurConfig.minecartMaxSpeed;
-diff --git a/src/main/java/net/minecraft/world/entity/vehicle/Boat.java b/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
-index fe5bf9557b58bdc7aac319491bf2e0e58c5bd7fd..81f0121155dcae221a97e89fd43110a90900f405 100644
---- a/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
-+++ b/src/main/java/net/minecraft/world/entity/vehicle/Boat.java
-@@ -58,6 +58,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
- import org.bukkit.event.vehicle.VehicleDestroyEvent;
- import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
- import org.bukkit.event.vehicle.VehicleMoveEvent;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- // CraftBukkit end
- 
- public class Boat extends Entity {
-@@ -325,6 +326,7 @@ public class Boat extends Entity {
-     private Location lastLocation; // CraftBukkit
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.BoatTickTreshold) return; //sugarcane
-         this.oldStatus = this.status;
-         this.status = this.getStatus();
-         if (this.status != Boat.Status.UNDER_WATER && this.status != Boat.Status.UNDER_FLOWING_WATER) {
-diff --git a/src/main/java/net/minecraft/world/entity/vehicle/MinecartCommandBlock.java b/src/main/java/net/minecraft/world/entity/vehicle/MinecartCommandBlock.java
-index 7df7c1b9a7b83768c2e2994ab02b966811619949..556bf6c066c877a916ea7745da0f42a0df40e7d1 100644
---- a/src/main/java/net/minecraft/world/entity/vehicle/MinecartCommandBlock.java
-+++ b/src/main/java/net/minecraft/world/entity/vehicle/MinecartCommandBlock.java
-@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
- import net.minecraft.world.level.block.Blocks;
- import net.minecraft.world.level.block.state.BlockState;
- import net.minecraft.world.phys.Vec3;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
- 
- public class MinecartCommandBlock extends AbstractMinecart {
- 
-@@ -55,6 +56,12 @@ public class MinecartCommandBlock extends AbstractMinecart {
-         this.commandBlock.save(nbt);
-     }
- 
-+    @Override
-+    public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.MinecartCommandBlockTickTreshold) return; //sugarcane
-+        super.tick();
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..e4fce9272f923b5118a771c043f8ca2143db64fa
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java
+@@ -0,0 +1,359 @@
++package org.sugarcanemc.sugarcane.command;
++
++import com.google.common.collect.Maps;
++import com.google.common.collect.Sets;
++import com.mojang.brigadier.CommandDispatcher;
++import com.mojang.brigadier.arguments.BoolArgumentType;
++import com.mojang.brigadier.arguments.FloatArgumentType;
++import com.mojang.brigadier.arguments.IntegerArgumentType;
++import com.mojang.brigadier.builder.LiteralArgumentBuilder;
++import com.mojang.brigadier.builder.RequiredArgumentBuilder;
++import com.mojang.brigadier.exceptions.CommandSyntaxException;
++import com.mojang.brigadier.exceptions.Dynamic4CommandExceptionType;
++
++import java.util.*;
++
++import net.minecraft.commands.CommandSourceStack;
++import net.minecraft.commands.arguments.EntityArgument;
++import net.minecraft.commands.arguments.coordinates.Vec2Argument;
++import net.minecraft.core.BlockPos;
++import net.minecraft.core.Direction;
++import net.minecraft.network.chat.TranslatableComponent;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.ServerLevel;
++import net.minecraft.util.Mth;
++import net.minecraft.world.entity.Entity;
++import net.minecraft.world.entity.player.Player;
++import net.minecraft.world.level.BlockGetter;
++import net.minecraft.world.level.block.state.BlockState;
++import net.minecraft.world.level.material.Material;
++import net.minecraft.world.phys.Vec2;
++import net.minecraft.world.scores.Team;
++import org.bukkit.Bukkit;
++import org.bukkit.craftbukkit.scheduler.MinecraftInternalPlugin;
++import org.bukkit.scheduler.BukkitRunnable;
++
++public class SpreadPlayerFCommand {
++    private static final Queue<Entity> queue = new PriorityQueue<Entity>();
++    private static final int MAX_ITERATION_COUNT = 1000;
++    private static final Dynamic4CommandExceptionType ERROR_FAILED_TO_SPREAD_TEAMS = new Dynamic4CommandExceptionType((object, object1, object2, object3) -> {
++        return new TranslatableComponent("commands.spreadplayers.failed.teams", object, object1, object2, object3);
++    });
++    private static final Dynamic4CommandExceptionType ERROR_FAILED_TO_SPREAD_ENTITIES = new Dynamic4CommandExceptionType((object, object1, object2, object3) -> {
++        return new TranslatableComponent("commands.spreadplayers.failed.entities", object, object1, object2, object3);
++    });
++    static Random random = new Random();
++    private static CommandSourceStack lsource;
++    private static Vec2 lcenter;
++    private static float lspreadDistance;
++    private static float lmaxRange;
++    private static int lmaxY;
++    private static boolean lrespectTeams;
++
++    public SpreadPlayerFCommand() {
 +    }
 +
-     @Override
-     public AbstractMinecart.Type getMinecartType() {
-         return AbstractMinecart.Type.COMMAND_BLOCK;
-diff --git a/src/main/java/net/minecraft/world/entity/vehicle/MinecartTNT.java b/src/main/java/net/minecraft/world/entity/vehicle/MinecartTNT.java
-index 4572a3cf0a067b64f2bd6c31139a773cddf4e872..0b6d1d059125913d2659997119da145cdc8ad704 100644
---- a/src/main/java/net/minecraft/world/entity/vehicle/MinecartTNT.java
-+++ b/src/main/java/net/minecraft/world/entity/vehicle/MinecartTNT.java
-@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
- import net.minecraft.world.level.block.Blocks;
- import net.minecraft.world.level.block.state.BlockState;
- import net.minecraft.world.level.material.FluidState;
-+import org.sugarcanemc.sugarcane.config.MobTPSTresholds;
++    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
++        dispatcher.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) net.minecraft.commands.Commands.literal("spreadplayersf").requires((commandlistenerwrapper) -> {
++            return commandlistenerwrapper.hasPermission(2);
++        })).then(net.minecraft.commands.Commands.argument("center", Vec2Argument.vec2()).then(net.minecraft.commands.Commands.argument("spreadDistance", FloatArgumentType.floatArg(0.0F)).then(((RequiredArgumentBuilder) net.minecraft.commands.Commands.argument("maxRange", FloatArgumentType.floatArg(1.0F)).then(net.minecraft.commands.Commands.argument("respectTeams", BoolArgumentType.bool()).then(net.minecraft.commands.Commands.argument("targets", EntityArgument.entities()).executes((commandcontext) -> {
++            return SpreadPlayerFCommand.spreadPlayers(commandcontext.getSource(), Vec2Argument.getVec2(commandcontext, "center"), FloatArgumentType.getFloat(commandcontext, "spreadDistance"), FloatArgumentType.getFloat(commandcontext, "maxRange"), commandcontext.getSource().getLevel().getMaxBuildHeight(), BoolArgumentType.getBool(commandcontext, "respectTeams"), EntityArgument.getEntities(commandcontext, "targets"));
++        })))).then(net.minecraft.commands.Commands.literal("under").then(net.minecraft.commands.Commands.argument("maxHeight", IntegerArgumentType.integer(0)).then(net.minecraft.commands.Commands.argument("respectTeams", BoolArgumentType.bool()).then(net.minecraft.commands.Commands.argument("targets", EntityArgument.entities()).executes((commandcontext) -> {
++            return SpreadPlayerFCommand.spreadPlayers(commandcontext.getSource(), Vec2Argument.getVec2(commandcontext, "center"), FloatArgumentType.getFloat(commandcontext, "spreadDistance"), FloatArgumentType.getFloat(commandcontext, "maxRange"), IntegerArgumentType.getInteger(commandcontext, "maxHeight"), BoolArgumentType.getBool(commandcontext, "respectTeams"), EntityArgument.getEntities(commandcontext, "targets"));
++        })))))))));
++        new BukkitRunnable() {
++            @Override
++            public void run() {
++                if (Bukkit.isStopping() || MinecraftServer.getServer().hasStopped()) cancel();
++                if (!queue.isEmpty()) {
++                    List<Entity> ents = new ArrayList<>();
++                    for (int i = 0; i < Math.min(queue.size(), MAX_ITERATION_COUNT); i++) {
++                        ents.add(queue.remove());
++                    }
++                    try {
++                        runSpreadPlayers(lsource, lcenter, lspreadDistance, lmaxRange, lmaxY, lrespectTeams, ents);
++                    } catch (CommandSyntaxException e) {
++                        e.printStackTrace();
++                    }
++                }
++            }
++        }.runTaskTimerAsynchronously(new MinecraftInternalPlugin(), 0L, 1L);
++    }
++
++    private static int spreadPlayers(CommandSourceStack source, Vec2 center, float spreadDistance, float maxRange, int maxY, boolean respectTeams, Collection<? extends Entity> players) throws CommandSyntaxException {
++        lsource = source;
++        lcenter = center;
++        lspreadDistance = spreadDistance;
++        lmaxRange = maxRange;
++        lmaxY = maxY;
++        lrespectTeams = respectTeams;
++        queue.addAll(players);
++        return players.size();
++    }
++
++    private static int runSpreadPlayers(CommandSourceStack source, Vec2 center, float spreadDistance, float maxRange, int maxY, boolean respectTeams, Collection<? extends Entity> players) throws CommandSyntaxException {
++        double d0 = center.x - maxRange;
++        double d1 = center.y - maxRange;
++        double d2 = center.x + maxRange;
++        double d3 = center.y + maxRange;
++        SpreadPlayerFCommand.Position[] acommandspreadplayers_a = SpreadPlayerFCommand.createInitialPositions(random, respectTeams ? SpreadPlayerFCommand.getNumberOfTeams(players) : players.size(), d0, d1, d2, d3);
++
++        SpreadPlayerFCommand.spreadPositions(center, spreadDistance, source.getLevel(), random, d0, d1, d2, d3, maxY, acommandspreadplayers_a, respectTeams);
++        double d4 = SpreadPlayerFCommand.setPlayerPositions(players, source.getLevel(), acommandspreadplayers_a, maxY, respectTeams);
++
++        source.sendSuccess(new TranslatableComponent("commands.spreadplayers.success." + (respectTeams ? "teams" : "entities"), acommandspreadplayers_a.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d4)), true);
++        return acommandspreadplayers_a.length;
++    }
++
++    private static int getNumberOfTeams(Collection<? extends Entity> entities) {
++        Set<Team> set = Sets.newHashSet();
++        Iterator iterator = entities.iterator();
++
++        while (iterator.hasNext()) {
++            Entity entity = (Entity) iterator.next();
++
++            if (entity instanceof Player) {
++                set.add(entity.getTeam());
++            } else {
++                set.add(null); // CraftBukkit - decompile error
++            }
++        }
++
++        return set.size();
++    }
++
++    private static void spreadPositions(Vec2 center, double spreadDistance, ServerLevel world, Random random, double minX, double minZ, double maxX, double maxZ, int maxY, SpreadPlayerFCommand.Position[] piles, boolean respectTeams) throws CommandSyntaxException {
++        boolean flag1 = true;
++        double d5 = 3.4028234663852886E38D;
++
++        int j;
++
++        for (j = 0; j < 10000 && flag1; ++j) {
++            flag1 = false;
++            d5 = 3.4028234663852886E38D;
++
++            int k;
++            SpreadPlayerFCommand.Position commandspreadplayers_a;
++
++            for (int l = 0; l < piles.length; ++l) {
++                SpreadPlayerFCommand.Position commandspreadplayers_a1 = piles[l];
++
++                k = 0;
++                commandspreadplayers_a = new SpreadPlayerFCommand.Position();
++
++                for (int i1 = 0; i1 < piles.length; ++i1) {
++                    if (l != i1) {
++                        SpreadPlayerFCommand.Position commandspreadplayers_a2 = piles[i1];
++                        double d6 = commandspreadplayers_a1.dist(commandspreadplayers_a2);
++
++                        d5 = Math.min(d6, d5);
++                        if (d6 < spreadDistance) {
++                            ++k;
++                            commandspreadplayers_a.x += commandspreadplayers_a2.x - commandspreadplayers_a1.x;
++                            commandspreadplayers_a.z += commandspreadplayers_a2.z - commandspreadplayers_a1.z;
++                        }
++                    }
++                }
++
++                if (k > 0) {
++                    commandspreadplayers_a.x /= k;
++                    commandspreadplayers_a.z /= k;
++                    double d7 = commandspreadplayers_a.getLength();
++
++                    if (d7 > 0.0D) {
++                        commandspreadplayers_a.normalize();
++                        commandspreadplayers_a1.moveAway(commandspreadplayers_a);
++                    } else {
++                        commandspreadplayers_a1.randomize(random, minX, minZ, maxX, maxZ);
++                    }
++
++                    flag1 = true;
++                }
++
++                if (commandspreadplayers_a1.clamp(minX, minZ, maxX, maxZ)) {
++                    flag1 = true;
++                }
++            }
++
++            if (!flag1) {
++                SpreadPlayerFCommand.Position[] acommandspreadplayers_a1 = piles;
++                int j1 = piles.length;
++
++                for (k = 0; k < j1; ++k) {
++                    commandspreadplayers_a = acommandspreadplayers_a1[k];
++                    if (!commandspreadplayers_a.isSafe(world, maxY)) {
++                        commandspreadplayers_a.randomize(random, minX, minZ, maxX, maxZ);
++                        flag1 = true;
++                    }
++                }
++            }
++        }
++
++        if (d5 == 3.4028234663852886E38D) {
++            d5 = 0.0D;
++        }
++
++        if (j >= 10000) {
++            if (respectTeams) {
++                throw SpreadPlayerFCommand.ERROR_FAILED_TO_SPREAD_TEAMS.create(piles.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d5));
++            } else {
++                throw SpreadPlayerFCommand.ERROR_FAILED_TO_SPREAD_ENTITIES.create(piles.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d5));
++            }
++        }
++    }
++
++    private static double setPlayerPositions(Collection<? extends Entity> entities, ServerLevel world, SpreadPlayerFCommand.Position[] piles, int maxY, boolean respectTeams) {
++        double d0 = 0.0D;
++        int j = 0;
++        Map<Team, SpreadPlayerFCommand.Position> map = Maps.newHashMap();
++
++        double d1;
++
++        for (Iterator iterator = entities.iterator(); iterator.hasNext(); d0 += d1) {
++            Entity entity = (Entity) iterator.next();
++            SpreadPlayerFCommand.Position commandspreadplayers_a;
++
++            if (respectTeams) {
++                Team scoreboardteambase = entity instanceof Player ? entity.getTeam() : null;
++
++                if (!map.containsKey(scoreboardteambase)) {
++                    map.put(scoreboardteambase, piles[j++]);
++                }
++
++                commandspreadplayers_a = map.get(scoreboardteambase);
++            } else {
++                commandspreadplayers_a = piles[j++];
++            }
++
++            entity.teleportToWithTicket((double) Mth.floor(commandspreadplayers_a.x) + 0.5D, commandspreadplayers_a.getSpawnY(world, maxY), (double) Mth.floor(commandspreadplayers_a.z) + 0.5D);
++            d1 = Double.MAX_VALUE;
++            SpreadPlayerFCommand.Position[] acommandspreadplayers_a1 = piles;
++            int k = piles.length;
++
++            for (int l = 0; l < k; ++l) {
++                SpreadPlayerFCommand.Position commandspreadplayers_a1 = acommandspreadplayers_a1[l];
++
++                if (commandspreadplayers_a != commandspreadplayers_a1) {
++                    double d2 = commandspreadplayers_a.dist(commandspreadplayers_a1);
++
++                    d1 = Math.min(d2, d1);
++                }
++            }
++        }
++
++        if (entities.size() < 2) {
++            return 0.0D;
++        } else {
++            d0 /= entities.size();
++            return d0;
++        }
++    }
++
++    private static SpreadPlayerFCommand.Position[] createInitialPositions(Random random, int count, double minX, double minZ, double maxX, double maxZ) {
++        SpreadPlayerFCommand.Position[] acommandspreadplayers_a = new SpreadPlayerFCommand.Position[count];
++
++        for (int j = 0; j < acommandspreadplayers_a.length; ++j) {
++            SpreadPlayerFCommand.Position commandspreadplayers_a = new SpreadPlayerFCommand.Position();
++
++            commandspreadplayers_a.randomize(random, minX, minZ, maxX, maxZ);
++            acommandspreadplayers_a[j] = commandspreadplayers_a;
++        }
++
++        return acommandspreadplayers_a;
++    }
++
++    private static class Position {
++
++        double x;
++        double z;
++
++        Position() {
++        }
++
++        // CraftBukkit start - add a version of getBlockState which force loads chunks
++        private static BlockState getBlockState(BlockGetter iblockaccess, BlockPos position) {
++            ((ServerLevel) iblockaccess).getChunkSource().getChunk(position.getX() >> 4, position.getZ() >> 4, true);
++            return iblockaccess.getBlockState(position);
++        }
++
++        double dist(SpreadPlayerFCommand.Position other) {
++            double d0 = this.x - other.x;
++            double d1 = this.z - other.z;
++
++            return Math.sqrt(d0 * d0 + d1 * d1);
++        }
++
++        void normalize() {
++            double d0 = this.getLength();
++
++            this.x /= d0;
++            this.z /= d0;
++        }
++
++        double getLength() {
++            return Math.sqrt(this.x * this.x + this.z * this.z);
++        }
++
++        public void moveAway(SpreadPlayerFCommand.Position other) {
++            this.x -= other.x;
++            this.z -= other.z;
++        }
++
++        public boolean clamp(double minX, double minZ, double maxX, double maxZ) {
++            boolean flag = false;
++
++            if (this.x < minX) {
++                this.x = minX;
++                flag = true;
++            } else if (this.x > maxX) {
++                this.x = maxX;
++                flag = true;
++            }
++
++            if (this.z < minZ) {
++                this.z = minZ;
++                flag = true;
++            } else if (this.z > maxZ) {
++                this.z = maxZ;
++                flag = true;
++            }
++
++            return flag;
++        }
++
++        public int getSpawnY(BlockGetter blockView, int maxY) {
++            BlockPos.MutableBlockPos blockposition_mutableblockposition = new BlockPos.MutableBlockPos(this.x, maxY + 1, this.z);
++            boolean flag = blockView.getBlockState(blockposition_mutableblockposition).isAir();
++
++            blockposition_mutableblockposition.move(Direction.DOWN);
++
++            boolean flag1;
++
++            for (boolean flag2 = blockView.getBlockState(blockposition_mutableblockposition).isAir(); blockposition_mutableblockposition.getY() > blockView.getMinBuildHeight(); flag2 = flag1) {
++                blockposition_mutableblockposition.move(Direction.DOWN);
++                flag1 = Position.getBlockState(blockView, blockposition_mutableblockposition).isAir(); // CraftBukkit
++                if (!flag1 && flag2 && flag) {
++                    return blockposition_mutableblockposition.getY() + 1;
++                }
++
++                flag = flag2;
++            }
++
++            return maxY + 1;
++        }
++
++        public boolean isSafe(BlockGetter world, int maxY) {
++            BlockPos blockposition = new BlockPos(this.x, this.getSpawnY(world, maxY) - 1, this.z);
++            BlockState iblockdata = Position.getBlockState(world, blockposition); // CraftBukkit
++            Material material = iblockdata.getMaterial();
++
++            return blockposition.getY() < maxY && !material.isLiquid() && material != Material.FIRE;
++        }
++
++        public void randomize(Random random, double minX, double minZ, double maxX, double maxZ) {
++            this.x = Mth.nextDouble(random, minX, maxX);
++            this.z = Mth.nextDouble(random, minZ, maxZ);
++        }
++        // CraftBukkit end
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+index b079499c40092564d06dec5c8267964d48a0a81f..5c1a126d4f0a6cf4ec7848ed95ffc576b1ae9ba6 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+@@ -2,22 +2,25 @@ package org.sugarcanemc.sugarcane.command;
  
- public class MinecartTNT extends AbstractMinecart {
-     private static final byte EVENT_PRIME = 10;
-@@ -43,6 +44,7 @@ public class MinecartTNT extends AbstractMinecart {
+ import java.util.Map;
+ import java.util.HashMap;
++
++import com.mojang.brigadier.CommandDispatcher;
++import net.minecraft.server.commands.SpreadPlayersCommand;
+ import org.bukkit.command.Command;
+ import net.minecraft.server.MinecraftServer;
  
-     @Override
-     public void tick() {
-+        if(MobTPSTresholds.CurrentTPS < MobTPSTresholds.MinecartTNTTickTreshold) return; //sugarcane
-         super.tick();
-         if (this.fuse > 0) {
-             // Paper start - Configurable TNT entity height nerf
-diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSTresholds.java b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSTresholds.java
+ public class SugarcaneCommandsManager {
+     private static Map<String, Command> commands;
+ 
+-    static {
++    public static void registerCommands() {
+         commands = new HashMap<>();
+         commands.put("nspt", new NSPTCommand("nspt"));
+         commands.put("stats", new StatsCommand("stats"));
+-    }
+-
+-    public static void registerCommands() {
+         if (commands != null)
+             for (var command : commands.entrySet()) {
+                 MinecraftServer.getServer().server.getCommandMap().register(command.getKey(), "Sugarcane", command.getValue());
+             }
+     }
++    public static void registerWithDispatcher(CommandDispatcher dispatcher){
++        SpreadPlayersCommand.register(dispatcher);
++    }
+ }
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6a9bc6857693e19754994dfc82f07aaad9279249
+index 0000000000000000000000000000000000000000..a40c8138fd76ae0777ab693feb1bbadd5d1b3449
 --- /dev/null
-+++ b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSTresholds.java
-@@ -0,0 +1,463 @@
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java
+@@ -0,0 +1,95 @@
 +package org.sugarcanemc.sugarcane.config;
 +
-+public class MobTPSTresholds {
++import com.google.common.base.Throwables;
++import io.netty.util.ResourceLeakDetector;
++import net.minecraft.SharedConstants;
++import net.minecraft.world.level.storage.DataVersion;
++import org.bukkit.Bukkit;
++import org.bukkit.configuration.InvalidConfigurationException;
++import org.bukkit.configuration.file.YamlConfiguration;
++import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
++
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.Field;
++import java.lang.reflect.Modifier;
++import java.util.List;
++import java.util.logging.Level;
++
++public class DynamicConfig extends BaseYamlConfig {
++    public File CONFIG_FILE;
++    public YamlConfiguration config = new YamlConfiguration();;
++
++    private String HEADER = "This is the overrides configuration for Minecraft's Shared Constants file.\n"
++            + "Many of these may break your server or simply not work, so know what you are doing!\n"
++            + "You have been warned!\n"
++            + "We are not responsible for any effects caused by modifying these!\n"
++            + "Regards, the Sugarcane team.\n";
++
++    public DynamicConfig(String file){
++        CONFIG_FILE = new File(file);
++    }
++
++    public void Load() {
++        var stime = System.nanoTime();
++        System.out.printf("Loading %s...", CONFIG_FILE.getName());
++        config = new YamlConfiguration();
++        try {
++            config.load(CONFIG_FILE);
++        } catch (IOException ex) {
++        } catch (InvalidConfigurationException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, " Could not load file! Please correct your syntax errors", ex);
++            throw Throwables.propagate(ex);
++        }
++
++        System.out.printf(" Done! (%.2f ms)\n", (System.nanoTime() - stime) / 1000000d);
++        Save();
++    }
++
++    public void Save() {
++        var stime = System.nanoTime();
++        System.out.printf("Saving %s...", CONFIG_FILE.getName());
++
++        try {
++            config.save(CONFIG_FILE);
++        } catch (IOException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, "Could not save " + CONFIG_FILE, ex);
++        }
++
++        System.out.printf(" Done! (%.2f ms)\n", (System.nanoTime() - stime) / 1000000d);
++    }
++
++    public void set(String path, Object val) {
++        config.set(path, val);
++    }
++
++    public boolean getBoolean(String path, boolean def) {
++        config.addDefault(path, def);
++        return config.getBoolean(path, config.getBoolean(path));
++    }
++
++    public double getDouble(String path, double def) {
++        config.addDefault(path, def);
++        return config.getDouble(path, config.getDouble(path));
++    }
++
++    public float getFloat(String path, float def) {
++        // TODO: Figure out why getFloat() always returns the default value.
++        return (float) getDouble(path, (double) def);
++    }
++
++    public int getInt(String path, int def) {
++        config.addDefault(path, def);
++        return config.getInt(path, config.getInt(path));
++    }
++
++    public <T> List<T> getList(String path, List<T> def) {
++        config.addDefault(path, def);
++        return (List<T>) config.getList(path, config.getList(path));
++    }
++
++    public String getString(String path, String def) {
++        config.addDefault(path, def);
++        return config.getString(path, config.getString(path));
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..105da0aee3662b55f67d07145f3ce2b1ea6d62d0
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
+@@ -0,0 +1,36 @@
++package org.sugarcanemc.sugarcane.config;
++
++import java.util.HashMap;
++
++public class MobTPSThresholds {
++    private static DynamicConfig Config = new DynamicConfig("config/tps-thresholds.yml");
 +    public static int CurrentTPS = 20;
-+    //Tresholds for FallingBlockEntity:
-+    public static int FallingBlockEntityTickTreshold = 10;
-+    //Tresholds for ExperienceOrb:
-+    public static int ExperienceOrbTickTreshold = 10;
-+    //Tresholds for PrimedTnt:
-+    public static int PrimedTntTickTreshold = 10;
-+    //Tresholds for ItemEntity:
-+    public static int ItemEntityTickTreshold = 10;
-+    //Tresholds for Boat:
-+    public static int BoatTickTreshold = 10;
-+    //Tresholds for Marker:
-+    public static int MarkerTickTreshold = 10;
-+    //Tresholds for ArmorStand:
-+    public static int ArmorStandTickTreshold = 10;
-+    //Tresholds for ItemFrame:
-+    public static int ItemFrameSpawnTreshold = 7;
-+    public static int ItemFrameTickTreshold = 10;
-+    //Tresholds for Painting:
-+    public static int PaintingSpawnTreshold = 7;
-+    public static int PaintingTickTreshold = 10;
-+    //Tresholds for MinecartTNT:
-+    public static int MinecartTNTTickTreshold = 10;
-+    //Tresholds for MinecartCommandBlock:
-+    public static int MinecartCommandBlockTickTreshold = 10;
-+    //Tresholds for MinecartFurnace:
-+    public static int MinecartFurnaceTickTreshold = 10;
-+    //Tresholds for MinecartSpawner:
-+    public static int MinecartSpawnerTickTreshold = 10;
-+    //Tresholds for Minecart:
-+    public static int MinecartTickTreshold = 10;
-+    //Tresholds for Slime:
-+    public static int SlimeSpawnTreshold = 7;
-+    public static int SlimeTickTreshold = 10;
-+    //Tresholds for MinecartHopper:
-+    public static int MinecartHopperTickTreshold = 10;
-+    //Tresholds for MinecartChest:
-+    public static int MinecartChestTickTreshold = 10;
-+    //Tresholds for Arrow:
-+    public static int ArrowTickTreshold = 10;
-+    //Tresholds for ThrownTrident:
-+    public static int ThrownTridentTickTreshold = 10;
-+    //Tresholds for SpectralArrow:
-+    public static int SpectralArrowTickTreshold = 10;
-+    //Tresholds for WitherSkull:
-+    public static int WitherSkullSpawnTreshold = 7;
-+    public static int WitherSkullTickTreshold = 10;
-+    //Tresholds for Fireball:
-+    public static int FireballTickTreshold = 10;
-+    //Tresholds for ThrowableItemProjectile:
-+    public static int ThrowableItemProjectileTickTreshold = 10;
-+    //Tresholds for Phantom:
-+    public static int PhantomSpawnTreshold = 7;
-+    public static int PhantomTickTreshold = 10;
-+    //Tresholds for Ghast:
-+    public static int GhastSpawnTreshold = 7;
-+    public static int GhastTickTreshold = 10;
-+    //Tresholds for Bat:
-+    public static int BatSpawnTreshold = 7;
-+    public static int BatTickTreshold = 10;
-+    //Tresholds for MagmaCube:
-+    public static int MagmaCubeSpawnTreshold = 7;
-+    public static int MagmaCubeTickTreshold = 10;
-+    //Tresholds for SmallFireball:
-+    public static int SmallFireballTickTreshold = 10;
-+    //Tresholds for LargeFireball:
-+    public static int LargeFireballTickTreshold = 10;
-+    //Tresholds for ThrownPotion:
-+    public static int ThrownPotionTickTreshold = 10;
-+    //Tresholds for ThrownEgg:
-+    public static int ThrownEggSpawnTreshold = 7;
-+    public static int ThrownEggTickTreshold = 10;
-+    //Tresholds for ThrownEnderpearl:
-+    public static int ThrownEnderpearlSpawnTreshold = 7;
-+    public static int ThrownEnderpearlTickTreshold = 10;
-+    //Tresholds for ThrownExperienceBottle:
-+    public static int ThrownExperienceBottleTickTreshold = 10;
-+    //Tresholds for Snowball:
-+    public static int SnowballSpawnTreshold = 7;
-+    public static int SnowballTickTreshold = 10;
-+    //Tresholds for Blaze:
-+    public static int BlazeSpawnTreshold = 7;
-+    public static int BlazeTickTreshold = 10;
-+    //Tresholds for Spider:
-+    public static int SpiderSpawnTreshold = 7;
-+    public static int SpiderTickTreshold = 10;
-+    //Tresholds for Giant:
-+    public static int GiantTickTreshold = 10;
-+    //Tresholds for WitherBoss:
-+    public static int WitherBossTickTreshold = 10;
-+    //Tresholds for Vex:
-+    public static int VexTickTreshold = 10;
-+    //Tresholds for EnderMan:
-+    public static int EnderManSpawnTreshold = 7;
-+    public static int EnderManTickTreshold = 10;
-+    //Tresholds for Guardian:
-+    public static int GuardianSpawnTreshold = 7;
-+    public static int GuardianTickTreshold = 10;
-+    //Tresholds for Endermite:
-+    public static int EndermiteSpawnTreshold = 7;
-+    public static int EndermiteTickTreshold = 10;
-+    //Tresholds for Zoglin:
-+    public static int ZoglinSpawnTreshold = 7;
-+    public static int ZoglinTickTreshold = 10;
-+    //Tresholds for Zombie:
-+    public static int ZombieSpawnTreshold = 7;
-+    public static int ZombieTickTreshold = 10;
-+    //Tresholds for Creeper:
-+    public static int CreeperSpawnTreshold = 7;
-+    public static int CreeperTickTreshold = 10;
-+    //Tresholds for Silverfish:
-+    public static int SilverfishTickTreshold = 10;
-+    //Tresholds for Squid:
-+    public static int SquidSpawnTreshold = 7;
-+    public static int SquidTickTreshold = 10;
-+    //Tresholds for Dolphin:
-+    public static int DolphinSpawnTreshold = 7;
-+    public static int DolphinTickTreshold = 10;
-+    //Tresholds for IronGolem:
-+    public static int IronGolemSpawnTreshold = 7;
-+    public static int IronGolemTickTreshold = 10;
-+    //Tresholds for SnowGolem:
-+    public static int SnowGolemSpawnTreshold = 7;
-+    public static int SnowGolemTickTreshold = 10;
-+    //Tresholds for Shulker:
-+    public static int ShulkerSpawnTreshold = 7;
-+    public static int ShulkerTickTreshold = 10;
-+    //Tresholds for CaveSpider:
-+    public static int CaveSpiderTickTreshold = 10;
-+    //Tresholds for ElderGuardian:
-+    public static int ElderGuardianSpawnTreshold = 7;
-+    public static int ElderGuardianTickTreshold = 10;
-+    //Tresholds for PiglinBrute:
-+    public static int PiglinBruteSpawnTreshold = 7;
-+    public static int PiglinBruteTickTreshold = 10;
-+    //Tresholds for Piglin:
-+    public static int PiglinSpawnTreshold = 7;
-+    public static int PiglinTickTreshold = 10;
-+    //Tresholds for Drowned:
-+    public static int DrownedSpawnTreshold = 7;
-+    public static int DrownedTickTreshold = 10;
-+    //Tresholds for ZombieVillager:
-+    public static int ZombieVillagerSpawnTreshold = 7;
-+    public static int ZombieVillagerTickTreshold = 10;
-+    //Tresholds for ZombifiedPiglin:
-+    public static int ZombifiedPiglinSpawnTreshold = 7;
-+    public static int ZombifiedPiglinTickTreshold = 10;
-+    //Tresholds for Husk:
-+    public static int HuskSpawnTreshold = 7;
-+    public static int HuskTickTreshold = 10;
-+    //Tresholds for WitherSkeleton:
-+    public static int WitherSkeletonSpawnTreshold = 7;
-+    public static int WitherSkeletonTickTreshold = 10;
-+    //Tresholds for Skeleton:
-+    public static int SkeletonSpawnTreshold = 7;
-+    public static int SkeletonTickTreshold = 10;
-+    //Tresholds for Stray:
-+    public static int StraySpawnTreshold = 7;
-+    public static int StrayTickTreshold = 10;
-+    //Tresholds for Raider:
-+    public static int RaiderSpawnTreshold = 7;
-+    public static int RaiderTickTreshold = 10;
-+    //Tresholds for GlowSquid:
-+    public static int GlowSquidSpawnTreshold = 7;
-+    public static int GlowSquidTickTreshold = 10;
-+    //Tresholds for Pufferfish:
-+    public static int PufferfishSpawnTreshold = 7;
-+    public static int PufferfishTickTreshold = 10;
-+    //Tresholds for Fox:
-+    public static int FoxSpawnTreshold = 7;
-+    public static int FoxTickTreshold = 10;
-+    //Tresholds for Pig:
-+    public static int PigSpawnTreshold = 7;
-+    public static int PigTickTreshold = 10;
-+    //Tresholds for Strider:
-+    public static int StriderSpawnTreshold = 7;
-+    public static int StriderTickTreshold = 10;
-+    //Tresholds for Ocelot:
-+    public static int OcelotSpawnTreshold = 7;
-+    public static int OcelotTickTreshold = 10;
-+    //Tresholds for Panda:
-+    public static int PandaSpawnTreshold = 7;
-+    public static int PandaTickTreshold = 10;
-+    //Tresholds for Goat:
-+    public static int GoatSpawnTreshold = 7;
-+    public static int GoatTickTreshold = 10;
-+    //Tresholds for Cow:
-+    public static int CowSpawnTreshold = 7;
-+    public static int CowTickTreshold = 10;
-+    //Tresholds for Hoglin:
-+    public static int HoglinSpawnTreshold = 7;
-+    public static int HoglinTickTreshold = 10;
-+    //Tresholds for Rabbit:
-+    public static int RabbitSpawnTreshold = 7;
-+    public static int RabbitTickTreshold = 10;
-+    //Tresholds for Chicken:
-+    public static int ChickenSpawnTreshold = 7;
-+    public static int ChickenTickTreshold = 10;
-+    //Tresholds for Bee:
-+    public static int BeeSpawnTreshold = 7;
-+    public static int BeeTickTreshold = 10;
-+    //Tresholds for Axolotl:
-+    public static int AxolotlSpawnTreshold = 7;
-+    public static int AxolotlTickTreshold = 10;
-+    //Tresholds for Turtle:
-+    public static int TurtleSpawnTreshold = 7;
-+    public static int TurtleTickTreshold = 10;
-+    //Tresholds for PolarBear:
-+    public static int PolarBearSpawnTreshold = 7;
-+    public static int PolarBearTickTreshold = 10;
-+    //Tresholds for Sheep:
-+    public static int SheepSpawnTreshold = 7;
-+    public static int SheepTickTreshold = 10;
-+    //Tresholds for WanderingTrader:
-+    public static int WanderingTraderSpawnTreshold = 7;
-+    public static int WanderingTraderTickTreshold = 10;
-+    //Tresholds for Villager:
-+    public static int VillagerTickTreshold = 10;
-+    //Tresholds for Witch:
-+    public static int WitchSpawnTreshold = 7;
-+    public static int WitchTickTreshold = 10;
-+    //Tresholds for Ravager:
-+    public static int RavagerSpawnTreshold = 7;
-+    public static int RavagerTickTreshold = 10;
-+    //Tresholds for Cod:
-+    public static int CodSpawnTreshold = 7;
-+    public static int CodTickTreshold = 10;
-+    //Tresholds for Salmon:
-+    public static int SalmonSpawnTreshold = 7;
-+    public static int SalmonTickTreshold = 10;
-+    //Tresholds for TropicalFish:
-+    public static int TropicalFishSpawnTreshold = 7;
-+    public static int TropicalFishTickTreshold = 10;
-+    //Tresholds for MushroomCow:
-+    public static int MushroomCowSpawnTreshold = 7;
-+    public static int MushroomCowTickTreshold = 10;
-+    //Tresholds for Horse:
-+    public static int HorseSpawnTreshold = 7;
-+    public static int HorseTickTreshold = 10;
-+    //Tresholds for ZombieHorse:
-+    public static int ZombieHorseTickTreshold = 10;
-+    //Tresholds for SkeletonHorse:
-+    public static int SkeletonHorseTickTreshold = 10;
-+    //Tresholds for Wolf:
-+    public static int WolfSpawnTreshold = 7;
-+    public static int WolfTickTreshold = 10;
-+    //Tresholds for Cat:
-+    public static int CatSpawnTreshold = 7;
-+    public static int CatTickTreshold = 10;
-+    //Tresholds for Pillager:
-+    public static int PillagerSpawnTreshold = 7;
-+    public static int PillagerTickTreshold = 10;
-+    //Tresholds for SpellcasterIllager:
-+    public static int SpellcasterIllagerSpawnTreshold = 7;
-+    public static int SpellcasterIllagerTickTreshold = 10;
-+    //Tresholds for Vindicator:
-+    public static int VindicatorSpawnTreshold = 7;
-+    public static int VindicatorTickTreshold = 10;
-+    //Tresholds for Mule:
-+    public static int MuleSpawnTreshold = 7;
-+    public static int MuleTickTreshold = 10;
-+    //Tresholds for Llama:
-+    public static int LlamaSpawnTreshold = 7;
-+    public static int LlamaTickTreshold = 10;
-+    //Tresholds for Donkey:
-+    public static int DonkeySpawnTreshold = 7;
-+    public static int DonkeyTickTreshold = 10;
-+    //Tresholds for Parrot:
-+    public static int ParrotSpawnTreshold = 7;
-+    public static int ParrotTickTreshold = 10;
-+    //Tresholds for Illusioner:
-+    public static int IllusionerSpawnTreshold = 7;
-+    public static int IllusionerTickTreshold = 10;
-+    //Tresholds for Evoker:
-+    public static int EvokerSpawnTreshold = 7;
-+    public static int EvokerTickTreshold = 10;
-+    //Tresholds for TraderLlama:
-+    public static int TraderLlamaTickTreshold = 10;
++    private static HashMap<Class<?>, Integer> Thresholds = new HashMap<>();
++    public static int getTickThreshold(Class<?> type){
++        if(MobTPSThresholds.Thresholds.containsKey(type)){
++            return MobTPSThresholds.Thresholds.get(type);
++        }
++        else {
++            System.out.printf("Could not get TPS threshold for %s, saving default!\n", type.getSimpleName());
++            var val = Config.getInt("tps-tresholds.tick."+type.getSimpleName(), -1);
++            if(val == -1) val = getDefault(type);
++            if(val != -1) Config.set("tps-tresholds.tick."+type.getSimpleName(), val);
++            MobTPSThresholds.Thresholds.put(type, val);
++            Config.Save();
++            return val;
++        }
++    }
++
++    //per entity type defaults go here
++    private static int getDefault(Class<?> type) {
++        return 10;
++    }
 +
 +    // Config class loading:
-+    public static void loadMobTresholds() {
++    public static void loadMobThresholds() {
 +        var stime = System.nanoTime();
-+        System.out.println("Loading mob tresholds...");
-+//        FallingBlockEntityTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.fallingblockentity.tick", FallingBlockEntityTickTreshold);
-+//        ExperienceOrbTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.experienceorb.tick", ExperienceOrbTickTreshold);
-+//        PrimedTntTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.primedtnt.tick", PrimedTntTickTreshold);
-+//        ItemEntityTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.itementity.tick", ItemEntityTickTreshold);
-+//        BoatTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.boat.tick", BoatTickTreshold);
-+//        MarkerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.marker.tick", MarkerTickTreshold);
-+//        ArmorStandTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.armorstand.tick", ArmorStandTickTreshold);
-+//        ItemFrameSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.itemframe.spawn", ItemFrameSpawnTreshold);
-+//        ItemFrameTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.itemframe.tick", ItemFrameTickTreshold);
-+//        PaintingSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.painting.spawn", PaintingSpawnTreshold);
-+//        PaintingTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.painting.tick", PaintingTickTreshold);
-+//        MinecartTNTTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecarttnt.tick", MinecartTNTTickTreshold);
-+//        MinecartCommandBlockTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecartcommandblock.tick", MinecartCommandBlockTickTreshold);
-+//        MinecartFurnaceTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecartfurnace.tick", MinecartFurnaceTickTreshold);
-+//        MinecartSpawnerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecartspawner.tick", MinecartSpawnerTickTreshold);
-+//        MinecartTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecart.tick", MinecartTickTreshold);
-+//        SlimeSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.slime.spawn", SlimeSpawnTreshold);
-+//        SlimeTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.slime.tick", SlimeTickTreshold);
-+//        MinecartHopperTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecarthopper.tick", MinecartHopperTickTreshold);
-+//        MinecartChestTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.minecartchest.tick", MinecartChestTickTreshold);
-+//        ArrowTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.arrow.tick", ArrowTickTreshold);
-+//        ThrownTridentTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.throwntrident.tick", ThrownTridentTickTreshold);
-+//        SpectralArrowTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spectralarrow.tick", SpectralArrowTickTreshold);
-+//        WitherSkullSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherskull.spawn", WitherSkullSpawnTreshold);
-+//        WitherSkullTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherskull.tick", WitherSkullTickTreshold);
-+//        FireballTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.fireball.tick", FireballTickTreshold);
-+//        ThrowableItemProjectileTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.throwableitemprojectile.tick", ThrowableItemProjectileTickTreshold);
-+//        PhantomSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.phantom.spawn", PhantomSpawnTreshold);
-+//        PhantomTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.phantom.tick", PhantomTickTreshold);
-+//        GhastSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ghast.spawn", GhastSpawnTreshold);
-+//        GhastTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ghast.tick", GhastTickTreshold);
-+//        BatSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.bat.spawn", BatSpawnTreshold);
-+//        BatTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.bat.tick", BatTickTreshold);
-+//        MagmaCubeSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.magmacube.spawn", MagmaCubeSpawnTreshold);
-+//        MagmaCubeTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.magmacube.tick", MagmaCubeTickTreshold);
-+//        SmallFireballTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.smallfireball.tick", SmallFireballTickTreshold);
-+//        LargeFireballTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.largefireball.tick", LargeFireballTickTreshold);
-+//        ThrownPotionTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownpotion.tick", ThrownPotionTickTreshold);
-+//        ThrownEggSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownegg.spawn", ThrownEggSpawnTreshold);
-+//        ThrownEggTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownegg.tick", ThrownEggTickTreshold);
-+//        ThrownEnderpearlSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownenderpearl.spawn", ThrownEnderpearlSpawnTreshold);
-+//        ThrownEnderpearlTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownenderpearl.tick", ThrownEnderpearlTickTreshold);
-+//        ThrownExperienceBottleTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.thrownexperiencebottle.tick", ThrownExperienceBottleTickTreshold);
-+//        SnowballSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.snowball.spawn", SnowballSpawnTreshold);
-+//        SnowballTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.snowball.tick", SnowballTickTreshold);
-+//        BlazeSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.blaze.spawn", BlazeSpawnTreshold);
-+//        BlazeTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.blaze.tick", BlazeTickTreshold);
-+//        SpiderSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spider.spawn", SpiderSpawnTreshold);
-+//        SpiderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spider.tick", SpiderTickTreshold);
-+//        GiantTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.giant.tick", GiantTickTreshold);
-+//        WitherBossTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherboss.tick", WitherBossTickTreshold);
-+//        VexTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.vex.tick", VexTickTreshold);
-+//        EnderManSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.enderman.spawn", EnderManSpawnTreshold);
-+//        EnderManTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.enderman.tick", EnderManTickTreshold);
-+//        GuardianSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.guardian.spawn", GuardianSpawnTreshold);
-+//        GuardianTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.guardian.tick", GuardianTickTreshold);
-+//        EndermiteSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.endermite.spawn", EndermiteSpawnTreshold);
-+//        EndermiteTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.endermite.tick", EndermiteTickTreshold);
-+//        ZoglinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zoglin.spawn", ZoglinSpawnTreshold);
-+//        ZoglinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zoglin.tick", ZoglinTickTreshold);
-+//        ZombieSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombie.spawn", ZombieSpawnTreshold);
-+//        ZombieTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombie.tick", ZombieTickTreshold);
-+//        CreeperSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.creeper.spawn", CreeperSpawnTreshold);
-+//        CreeperTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.creeper.tick", CreeperTickTreshold);
-+//        SilverfishTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.silverfish.tick", SilverfishTickTreshold);
-+//        SquidSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.squid.spawn", SquidSpawnTreshold);
-+//        SquidTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.squid.tick", SquidTickTreshold);
-+//        DolphinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.dolphin.spawn", DolphinSpawnTreshold);
-+//        DolphinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.dolphin.tick", DolphinTickTreshold);
-+//        IronGolemSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.irongolem.spawn", IronGolemSpawnTreshold);
-+//        IronGolemTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.irongolem.tick", IronGolemTickTreshold);
-+//        SnowGolemSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.snowgolem.spawn", SnowGolemSpawnTreshold);
-+//        SnowGolemTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.snowgolem.tick", SnowGolemTickTreshold);
-+//        ShulkerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.shulker.spawn", ShulkerSpawnTreshold);
-+//        ShulkerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.shulker.tick", ShulkerTickTreshold);
-+//        CaveSpiderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cavespider.tick", CaveSpiderTickTreshold);
-+//        ElderGuardianSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.elderguardian.spawn", ElderGuardianSpawnTreshold);
-+//        ElderGuardianTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.elderguardian.tick", ElderGuardianTickTreshold);
-+//        PiglinBruteSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.piglinbrute.spawn", PiglinBruteSpawnTreshold);
-+//        PiglinBruteTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.piglinbrute.tick", PiglinBruteTickTreshold);
-+//        PiglinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.piglin.spawn", PiglinSpawnTreshold);
-+//        PiglinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.piglin.tick", PiglinTickTreshold);
-+//        DrownedSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.drowned.spawn", DrownedSpawnTreshold);
-+//        DrownedTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.drowned.tick", DrownedTickTreshold);
-+//        ZombieVillagerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombievillager.spawn", ZombieVillagerSpawnTreshold);
-+//        ZombieVillagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombievillager.tick", ZombieVillagerTickTreshold);
-+//        ZombifiedPiglinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombifiedpiglin.spawn", ZombifiedPiglinSpawnTreshold);
-+//        ZombifiedPiglinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombifiedpiglin.tick", ZombifiedPiglinTickTreshold);
-+//        HuskSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.husk.spawn", HuskSpawnTreshold);
-+//        HuskTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.husk.tick", HuskTickTreshold);
-+//        WitherSkeletonSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherskeleton.spawn", WitherSkeletonSpawnTreshold);
-+//        WitherSkeletonTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witherskeleton.tick", WitherSkeletonTickTreshold);
-+//        SkeletonSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.skeleton.spawn", SkeletonSpawnTreshold);
-+//        SkeletonTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.skeleton.tick", SkeletonTickTreshold);
-+//        StraySpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.stray.spawn", StraySpawnTreshold);
-+//        StrayTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.stray.tick", StrayTickTreshold);
-+//        RaiderSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.raider.spawn", RaiderSpawnTreshold);
-+//        RaiderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.raider.tick", RaiderTickTreshold);
-+//        GlowSquidSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.glowsquid.spawn", GlowSquidSpawnTreshold);
-+//        GlowSquidTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.glowsquid.tick", GlowSquidTickTreshold);
-+//        PufferfishSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pufferfish.spawn", PufferfishSpawnTreshold);
-+//        PufferfishTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pufferfish.tick", PufferfishTickTreshold);
-+//        FoxSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.fox.spawn", FoxSpawnTreshold);
-+//        FoxTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.fox.tick", FoxTickTreshold);
-+//        PigSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pig.spawn", PigSpawnTreshold);
-+//        PigTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pig.tick", PigTickTreshold);
-+//        StriderSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.strider.spawn", StriderSpawnTreshold);
-+//        StriderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.strider.tick", StriderTickTreshold);
-+//        OcelotSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ocelot.spawn", OcelotSpawnTreshold);
-+//        OcelotTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ocelot.tick", OcelotTickTreshold);
-+//        PandaSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.panda.spawn", PandaSpawnTreshold);
-+//        PandaTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.panda.tick", PandaTickTreshold);
-+//        GoatSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.goat.spawn", GoatSpawnTreshold);
-+//        GoatTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.goat.tick", GoatTickTreshold);
-+//        CowSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cow.spawn", CowSpawnTreshold);
-+//        CowTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cow.tick", CowTickTreshold);
-+//        HoglinSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.hoglin.spawn", HoglinSpawnTreshold);
-+//        HoglinTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.hoglin.tick", HoglinTickTreshold);
-+//        RabbitSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.rabbit.spawn", RabbitSpawnTreshold);
-+//        RabbitTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.rabbit.tick", RabbitTickTreshold);
-+//        ChickenSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.chicken.spawn", ChickenSpawnTreshold);
-+//        ChickenTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.chicken.tick", ChickenTickTreshold);
-+//        BeeSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.bee.spawn", BeeSpawnTreshold);
-+//        BeeTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.bee.tick", BeeTickTreshold);
-+//        AxolotlSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.axolotl.spawn", AxolotlSpawnTreshold);
-+//        AxolotlTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.axolotl.tick", AxolotlTickTreshold);
-+//        TurtleSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.turtle.spawn", TurtleSpawnTreshold);
-+//        TurtleTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.turtle.tick", TurtleTickTreshold);
-+//        PolarBearSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.polarbear.spawn", PolarBearSpawnTreshold);
-+//        PolarBearTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.polarbear.tick", PolarBearTickTreshold);
-+//        SheepSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.sheep.spawn", SheepSpawnTreshold);
-+//        SheepTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.sheep.tick", SheepTickTreshold);
-+//        WanderingTraderSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.wanderingtrader.spawn", WanderingTraderSpawnTreshold);
-+//        WanderingTraderTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.wanderingtrader.tick", WanderingTraderTickTreshold);
-+//        VillagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.villager.tick", VillagerTickTreshold);
-+//        WitchSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witch.spawn", WitchSpawnTreshold);
-+//        WitchTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.witch.tick", WitchTickTreshold);
-+//        RavagerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ravager.spawn", RavagerSpawnTreshold);
-+//        RavagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.ravager.tick", RavagerTickTreshold);
-+//        CodSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cod.spawn", CodSpawnTreshold);
-+//        CodTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cod.tick", CodTickTreshold);
-+//        SalmonSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.salmon.spawn", SalmonSpawnTreshold);
-+//        SalmonTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.salmon.tick", SalmonTickTreshold);
-+//        TropicalFishSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.tropicalfish.spawn", TropicalFishSpawnTreshold);
-+//        TropicalFishTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.tropicalfish.tick", TropicalFishTickTreshold);
-+//        MushroomCowSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.mushroomcow.spawn", MushroomCowSpawnTreshold);
-+//        MushroomCowTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.mushroomcow.tick", MushroomCowTickTreshold);
-+//        HorseSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.horse.spawn", HorseSpawnTreshold);
-+//        HorseTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.horse.tick", HorseTickTreshold);
-+//        ZombieHorseTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.zombiehorse.tick", ZombieHorseTickTreshold);
-+//        SkeletonHorseTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.skeletonhorse.tick", SkeletonHorseTickTreshold);
-+//        WolfSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.wolf.spawn", WolfSpawnTreshold);
-+//        WolfTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.wolf.tick", WolfTickTreshold);
-+//        CatSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cat.spawn", CatSpawnTreshold);
-+//        CatTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.cat.tick", CatTickTreshold);
-+//        PillagerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pillager.spawn", PillagerSpawnTreshold);
-+//        PillagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.pillager.tick", PillagerTickTreshold);
-+//        SpellcasterIllagerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spellcasterillager.spawn", SpellcasterIllagerSpawnTreshold);
-+//        SpellcasterIllagerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.spellcasterillager.tick", SpellcasterIllagerTickTreshold);
-+//        VindicatorSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.vindicator.spawn", VindicatorSpawnTreshold);
-+//        VindicatorTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.vindicator.tick", VindicatorTickTreshold);
-+//        MuleSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.mule.spawn", MuleSpawnTreshold);
-+//        MuleTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.mule.tick", MuleTickTreshold);
-+//        LlamaSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.llama.spawn", LlamaSpawnTreshold);
-+//        LlamaTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.llama.tick", LlamaTickTreshold);
-+//        DonkeySpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.donkey.spawn", DonkeySpawnTreshold);
-+//        DonkeyTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.donkey.tick", DonkeyTickTreshold);
-+//        ParrotSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.parrot.spawn", ParrotSpawnTreshold);
-+//        ParrotTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.parrot.tick", ParrotTickTreshold);
-+//        IllusionerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.illusioner.spawn", IllusionerSpawnTreshold);
-+//        IllusionerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.illusioner.tick", IllusionerTickTreshold);
-+//        EvokerSpawnTreshold = SugarcaneConfig.getInt("performance.tps-treshold.evoker.spawn", EvokerSpawnTreshold);
-+//        EvokerTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.evoker.tick", EvokerTickTreshold);
-+//        TraderLlamaTickTreshold = SugarcaneConfig.getInt("performance.tps-treshold.traderllama.tick", TraderLlamaTickTreshold);
-+        System.out.printf("Loaded mob TPS tresholds in %s ms\n", (System.nanoTime() - stime) / 1000000d);
++        System.out.println("Loading mob thresholds...");
++        Config.Load();
++        System.out.printf("Loaded mob TPS thresholds in %s ms\n", (System.nanoTime() - stime) / 1000000d);
 +    }
 +}
 \ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-index defa1d104376bbb159b8dc7b371d934d183309f7..30f6b9d4364ca0578c613eb20f29f8b1aa3089ff 100644
+index defa1d104376bbb159b8dc7b371d934d183309f7..de4d86a2287dcdb5a2fd069d9279f93527d0ab03 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -15,6 +15,7 @@ import net.minecraft.SharedConstants;
+@@ -7,14 +7,13 @@ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+ import java.lang.reflect.Modifier;
+ import java.util.List;
+-import java.util.concurrent.TimeUnit;
+ import java.util.logging.Level;
+-import java.util.regex.Pattern;
+ 
+ import net.minecraft.SharedConstants;
  import org.bukkit.Bukkit;
  import org.bukkit.configuration.InvalidConfigurationException;
  import org.bukkit.configuration.file.YamlConfiguration;
@@ -1295,7 +1675,19 @@ index defa1d104376bbb159b8dc7b371d934d183309f7..30f6b9d4364ca0578c613eb20f29f8b1
  import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
  import org.sugarcanemc.sugarcane.util.yaml.YamlCommenter;
  
-@@ -42,7 +43,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+@@ -29,9 +28,11 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 	private static final YamlCommenter c = new YamlCommenter();
+ 	public static int version; // since we're remapping sidestreams' configs we need this public
+ 	public static boolean verbose; // since we're remapping sidestreams' configs we need this public
++	public static boolean alreadyLoaded = false;
+ 	/*========================================================================*/
+ 
+ 	public static void init(File configFile) {
++		if(alreadyLoaded) return;
+ 		CONFIG_FILE = configFile;
+ 		config = new YamlConfiguration();
+ 		try {
+@@ -42,12 +43,13 @@ public class SugarcaneConfig extends BaseYamlConfig {
  			throw Throwables.propagate(ex);
  		}
  		config.options().copyDefaults(true);
@@ -1304,7 +1696,13 @@ index defa1d104376bbb159b8dc7b371d934d183309f7..30f6b9d4364ca0578c613eb20f29f8b1
  		version = getInt("config-version", 2);
  		set("config-version", 2);
  		removeLeftovers();
-@@ -57,10 +58,14 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 		readConfig(SugarcaneConfig.class, null);
+ 		addComments();
++		alreadyLoaded = true;
+ 	}
+ 	private static void addComments() {
+ 		//add header
+@@ -57,10 +59,14 @@ public class SugarcaneConfig extends BaseYamlConfig {
  				You have been warned!
  				Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord""");
  		//add comments
@@ -1323,7 +1721,7 @@ index defa1d104376bbb159b8dc7b371d934d183309f7..30f6b9d4364ca0578c613eb20f29f8b1
  		c.addComment("brand-name", "Set the software name the server reports to be using.");
  		c.addComment("ItemMergeBehavior",
  				"""
-@@ -72,7 +77,9 @@ public class SugarcaneConfig extends BaseYamlConfig {
+@@ -72,7 +78,10 @@ public class SugarcaneConfig extends BaseYamlConfig {
  		c.addComment("config-version", "Config version, do NOT modify this!");
  		c.addComment("settings.checks.flight", "Toggles flight checks for players");
  		c.addComment("settings.checks.vehicle-flight", "Toggles flight checks for players in vehicles");
@@ -1331,19 +1729,36 @@ index defa1d104376bbb159b8dc7b371d934d183309f7..30f6b9d4364ca0578c613eb20f29f8b1
 +		c.addComment("performance.disable-mob-spawners-below-tps", "Disable mob spawners spawning mobs when TPS drops below this value.");
 +		c.addComment("performance.disable-mob-spawning-below-tps", "Disable spawning mobs when TPS drops below this value.");
 +		c.addComment("performance.tps-treshold", "Disable these features when TPS drops below this value");
++		c.addComment("performance.uncap-tps", "Disable the 20TPS limit. Warning: this will make your server run way faster and make it consume a lot of CPU!");
  	}
  
  	private static void removeLeftovers() {
-@@ -111,7 +118,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+@@ -97,6 +106,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 	}
+ 
+ 	static void readConfig(Class<?> clazz, Object instance) {
++		if(alreadyLoaded) return;
+ 		for (Method method : clazz.getDeclaredMethods()) {
+ 			if (Modifier.isPrivate(method.getModifiers())) {
+ 				if (method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
+@@ -111,13 +121,15 @@ public class SugarcaneConfig extends BaseYamlConfig {
  				}
  			}
  		}
 -
-+		MobTPSTresholds.loadMobTresholds();
++		new File("config/").mkdirs();
++		MobTPSThresholds.loadMobThresholds();
  		try {
  			config.save(CONFIG_FILE);
  			c.saveComments(CONFIG_FILE);
-@@ -139,7 +146,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
+ 		} catch (IOException ex) {
+ 			Bukkit.getLogger().log(Level.SEVERE, "Could not save " + CONFIG_FILE, ex);
+ 		}
++		alreadyLoaded = true;
+ 	}
+ 
+ 	private static void set(String path, Object val) {
+@@ -139,7 +151,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
  		return (float) getDouble(path, (double) def);
  	}
  
@@ -1352,7 +1767,7 @@ index defa1d104376bbb159b8dc7b371d934d183309f7..30f6b9d4364ca0578c613eb20f29f8b1
  		config.addDefault(path, def);
  		return config.getInt(path, config.getInt(path));
  	}
-@@ -155,18 +162,20 @@ public class SugarcaneConfig extends BaseYamlConfig {
+@@ -155,18 +167,20 @@ public class SugarcaneConfig extends BaseYamlConfig {
  	}
  
  	//define settings
@@ -1376,20 +1791,28 @@ index defa1d104376bbb159b8dc7b371d934d183309f7..30f6b9d4364ca0578c613eb20f29f8b1
  		if(modSharedConstants) SharedConstantOverridesConfig.Load();
  	}
  
-@@ -207,5 +216,5 @@ public class SugarcaneConfig extends BaseYamlConfig {
+@@ -207,5 +221,13 @@ public class SugarcaneConfig extends BaseYamlConfig {
      private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
  
  	public static int DisableMobSpawnerBelowTPS = 0;
 -	private static void disableMobSpawnerBelowTPS(){ DisableMobSpawnerBelowTPS = getInt("disable-mob-spawners-below-tps", 0); }
 +	private static void disableMobSpawnerBelowTPS(){ DisableMobSpawnerBelowTPS = getInt("performance.tps-treshold.mob-spawners", 0); }
++	public static boolean UncapTPS = true;
++	private static void uncapTPS(){ UncapTPS = getBoolean("performance.uncap-tps", false); }
++
++	public static boolean TickAllEntities = true;
++	public static void setCheckEntityTickingRange(){ TickAllEntities = getBoolean("performance.tick-all-entities", TickAllEntities); }
++
++	public static boolean DisableEntityTicking = false;
++	public static void setDisableEntityTicking(){ DisableEntityTicking = getBoolean("performance.disable-entity-ticking", DisableEntityTicking); }
  }
 \ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java b/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..2a17b72f659b4ec2a829fe0fef4c14a6fa3ca8f4
+index 0000000000000000000000000000000000000000..49209ca447f671348c2f850c2385a0546a3a93ac
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java
-@@ -0,0 +1,98 @@
+@@ -0,0 +1,99 @@
 +package org.sugarcanemc.sugarcane.util;
 +
 +import net.minecraft.world.entity.Entity;
@@ -1408,7 +1831,8 @@ index 0000000000000000000000000000000000000000..2a17b72f659b4ec2a829fe0fef4c14a6
 +    public static void Generate() {
 +        System.out.println("Generating classes...");
 +        new File(cd).mkdir();
-+        GenerateMobSpawnTresholds();
++        //deprecated, use as template only:
++        //GenerateMobSpawnTresholds();
 +    }
 +
 +    public static void GenerateMobSpawnTresholds() {
