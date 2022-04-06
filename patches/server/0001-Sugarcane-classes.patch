@@ -1,0 +1,1808 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 19:42:58 +0200
+Subject: [PATCH] Sugarcane classes
+
+
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/cache/NBTCache.java b/src/main/java/org/sugarcanemc/sugarcane/cache/NBTCache.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..a1db826de6fd53787c7e3f0d8dd8365d452f4ac0
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/cache/NBTCache.java
+@@ -0,0 +1,32 @@
++package org.sugarcanemc.sugarcane.cache;
++
++import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenCustomHashMap;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.nbt.CompoundTag;
++
++import java.io.File;
++
++public class NBTCache extends Object2ObjectLinkedOpenCustomHashMap<File, CompoundTag> {
++
++    public NBTCache() {
++        super(100, 0.75F, new Strategy<File>() {
++            @Override
++            public int hashCode(File k) {
++                return k.hashCode();
++            }
++
++            @Override
++            public boolean equals(File k, File k1) {
++                return k.equals(k1);
++            }
++        });
++    }
++
++    @Override
++    public CompoundTag put(File k, CompoundTag v) {
++        if (this.size() > MinecraftServer.getServer().getPlayerCount()) {
++            this.removeLast();
++        }
++        return super.putAndMoveToFirst(k, v);
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/NSPTCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/NSPTCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..2c8bb5604748777b0e98252a0589e5f09833e058
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/NSPTCommand.java
+@@ -0,0 +1,59 @@
++package org.sugarcanemc.sugarcane.command;
++
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Collections;
++import java.util.List;
++import net.minecraft.server.MinecraftServer;
++import org.bukkit.ChatColor;
++import org.bukkit.Location;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandSender;
++
++public class NSPTCommand extends Command {
++
++    public NSPTCommand(String name) {
++        super(name);
++        this.description = "View server tick times in nanoseconds";
++        this.usageMessage = "/nspt";
++        this.setPermission("bukkit.command.nspt");
++    }
++
++    @Override
++    public List<String> tabComplete(CommandSender sender, String alias, String[] args, Location location) throws IllegalArgumentException {
++        return Collections.emptyList();
++    }
++
++    @Override
++    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
++        if (!testPermission(sender)) return true;
++
++        MinecraftServer server = MinecraftServer.getServer();
++
++        List<String> times = new ArrayList<>();
++        times.addAll(eval(server.tickTimes5s.getTimes()));
++        times.addAll(eval(server.tickTimes10s.getTimes()));
++        times.addAll(eval(server.tickTimes60s.getTimes()));
++
++        sender.sendMessage("§6Server tick NS times §e(§7avg§e/§7min§e/§7max§e)§6 from last 5s§7,§6 10s§7,§6 1m§e:");
++        sender.sendMessage(String.format("§6◴ %s§7/%s§7/%s§e, %s§7/%s§7/%s§e, %s§7/%s§7/%s", times.toArray()));
++        return true;
++    }
++
++    private static List<String> eval(long[] times) {
++        long min = Integer.MAX_VALUE;
++        long max = 0L;
++        long total = 0L;
++        for (long value : times) {
++            if (value > 0L && value < min) min = value;
++            if (value > max) max = value;
++            total += value;
++        }
++        double avgD = ((double) total / (double) times.length);
++        return Arrays.asList(getColor(avgD), getColor(min), getColor(max));
++    }
++
++    private static String getColor(double avg) {
++        return ChatColor.COLOR_CHAR + (avg >= 5E+7 ? "c" : avg >= (4E+7) ? "e" : "a") + avg;
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..e4fce9272f923b5118a771c043f8ca2143db64fa
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java
+@@ -0,0 +1,359 @@
++package org.sugarcanemc.sugarcane.command;
++
++import com.google.common.collect.Maps;
++import com.google.common.collect.Sets;
++import com.mojang.brigadier.CommandDispatcher;
++import com.mojang.brigadier.arguments.BoolArgumentType;
++import com.mojang.brigadier.arguments.FloatArgumentType;
++import com.mojang.brigadier.arguments.IntegerArgumentType;
++import com.mojang.brigadier.builder.LiteralArgumentBuilder;
++import com.mojang.brigadier.builder.RequiredArgumentBuilder;
++import com.mojang.brigadier.exceptions.CommandSyntaxException;
++import com.mojang.brigadier.exceptions.Dynamic4CommandExceptionType;
++
++import java.util.*;
++
++import net.minecraft.commands.CommandSourceStack;
++import net.minecraft.commands.arguments.EntityArgument;
++import net.minecraft.commands.arguments.coordinates.Vec2Argument;
++import net.minecraft.core.BlockPos;
++import net.minecraft.core.Direction;
++import net.minecraft.network.chat.TranslatableComponent;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.ServerLevel;
++import net.minecraft.util.Mth;
++import net.minecraft.world.entity.Entity;
++import net.minecraft.world.entity.player.Player;
++import net.minecraft.world.level.BlockGetter;
++import net.minecraft.world.level.block.state.BlockState;
++import net.minecraft.world.level.material.Material;
++import net.minecraft.world.phys.Vec2;
++import net.minecraft.world.scores.Team;
++import org.bukkit.Bukkit;
++import org.bukkit.craftbukkit.scheduler.MinecraftInternalPlugin;
++import org.bukkit.scheduler.BukkitRunnable;
++
++public class SpreadPlayerFCommand {
++    private static final Queue<Entity> queue = new PriorityQueue<Entity>();
++    private static final int MAX_ITERATION_COUNT = 1000;
++    private static final Dynamic4CommandExceptionType ERROR_FAILED_TO_SPREAD_TEAMS = new Dynamic4CommandExceptionType((object, object1, object2, object3) -> {
++        return new TranslatableComponent("commands.spreadplayers.failed.teams", object, object1, object2, object3);
++    });
++    private static final Dynamic4CommandExceptionType ERROR_FAILED_TO_SPREAD_ENTITIES = new Dynamic4CommandExceptionType((object, object1, object2, object3) -> {
++        return new TranslatableComponent("commands.spreadplayers.failed.entities", object, object1, object2, object3);
++    });
++    static Random random = new Random();
++    private static CommandSourceStack lsource;
++    private static Vec2 lcenter;
++    private static float lspreadDistance;
++    private static float lmaxRange;
++    private static int lmaxY;
++    private static boolean lrespectTeams;
++
++    public SpreadPlayerFCommand() {
++    }
++
++    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
++        dispatcher.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) net.minecraft.commands.Commands.literal("spreadplayersf").requires((commandlistenerwrapper) -> {
++            return commandlistenerwrapper.hasPermission(2);
++        })).then(net.minecraft.commands.Commands.argument("center", Vec2Argument.vec2()).then(net.minecraft.commands.Commands.argument("spreadDistance", FloatArgumentType.floatArg(0.0F)).then(((RequiredArgumentBuilder) net.minecraft.commands.Commands.argument("maxRange", FloatArgumentType.floatArg(1.0F)).then(net.minecraft.commands.Commands.argument("respectTeams", BoolArgumentType.bool()).then(net.minecraft.commands.Commands.argument("targets", EntityArgument.entities()).executes((commandcontext) -> {
++            return SpreadPlayerFCommand.spreadPlayers(commandcontext.getSource(), Vec2Argument.getVec2(commandcontext, "center"), FloatArgumentType.getFloat(commandcontext, "spreadDistance"), FloatArgumentType.getFloat(commandcontext, "maxRange"), commandcontext.getSource().getLevel().getMaxBuildHeight(), BoolArgumentType.getBool(commandcontext, "respectTeams"), EntityArgument.getEntities(commandcontext, "targets"));
++        })))).then(net.minecraft.commands.Commands.literal("under").then(net.minecraft.commands.Commands.argument("maxHeight", IntegerArgumentType.integer(0)).then(net.minecraft.commands.Commands.argument("respectTeams", BoolArgumentType.bool()).then(net.minecraft.commands.Commands.argument("targets", EntityArgument.entities()).executes((commandcontext) -> {
++            return SpreadPlayerFCommand.spreadPlayers(commandcontext.getSource(), Vec2Argument.getVec2(commandcontext, "center"), FloatArgumentType.getFloat(commandcontext, "spreadDistance"), FloatArgumentType.getFloat(commandcontext, "maxRange"), IntegerArgumentType.getInteger(commandcontext, "maxHeight"), BoolArgumentType.getBool(commandcontext, "respectTeams"), EntityArgument.getEntities(commandcontext, "targets"));
++        })))))))));
++        new BukkitRunnable() {
++            @Override
++            public void run() {
++                if (Bukkit.isStopping() || MinecraftServer.getServer().hasStopped()) cancel();
++                if (!queue.isEmpty()) {
++                    List<Entity> ents = new ArrayList<>();
++                    for (int i = 0; i < Math.min(queue.size(), MAX_ITERATION_COUNT); i++) {
++                        ents.add(queue.remove());
++                    }
++                    try {
++                        runSpreadPlayers(lsource, lcenter, lspreadDistance, lmaxRange, lmaxY, lrespectTeams, ents);
++                    } catch (CommandSyntaxException e) {
++                        e.printStackTrace();
++                    }
++                }
++            }
++        }.runTaskTimerAsynchronously(new MinecraftInternalPlugin(), 0L, 1L);
++    }
++
++    private static int spreadPlayers(CommandSourceStack source, Vec2 center, float spreadDistance, float maxRange, int maxY, boolean respectTeams, Collection<? extends Entity> players) throws CommandSyntaxException {
++        lsource = source;
++        lcenter = center;
++        lspreadDistance = spreadDistance;
++        lmaxRange = maxRange;
++        lmaxY = maxY;
++        lrespectTeams = respectTeams;
++        queue.addAll(players);
++        return players.size();
++    }
++
++    private static int runSpreadPlayers(CommandSourceStack source, Vec2 center, float spreadDistance, float maxRange, int maxY, boolean respectTeams, Collection<? extends Entity> players) throws CommandSyntaxException {
++        double d0 = center.x - maxRange;
++        double d1 = center.y - maxRange;
++        double d2 = center.x + maxRange;
++        double d3 = center.y + maxRange;
++        SpreadPlayerFCommand.Position[] acommandspreadplayers_a = SpreadPlayerFCommand.createInitialPositions(random, respectTeams ? SpreadPlayerFCommand.getNumberOfTeams(players) : players.size(), d0, d1, d2, d3);
++
++        SpreadPlayerFCommand.spreadPositions(center, spreadDistance, source.getLevel(), random, d0, d1, d2, d3, maxY, acommandspreadplayers_a, respectTeams);
++        double d4 = SpreadPlayerFCommand.setPlayerPositions(players, source.getLevel(), acommandspreadplayers_a, maxY, respectTeams);
++
++        source.sendSuccess(new TranslatableComponent("commands.spreadplayers.success." + (respectTeams ? "teams" : "entities"), acommandspreadplayers_a.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d4)), true);
++        return acommandspreadplayers_a.length;
++    }
++
++    private static int getNumberOfTeams(Collection<? extends Entity> entities) {
++        Set<Team> set = Sets.newHashSet();
++        Iterator iterator = entities.iterator();
++
++        while (iterator.hasNext()) {
++            Entity entity = (Entity) iterator.next();
++
++            if (entity instanceof Player) {
++                set.add(entity.getTeam());
++            } else {
++                set.add(null); // CraftBukkit - decompile error
++            }
++        }
++
++        return set.size();
++    }
++
++    private static void spreadPositions(Vec2 center, double spreadDistance, ServerLevel world, Random random, double minX, double minZ, double maxX, double maxZ, int maxY, SpreadPlayerFCommand.Position[] piles, boolean respectTeams) throws CommandSyntaxException {
++        boolean flag1 = true;
++        double d5 = 3.4028234663852886E38D;
++
++        int j;
++
++        for (j = 0; j < 10000 && flag1; ++j) {
++            flag1 = false;
++            d5 = 3.4028234663852886E38D;
++
++            int k;
++            SpreadPlayerFCommand.Position commandspreadplayers_a;
++
++            for (int l = 0; l < piles.length; ++l) {
++                SpreadPlayerFCommand.Position commandspreadplayers_a1 = piles[l];
++
++                k = 0;
++                commandspreadplayers_a = new SpreadPlayerFCommand.Position();
++
++                for (int i1 = 0; i1 < piles.length; ++i1) {
++                    if (l != i1) {
++                        SpreadPlayerFCommand.Position commandspreadplayers_a2 = piles[i1];
++                        double d6 = commandspreadplayers_a1.dist(commandspreadplayers_a2);
++
++                        d5 = Math.min(d6, d5);
++                        if (d6 < spreadDistance) {
++                            ++k;
++                            commandspreadplayers_a.x += commandspreadplayers_a2.x - commandspreadplayers_a1.x;
++                            commandspreadplayers_a.z += commandspreadplayers_a2.z - commandspreadplayers_a1.z;
++                        }
++                    }
++                }
++
++                if (k > 0) {
++                    commandspreadplayers_a.x /= k;
++                    commandspreadplayers_a.z /= k;
++                    double d7 = commandspreadplayers_a.getLength();
++
++                    if (d7 > 0.0D) {
++                        commandspreadplayers_a.normalize();
++                        commandspreadplayers_a1.moveAway(commandspreadplayers_a);
++                    } else {
++                        commandspreadplayers_a1.randomize(random, minX, minZ, maxX, maxZ);
++                    }
++
++                    flag1 = true;
++                }
++
++                if (commandspreadplayers_a1.clamp(minX, minZ, maxX, maxZ)) {
++                    flag1 = true;
++                }
++            }
++
++            if (!flag1) {
++                SpreadPlayerFCommand.Position[] acommandspreadplayers_a1 = piles;
++                int j1 = piles.length;
++
++                for (k = 0; k < j1; ++k) {
++                    commandspreadplayers_a = acommandspreadplayers_a1[k];
++                    if (!commandspreadplayers_a.isSafe(world, maxY)) {
++                        commandspreadplayers_a.randomize(random, minX, minZ, maxX, maxZ);
++                        flag1 = true;
++                    }
++                }
++            }
++        }
++
++        if (d5 == 3.4028234663852886E38D) {
++            d5 = 0.0D;
++        }
++
++        if (j >= 10000) {
++            if (respectTeams) {
++                throw SpreadPlayerFCommand.ERROR_FAILED_TO_SPREAD_TEAMS.create(piles.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d5));
++            } else {
++                throw SpreadPlayerFCommand.ERROR_FAILED_TO_SPREAD_ENTITIES.create(piles.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d5));
++            }
++        }
++    }
++
++    private static double setPlayerPositions(Collection<? extends Entity> entities, ServerLevel world, SpreadPlayerFCommand.Position[] piles, int maxY, boolean respectTeams) {
++        double d0 = 0.0D;
++        int j = 0;
++        Map<Team, SpreadPlayerFCommand.Position> map = Maps.newHashMap();
++
++        double d1;
++
++        for (Iterator iterator = entities.iterator(); iterator.hasNext(); d0 += d1) {
++            Entity entity = (Entity) iterator.next();
++            SpreadPlayerFCommand.Position commandspreadplayers_a;
++
++            if (respectTeams) {
++                Team scoreboardteambase = entity instanceof Player ? entity.getTeam() : null;
++
++                if (!map.containsKey(scoreboardteambase)) {
++                    map.put(scoreboardteambase, piles[j++]);
++                }
++
++                commandspreadplayers_a = map.get(scoreboardteambase);
++            } else {
++                commandspreadplayers_a = piles[j++];
++            }
++
++            entity.teleportToWithTicket((double) Mth.floor(commandspreadplayers_a.x) + 0.5D, commandspreadplayers_a.getSpawnY(world, maxY), (double) Mth.floor(commandspreadplayers_a.z) + 0.5D);
++            d1 = Double.MAX_VALUE;
++            SpreadPlayerFCommand.Position[] acommandspreadplayers_a1 = piles;
++            int k = piles.length;
++
++            for (int l = 0; l < k; ++l) {
++                SpreadPlayerFCommand.Position commandspreadplayers_a1 = acommandspreadplayers_a1[l];
++
++                if (commandspreadplayers_a != commandspreadplayers_a1) {
++                    double d2 = commandspreadplayers_a.dist(commandspreadplayers_a1);
++
++                    d1 = Math.min(d2, d1);
++                }
++            }
++        }
++
++        if (entities.size() < 2) {
++            return 0.0D;
++        } else {
++            d0 /= entities.size();
++            return d0;
++        }
++    }
++
++    private static SpreadPlayerFCommand.Position[] createInitialPositions(Random random, int count, double minX, double minZ, double maxX, double maxZ) {
++        SpreadPlayerFCommand.Position[] acommandspreadplayers_a = new SpreadPlayerFCommand.Position[count];
++
++        for (int j = 0; j < acommandspreadplayers_a.length; ++j) {
++            SpreadPlayerFCommand.Position commandspreadplayers_a = new SpreadPlayerFCommand.Position();
++
++            commandspreadplayers_a.randomize(random, minX, minZ, maxX, maxZ);
++            acommandspreadplayers_a[j] = commandspreadplayers_a;
++        }
++
++        return acommandspreadplayers_a;
++    }
++
++    private static class Position {
++
++        double x;
++        double z;
++
++        Position() {
++        }
++
++        // CraftBukkit start - add a version of getBlockState which force loads chunks
++        private static BlockState getBlockState(BlockGetter iblockaccess, BlockPos position) {
++            ((ServerLevel) iblockaccess).getChunkSource().getChunk(position.getX() >> 4, position.getZ() >> 4, true);
++            return iblockaccess.getBlockState(position);
++        }
++
++        double dist(SpreadPlayerFCommand.Position other) {
++            double d0 = this.x - other.x;
++            double d1 = this.z - other.z;
++
++            return Math.sqrt(d0 * d0 + d1 * d1);
++        }
++
++        void normalize() {
++            double d0 = this.getLength();
++
++            this.x /= d0;
++            this.z /= d0;
++        }
++
++        double getLength() {
++            return Math.sqrt(this.x * this.x + this.z * this.z);
++        }
++
++        public void moveAway(SpreadPlayerFCommand.Position other) {
++            this.x -= other.x;
++            this.z -= other.z;
++        }
++
++        public boolean clamp(double minX, double minZ, double maxX, double maxZ) {
++            boolean flag = false;
++
++            if (this.x < minX) {
++                this.x = minX;
++                flag = true;
++            } else if (this.x > maxX) {
++                this.x = maxX;
++                flag = true;
++            }
++
++            if (this.z < minZ) {
++                this.z = minZ;
++                flag = true;
++            } else if (this.z > maxZ) {
++                this.z = maxZ;
++                flag = true;
++            }
++
++            return flag;
++        }
++
++        public int getSpawnY(BlockGetter blockView, int maxY) {
++            BlockPos.MutableBlockPos blockposition_mutableblockposition = new BlockPos.MutableBlockPos(this.x, maxY + 1, this.z);
++            boolean flag = blockView.getBlockState(blockposition_mutableblockposition).isAir();
++
++            blockposition_mutableblockposition.move(Direction.DOWN);
++
++            boolean flag1;
++
++            for (boolean flag2 = blockView.getBlockState(blockposition_mutableblockposition).isAir(); blockposition_mutableblockposition.getY() > blockView.getMinBuildHeight(); flag2 = flag1) {
++                blockposition_mutableblockposition.move(Direction.DOWN);
++                flag1 = Position.getBlockState(blockView, blockposition_mutableblockposition).isAir(); // CraftBukkit
++                if (!flag1 && flag2 && flag) {
++                    return blockposition_mutableblockposition.getY() + 1;
++                }
++
++                flag = flag2;
++            }
++
++            return maxY + 1;
++        }
++
++        public boolean isSafe(BlockGetter world, int maxY) {
++            BlockPos blockposition = new BlockPos(this.x, this.getSpawnY(world, maxY) - 1, this.z);
++            BlockState iblockdata = Position.getBlockState(world, blockposition); // CraftBukkit
++            Material material = iblockdata.getMaterial();
++
++            return blockposition.getY() < maxY && !material.isLiquid() && material != Material.FIRE;
++        }
++
++        public void randomize(Random random, double minX, double minZ, double maxX, double maxZ) {
++            this.x = Mth.nextDouble(random, minX, maxX);
++            this.z = Mth.nextDouble(random, minZ, maxZ);
++        }
++        // CraftBukkit end
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..03cfab0f80c1646fe9fff696f2c396c33d6eb4fe
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/StatsCommand.java
+@@ -0,0 +1,233 @@
++package org.sugarcanemc.sugarcane.command;
++
++import net.minecraft.server.MinecraftServer;
++import org.bukkit.Bukkit;
++import org.bukkit.ChatColor;
++import org.bukkit.Location;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandSender;
++
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Collections;
++import java.util.List;
++import com.sun.management.OperatingSystemMXBean;
++import org.bukkit.World;
++import org.bukkit.boss.BarColor;
++import org.bukkit.boss.BarStyle;
++import org.bukkit.boss.BossBar;
++import org.bukkit.command.ConsoleCommandSender;
++import org.bukkit.craftbukkit.scheduler.MinecraftInternalPlugin;
++import org.bukkit.entity.*;
++import org.bukkit.scheduler.BukkitRunnable;
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
++import org.sugarcanemc.sugarcane.util.Util;
++
++import java.lang.management.ManagementFactory;
++import java.math.RoundingMode;
++import java.text.DecimalFormat;
++import java.util.concurrent.ConcurrentMap;
++import java.util.concurrent.ConcurrentHashMap;
++
++public class StatsCommand extends Command {
++    private final static int ConsoleBarWidth = 78; //keeping the 80 column standard in mind
++
++    byte cpusamples = 100;
++    DecimalFormat df = new DecimalFormat("00.00");
++    BossBar memoryBar = Bukkit.createBossBar("Memory...", BarColor.BLUE, BarStyle.SEGMENTED_20);
++    BossBar tpsBar = Bukkit.createBossBar("TPS...", BarColor.PINK, BarStyle.SEGMENTED_20);
++    BossBar entityBar = Bukkit.createBossBar("Entities...", BarColor.PINK, BarStyle.SEGMENTED_20);
++    BossBar cpuBar = Bukkit.createBossBar("CPU...", BarColor.GREEN, BarStyle.SEGMENTED_20);
++    OperatingSystemMXBean systemInfo = ManagementFactory.getPlatformMXBean(
++            OperatingSystemMXBean.class);
++    Double current_memory, current_tps;
++    int entities;
++    Long MemUsed, MemMax, MemAlloc;
++    int items = 0, players = 0, minecarts = 0, peaceful = 0, hostile = 0, others = 0;
++    ArrayList<Double> process_cpu = new ArrayList<>(), system_cpu = new ArrayList<>();
++    ConcurrentMap<String, String> entTypes = new ConcurrentHashMap<>();
++    public StatsCommand(String name) {
++        super(name);
++        this.description = "Toggle stats bars";
++        this.usageMessage = "/stats";
++        this.setPermission("sugarcane.command.stats");
++
++        df.setRoundingMode(RoundingMode.CEILING);
++        MemMax = Runtime.getRuntime().maxMemory() / 1024;
++
++        entTypes.put("Unknown", "");
++        entTypes.put("Hostile", "");
++        entTypes.put("Minecart", "");
++        entTypes.put("Peaceful", "");
++        entTypes.put("Items", "");
++        entTypes.put("Other", "");
++
++        new BukkitRunnable() {
++            @Override
++            public void run() {
++                if(Bukkit.isStopping() || MinecraftServer.getServer().hasStopped()) cancel();
++                if (Bukkit.getOnlinePlayers().size() == 0 || entityBar.getPlayers().size() == 0) return;
++                updateCpuBar();
++            }
++        }.runTaskTimerAsynchronously(new MinecraftInternalPlugin(), 0L, 1L);
++
++        new BukkitRunnable() {
++            @Override
++            public void run() {
++                if(Bukkit.isStopping() || MinecraftServer.getServer().hasStopped()) cancel();
++                if (Bukkit.getOnlinePlayers().size() == 0 || entityBar.getPlayers().size() == 0) return;
++                updateTpsMemoryBars();
++            }
++            public void stop() {
++                this.cancel();
++            }
++        }.runTaskTimer(new MinecraftInternalPlugin(), 0L, 1L);
++
++        new BukkitRunnable() {
++            @Override
++            public void run() {
++                if(Bukkit.isStopping() || MinecraftServer.getServer().hasStopped()) cancel();
++                if (Bukkit.getOnlinePlayers().size() == 0 || entityBar.getPlayers().size() == 0) return;
++                updateEntityBar();
++            }
++        }.runTaskTimer(new MinecraftInternalPlugin(), 0L, 1L);
++    }
++
++    @Override
++    public List<String> tabComplete(CommandSender sender, String alias, String[] args, Location location) throws IllegalArgumentException {
++        return Collections.emptyList();
++    }
++
++    @Override
++    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
++        if (!testPermission(sender)) return true;
++        if(sender instanceof ConsoleCommandSender) {
++            for(BossBar bb : new BossBar[]{cpuBar, memoryBar, tpsBar, entityBar}){
++                updateCpuBar();
++                updateTpsMemoryBars();
++                updateEntityBar();
++                sender.sendMessage(bb.getTitle()+"\n"+Util.getTextProgressBar(bb.getProgress()));
++            }
++            return true;
++        }
++        Player p = Bukkit.getPlayer(sender.getName());
++        if (args.length == 0) {
++            if (memoryBar.getPlayers().contains(p)) {
++                cpuBar.removePlayer(p);
++                memoryBar.removePlayer(p);
++                tpsBar.removePlayer(p);
++                entityBar.removePlayer(p);
++            } else {
++                cpuBar.addPlayer(p);
++                memoryBar.addPlayer(p);
++                tpsBar.addPlayer(p);
++                entityBar.addPlayer(p);
++                Util.logDebug("Added player " + p.getName());
++            }
++            return true;
++        }
++        return false;
++    }
++
++    private double calculateAverage(List<Double> list) {
++        List<Double> _list = new ArrayList<>(list);
++        return _list.stream()
++                .mapToDouble(Double::doubleValue)
++                .average()
++                .orElse(0.0);
++    }
++
++    private void updateCpuBar(){
++        double _proc = systemInfo.getProcessCpuLoad();
++        double _sys = systemInfo.getSystemCpuLoad();
++        if(_proc != -1) process_cpu.add(_proc* 100);
++        if(_sys != -1) system_cpu.add(_sys * 100);
++        if (process_cpu.size() > cpusamples) {
++            process_cpu.remove(0);
++        }
++        if (system_cpu.size() > cpusamples) {
++            system_cpu.remove(0);
++        }
++        double _proccpu = calculateAverage(process_cpu);
++        double _syscpu = calculateAverage(system_cpu);
++        cpuBar.setTitle(ChatColor.GREEN + "ProcCPU: " + df.format(_proccpu) + "% | SysCPU: " + df.format(_syscpu) + "%");
++
++        if (_syscpu >= 90) cpuBar.setColor(BarColor.RED);
++        else if (_syscpu >= 75) cpuBar.setColor(BarColor.YELLOW);
++        else cpuBar.setColor(BarColor.GREEN);
++        double cpuAverage = _syscpu / 100;
++        if(cpuAverage < 0) cpuAverage = 0;
++        else if(cpuAverage > 1) cpuAverage = 1;
++        cpuBar.setProgress(cpuAverage);
++    }
++    private void updateTpsMemoryBars(){
++        MemUsed = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
++        MemAlloc = Runtime.getRuntime().totalMemory() / 1048576;
++        current_memory = (MemUsed.doubleValue() / MemMax.doubleValue()) / 1024;
++        current_tps = Arrays.stream(Bukkit.getTPS()).average().orElse(-1);
++        memoryBar.setProgress(current_memory);
++        memoryBar.setTitle(ChatColor.BLUE + "Mem: " + (MemUsed / 1048576) + " MB/" + MemMax / 1024 + " MB (" + MemAlloc + " MB alloc)");
++        tpsBar.setTitle(ChatColor.LIGHT_PURPLE + "TPS: " + df.format(current_tps) + " (" + df.format(Bukkit.getAverageTickTime()) + " MSPT -> "+df.format(1000/Bukkit.getAverageTickTime())+" TPS)");
++        tpsBar.setColor(BarColor.PINK);
++        if (current_tps > 21) tpsBar.setColor(BarColor.YELLOW);
++        if (current_tps > 20) {
++            current_tps = 20D;
++            tpsBar.setColor(BarColor.PURPLE);
++        } else if (current_tps < 18) {
++            tpsBar.setColor(BarColor.YELLOW);
++            if (current_tps < 15)
++                tpsBar.setColor(BarColor.RED);
++        }
++        tpsBar.setProgress(current_tps / 20);
++    }
++    private void updateEntityBar(){
++        items = players = minecarts = peaceful = hostile = others = 0;
++        for (World w : Bukkit.getServer().getWorlds())
++            for (Entity e : w.getEntities()) {
++                if (e instanceof Player) {
++                    players++;
++                } else if (e instanceof Monster || e instanceof Slime
++                        || e instanceof Boss || e instanceof Ghast || e instanceof Shulker
++                        || e instanceof Phantom) {
++                    hostile++;
++                } else if (e instanceof Minecart || e instanceof Boat) {
++                    minecarts++;
++                } else if (e instanceof Animals || e instanceof Golem || e instanceof Ambient
++                        || e instanceof WaterMob) {
++                    peaceful++;
++                } else if (e instanceof Projectile || e instanceof ArmorStand || e instanceof Villager
++                        || e instanceof EvokerFangs || e instanceof AreaEffectCloud
++                        || e instanceof WanderingTrader || e instanceof EnderSignal
++                        || e instanceof EnderCrystal) {
++                    others++;
++                } else if (e instanceof Item || e instanceof ExperienceOrb || e instanceof Hanging) {
++                    items++;
++                } else if (e instanceof FallingBlock || e instanceof Explosive) {
++                    items++;
++                } else {
++                    if (SugarcaneConfig.debug)
++                        Util.logDebug("Unknown ent type: " + e.getType().name());
++                }
++
++            }
++//                for(String key : entTypes.keySet()) {
++//                    if(key.equals("Unknown")) System.out.println(key+": "+entTypes.get(key));
++//                }
++//                Bukkit.getServer().broadcastMessage("New hostile: "+ hostile);
++
++        entities = items + players + minecarts + peaceful + hostile + others;
++        String entTitle = "Entities: " + entities + " (";
++        if (players > 0) entTitle += "Player " + players + " ";
++        if (items > 0) entTitle += "Item " + items + " ";
++        if (minecarts > 0) entTitle += "Cart " + minecarts + " ";
++        if (peaceful > 0) entTitle += "Peace " + peaceful + " ";
++        if (hostile > 0) entTitle += "Hostile " + hostile + (others == 0 ? "" : " ");
++        if (others > 0) entTitle += "+" + others;
++
++        entTitle += ")";
++        entityBar.setTitle(entTitle);
++        if (entities > 5000)
++            entities = 5000;
++        entityBar.setProgress((double) entities / 5000);
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..5c1a126d4f0a6cf4ec7848ed95ffc576b1ae9ba6
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
+@@ -0,0 +1,26 @@
++package org.sugarcanemc.sugarcane.command;
++
++import java.util.Map;
++import java.util.HashMap;
++
++import com.mojang.brigadier.CommandDispatcher;
++import net.minecraft.server.commands.SpreadPlayersCommand;
++import org.bukkit.command.Command;
++import net.minecraft.server.MinecraftServer;
++
++public class SugarcaneCommandsManager {
++    private static Map<String, Command> commands;
++
++    public static void registerCommands() {
++        commands = new HashMap<>();
++        commands.put("nspt", new NSPTCommand("nspt"));
++        commands.put("stats", new StatsCommand("stats"));
++        if (commands != null)
++            for (var command : commands.entrySet()) {
++                MinecraftServer.getServer().server.getCommandMap().register(command.getKey(), "Sugarcane", command.getValue());
++            }
++    }
++    public static void registerWithDispatcher(CommandDispatcher dispatcher){
++        SpreadPlayersCommand.register(dispatcher);
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..a40c8138fd76ae0777ab693feb1bbadd5d1b3449
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java
+@@ -0,0 +1,95 @@
++package org.sugarcanemc.sugarcane.config;
++
++import com.google.common.base.Throwables;
++import io.netty.util.ResourceLeakDetector;
++import net.minecraft.SharedConstants;
++import net.minecraft.world.level.storage.DataVersion;
++import org.bukkit.Bukkit;
++import org.bukkit.configuration.InvalidConfigurationException;
++import org.bukkit.configuration.file.YamlConfiguration;
++import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
++
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.Field;
++import java.lang.reflect.Modifier;
++import java.util.List;
++import java.util.logging.Level;
++
++public class DynamicConfig extends BaseYamlConfig {
++    public File CONFIG_FILE;
++    public YamlConfiguration config = new YamlConfiguration();;
++
++    private String HEADER = "This is the overrides configuration for Minecraft's Shared Constants file.\n"
++            + "Many of these may break your server or simply not work, so know what you are doing!\n"
++            + "You have been warned!\n"
++            + "We are not responsible for any effects caused by modifying these!\n"
++            + "Regards, the Sugarcane team.\n";
++
++    public DynamicConfig(String file){
++        CONFIG_FILE = new File(file);
++    }
++
++    public void Load() {
++        var stime = System.nanoTime();
++        System.out.printf("Loading %s...", CONFIG_FILE.getName());
++        config = new YamlConfiguration();
++        try {
++            config.load(CONFIG_FILE);
++        } catch (IOException ex) {
++        } catch (InvalidConfigurationException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, " Could not load file! Please correct your syntax errors", ex);
++            throw Throwables.propagate(ex);
++        }
++
++        System.out.printf(" Done! (%.2f ms)\n", (System.nanoTime() - stime) / 1000000d);
++        Save();
++    }
++
++    public void Save() {
++        var stime = System.nanoTime();
++        System.out.printf("Saving %s...", CONFIG_FILE.getName());
++
++        try {
++            config.save(CONFIG_FILE);
++        } catch (IOException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, "Could not save " + CONFIG_FILE, ex);
++        }
++
++        System.out.printf(" Done! (%.2f ms)\n", (System.nanoTime() - stime) / 1000000d);
++    }
++
++    public void set(String path, Object val) {
++        config.set(path, val);
++    }
++
++    public boolean getBoolean(String path, boolean def) {
++        config.addDefault(path, def);
++        return config.getBoolean(path, config.getBoolean(path));
++    }
++
++    public double getDouble(String path, double def) {
++        config.addDefault(path, def);
++        return config.getDouble(path, config.getDouble(path));
++    }
++
++    public float getFloat(String path, float def) {
++        // TODO: Figure out why getFloat() always returns the default value.
++        return (float) getDouble(path, (double) def);
++    }
++
++    public int getInt(String path, int def) {
++        config.addDefault(path, def);
++        return config.getInt(path, config.getInt(path));
++    }
++
++    public <T> List<T> getList(String path, List<T> def) {
++        config.addDefault(path, def);
++        return (List<T>) config.getList(path, config.getList(path));
++    }
++
++    public String getString(String path, String def) {
++        config.addDefault(path, def);
++        return config.getString(path, config.getString(path));
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..105da0aee3662b55f67d07145f3ce2b1ea6d62d0
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
+@@ -0,0 +1,36 @@
++package org.sugarcanemc.sugarcane.config;
++
++import java.util.HashMap;
++
++public class MobTPSThresholds {
++    private static DynamicConfig Config = new DynamicConfig("config/tps-thresholds.yml");
++    public static int CurrentTPS = 20;
++    private static HashMap<Class<?>, Integer> Thresholds = new HashMap<>();
++    public static int getTickThreshold(Class<?> type){
++        if(MobTPSThresholds.Thresholds.containsKey(type)){
++            return MobTPSThresholds.Thresholds.get(type);
++        }
++        else {
++            System.out.printf("Could not get TPS threshold for %s, saving default!\n", type.getSimpleName());
++            var val = Config.getInt("tps-tresholds.tick."+type.getSimpleName(), -1);
++            if(val == -1) val = getDefault(type);
++            if(val != -1) Config.set("tps-tresholds.tick."+type.getSimpleName(), val);
++            MobTPSThresholds.Thresholds.put(type, val);
++            Config.Save();
++            return val;
++        }
++    }
++
++    //per entity type defaults go here
++    private static int getDefault(Class<?> type) {
++        return 10;
++    }
++
++    // Config class loading:
++    public static void loadMobThresholds() {
++        var stime = System.nanoTime();
++        System.out.println("Loading mob thresholds...");
++        Config.Load();
++        System.out.printf("Loaded mob TPS thresholds in %s ms\n", (System.nanoTime() - stime) / 1000000d);
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..8c5a82643721df79ad7cbf9b790221392fb7c7f9
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SharedConstantOverridesConfig.java
+@@ -0,0 +1,82 @@
++package org.sugarcanemc.sugarcane.config;
++
++import com.google.common.base.Throwables;
++import io.netty.util.ResourceLeakDetector;
++import net.minecraft.SharedConstants;
++import net.minecraft.world.level.storage.DataVersion;
++import org.bukkit.Bukkit;
++import org.bukkit.configuration.InvalidConfigurationException;
++import org.bukkit.configuration.file.YamlConfiguration;
++import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
++
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.Field;
++import java.lang.reflect.Modifier;
++import java.util.logging.Level;
++
++public class SharedConstantOverridesConfig extends BaseYamlConfig {
++    public static File CONFIG_FILE;
++    public static YamlConfiguration config;
++
++    private static final String HEADER = "This is the overrides configuration for Minecraft's Shared Constants file.\n"
++            + "Many of these may break your server or simply not work, so know what you are doing!\n"
++            + "You have been warned!\n"
++            + "We are not responsible for any effects caused by modifying these!\n"
++            + "Regards, the Sugarcane team.\n";
++
++    private static void init(File configFile) {
++        CONFIG_FILE = configFile;
++        config = new YamlConfiguration();
++    }
++
++    public static void Load() {
++        System.out.println("Loading shared constant overrides - these may break your server!");
++        init(new File("shared-constant-overrides.yml"));
++        config = new YamlConfiguration();
++        try {
++            config.load(CONFIG_FILE);
++        } catch (IOException ex) {
++        } catch (InvalidConfigurationException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load shared-constant-overrides.yml, please correct your syntax errors", ex);
++            throw Throwables.propagate(ex);
++        }
++
++
++        System.out.println("Loaded shared constant overrides!");
++        Save();
++    }
++
++    public static void Save() {
++        System.out.println("Saving shared constants to override config...");
++        var constants = SharedConstants.class;
++        var inst = new SharedConstants();
++        for (var _const : constants.getDeclaredFields()) {
++            if (_const.canAccess(Modifier.isStatic(_const.getModifiers()) ? null : inst))
++                try {
++                    var val = _const.get(inst);
++                    if(!(
++                        val instanceof ResourceLeakDetector.Level ||
++                        val instanceof char[] ||
++                        val instanceof DataVersion
++                    ))
++                        config.set(fieldToKey(_const), val);
++                } catch (IllegalAccessException e) {
++                    e.printStackTrace();
++                }
++        }
++
++        try {
++            config.save(CONFIG_FILE);
++        } catch (IOException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, "Could not save " + CONFIG_FILE, ex);
++        }
++        System.out.println("Saved shared constants to override config!");
++    }
++
++    private static String fieldToKey(Field field) {
++        if (Modifier.isFinal(field.getModifiers())) throw new IllegalStateException("Field is final!");
++
++        return String.format("%s%s.%s", Modifier.isStatic(field.getModifiers()) ? "static." : "", field.getType().getSimpleName(), field.getName());
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..de4d86a2287dcdb5a2fd069d9279f93527d0ab03
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
+@@ -0,0 +1,233 @@
++package org.sugarcanemc.sugarcane.config;
++
++import com.google.common.base.Throwables;
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.InvocationTargetException;
++import java.lang.reflect.Method;
++import java.lang.reflect.Modifier;
++import java.util.List;
++import java.util.logging.Level;
++
++import net.minecraft.SharedConstants;
++import org.bukkit.Bukkit;
++import org.bukkit.configuration.InvalidConfigurationException;
++import org.bukkit.configuration.file.YamlConfiguration;
++import org.sugarcanemc.sugarcane.util.ClassGenerators;
++import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
++import org.sugarcanemc.sugarcane.util.yaml.YamlCommenter;
++
++public class SugarcaneConfig extends BaseYamlConfig {
++	public static File CONFIG_FILE;
++	private static final String HEADER = "This is the main configuration file for Sugarcane.\n"
++			+ "Sugarcane contains many breaking changes and settings, so know what you are doing!\n"
++			+ "You have been warned!\n"
++            + "Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord\n";
++	/*========================================================================*/
++	public static YamlConfiguration config;
++	private static final YamlCommenter c = new YamlCommenter();
++	public static int version; // since we're remapping sidestreams' configs we need this public
++	public static boolean verbose; // since we're remapping sidestreams' configs we need this public
++	public static boolean alreadyLoaded = false;
++	/*========================================================================*/
++
++	public static void init(File configFile) {
++		if(alreadyLoaded) return;
++		CONFIG_FILE = configFile;
++		config = new YamlConfiguration();
++		try {
++			config.load(CONFIG_FILE);
++		} catch (IOException ex) {
++		} catch (InvalidConfigurationException ex) {
++			Bukkit.getLogger().log(Level.SEVERE, "Could not load sugarcane.yml, please correct your syntax errors", ex);
++			throw Throwables.propagate(ex);
++		}
++		config.options().copyDefaults(true);
++		verbose = getBoolean("dev.verbose", false);
++		version = getInt("config-version", 2);
++		set("config-version", 2);
++		removeLeftovers();
++		readConfig(SugarcaneConfig.class, null);
++		addComments();
++		alreadyLoaded = true;
++	}
++	private static void addComments() {
++		//add header
++		c.setHeader("""
++				This is the main configuration file for Sugarcane.
++				Sugarcane contains many breaking changes and settings, so know what you are doing!
++				You have been warned!
++				Join our Discord to receive support & optimization help: https://sugarcanemc.org/discord""");
++		//add comments
++		// section: developer toggles
++		c.addComment("dev", "These settings are only useful for Sugarcane developers. You shouldn't ever need to touch these!");
++		c.addComment("dev.debug", "Enable debug output for Sugarcane code!\nWarning: this WILL increase log size a lot!\nKeep in mind this is for output considered too spammy for verbose!");
++		c.addComment("dev.verbose", "Enable verbose mode for Sugarcane code!\nWarning: may increase log size and/or hurt performance!");
++		c.addComment("dev.is-running-in-ide", "Enables behavior changes related to running in IDEs.\nWe override this to true during startup, but will be set to this value (default: false) when this file is loaded.");
++		c.addComment("dev.enable-shared-constant-overrides", "Enables overriding vanilla's built in developer toggles. Most of these do not work!");
++		c.addComment("dev.enable-class-generators", "Enables generation of class files, useful when updating/patching them!");
++		// section: user toggles
++		c.addComment("brand-name", "Set the software name the server reports to be using.");
++		c.addComment("ItemMergeBehavior",
++				"""
++						Changes how item merging works
++						Values:
++						- -1: Normal (use the vanilla item stacking)
++						-  0: Infinite (stack infinitely based on item type and metadata)
++						-  1: No stacking (every separate item is its own entity, only for fun!)""");
++		c.addComment("config-version", "Config version, do NOT modify this!");
++		c.addComment("settings.checks.flight", "Toggles flight checks for players");
++		c.addComment("settings.checks.vehicle-flight", "Toggles flight checks for players in vehicles");
++		c.addComment("performance.disable-mob-spawners-below-tps", "Disable mob spawners spawning mobs when TPS drops below this value.");
++		c.addComment("performance.disable-mob-spawning-below-tps", "Disable spawning mobs when TPS drops below this value.");
++		c.addComment("performance.tps-treshold", "Disable these features when TPS drops below this value");
++		c.addComment("performance.uncap-tps", "Disable the 20TPS limit. Warning: this will make your server run way faster and make it consume a lot of CPU!");
++	}
++
++	private static void removeLeftovers() {
++		// this method is only to remove non-used values in the config
++
++		// leftover from rainforest
++		if (config.get("world-settings") != null) {
++			set("world-settings", null);
++		}
++		if (config.get("allow-player-item-duplication") != null) {
++			set("allow-player-item-duplication", null);
++		}
++		if (config.get("allow-ridable-chestable-duping") != null) {
++			set("allow-ridable-chestable-duping", null);
++		}
++		if (config.get("allow-sand-duping") != null) {
++			set("allow-sand-duping", null);
++		}
++		if (config.get("timings-url") != null) {
++			set("timings-url", null);
++		}
++	}
++
++	static void readConfig(Class<?> clazz, Object instance) {
++		if(alreadyLoaded) return;
++		for (Method method : clazz.getDeclaredMethods()) {
++			if (Modifier.isPrivate(method.getModifiers())) {
++				if (method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
++					try {
++						method.setAccessible(true);
++						method.invoke(instance);
++					} catch (InvocationTargetException ex) {
++						throw Throwables.propagate(ex.getCause());
++					} catch (Exception ex) {
++						Bukkit.getLogger().log(Level.SEVERE, "Error invoking " + method, ex);
++					}
++				}
++			}
++		}
++		new File("config/").mkdirs();
++		MobTPSThresholds.loadMobThresholds();
++		try {
++			config.save(CONFIG_FILE);
++			c.saveComments(CONFIG_FILE);
++		} catch (IOException ex) {
++			Bukkit.getLogger().log(Level.SEVERE, "Could not save " + CONFIG_FILE, ex);
++		}
++		alreadyLoaded = true;
++	}
++
++	private static void set(String path, Object val) {
++		config.set(path, val);
++}
++
++	private static boolean getBoolean(String path, boolean def) {
++		config.addDefault(path, def);
++		return config.getBoolean(path, config.getBoolean(path));
++	}
++
++	private static double getDouble(String path, double def) {
++	    config.addDefault(path, def);
++		return config.getDouble(path, config.getDouble(path));
++	}
++
++	private static float getFloat(String path, float def) {
++	 	// TODO: Figure out why getFloat() always returns the default value.
++		return (float) getDouble(path, (double) def);
++	}
++
++	static int getInt(String path, int def) {
++		config.addDefault(path, def);
++		return config.getInt(path, config.getInt(path));
++	}
++
++	private static <T> List<T> getList(String path, List<T> def) {
++		config.addDefault(path, def);
++		return (List<T>) config.getList(path, config.getList(path));
++	}
++
++	private static String getString(String path, String def) {
++		config.addDefault(path, def);
++		return config.getString(path, config.getString(path));
++	}
++
++	//define settings
++	private static void classGenerators(){ if(getBoolean("dev.enable-class-generators", false)) ClassGenerators.Generate(); }
++
++	public static boolean debug = false;
++	private static void debug() {
++		debug = getBoolean("dev.debug", false);
++	}
++	public static boolean isRunningInIDE = false;
++	private static void setIsRunningInIDE() {
++		isRunningInIDE = getBoolean("dev.is-running-in-ide", false);
++		SharedConstants.IS_RUNNING_IN_IDE = isRunningInIDE;
++	}
++	public static boolean modSharedConstants = false;
++	private static void setModSharedConstants() {
++		modSharedConstants = getBoolean("dev.enable-shared-constant-overrides", false);
++		if(modSharedConstants) SharedConstantOverridesConfig.Load();
++	}
++
++	public static boolean logPlayerLoginLoc = true;
++	private static void general() {
++		logPlayerLoginLoc = getBoolean("settings.log-player-login-location", logPlayerLoginLoc);
++	}
++
++	public static boolean fixProtocolLib = true;
++	private static void protocolLib() {
++		fixProtocolLib = getBoolean("settings.fix-protocollib", fixProtocolLib);
++	}
++
++	public static boolean disableEntityStuckChecks = false;
++	private static void disableEntityStuckChecks() {
++		disableEntityStuckChecks = getBoolean("settings.disableEntityStuckChecks", false);
++	}
++
++	public static String brandName = "Sugarcane";
++		private static void brandName() {
++		brandName = getString("brand-name", brandName);
++	}
++
++	public static boolean checkFlying = true;
++	public static boolean checkVehicleFlying = true;
++	private static void flightChecks() {
++		checkFlying = getBoolean("settings.checks.flight", checkFlying);
++		checkVehicleFlying = getBoolean("settings.checks.vehicle-flight", checkVehicleFlying);
++	}
++
++	public static int itemStuckSleepTicks = 1;
++	private static void itemStuckSleepTicks() {
++		itemStuckSleepTicks = getInt("settings.itemStuckSleepTicks", 1);
++	}
++
++	public static int ItemMergeBehavior = -1;
++    public static boolean SplitItems = false;
++    private static void shouldItemsMerge() { ItemMergeBehavior = getInt("ItemMergeBehavior", -1); SplitItems = ItemMergeBehavior == 1; }
++
++	public static int DisableMobSpawnerBelowTPS = 0;
++	private static void disableMobSpawnerBelowTPS(){ DisableMobSpawnerBelowTPS = getInt("performance.tps-treshold.mob-spawners", 0); }
++	public static boolean UncapTPS = true;
++	private static void uncapTPS(){ UncapTPS = getBoolean("performance.uncap-tps", false); }
++
++	public static boolean TickAllEntities = true;
++	public static void setCheckEntityTickingRange(){ TickAllEntities = getBoolean("performance.tick-all-entities", TickAllEntities); }
++
++	public static boolean DisableEntityTicking = false;
++	public static void setDisableEntityTicking(){ DisableEntityTicking = getBoolean("performance.disable-entity-ticking", DisableEntityTicking); }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..45428aea898630e05270a6ccfbcc687d79109e77
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneWorldConfig.java
+@@ -0,0 +1,78 @@
++package org.sugarcanemc.sugarcane.config;
++
++import org.apache.commons.lang.BooleanUtils;
++import org.bukkit.World;
++import org.bukkit.configuration.ConfigurationSection;
++
++import java.util.Map;
++import java.util.function.Predicate;
++
++import net.minecraft.server.level.ServerLevel;
++import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
++
++import java.util.List;
++
++@SuppressWarnings("unused")
++public class SugarcaneWorldConfig extends BaseYamlConfig {
++
++	private final ServerLevel level;
++	private final String worldName;
++	private final World.Environment environment;
++
++	public SugarcaneWorldConfig(ServerLevel level, String worldName, World.Environment environment) {
++		this.level = level;
++		this.worldName = worldName;
++		this.environment = environment;
++		init();
++	}
++
++	public void init() {
++		log("-------- World Settings For [" + worldName + "] --------");
++		SugarcaneConfig.readConfig(SugarcaneWorldConfig.class, this);
++	}
++
++	private void set(String path, Object val) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, val);
++		SugarcaneConfig.config.set("world-settings.default." + path, val);
++		if (SugarcaneConfig.config.get("world-settings." + worldName + "." + path) != null) {
++			SugarcaneConfig.config.addDefault("world-settings." + worldName + "." + path, val);
++			SugarcaneConfig.config.set("world-settings." + worldName + "." + path, val);
++		}
++	}
++
++	private ConfigurationSection getConfigurationSection(String path) {
++		ConfigurationSection section = SugarcaneConfig.config.getConfigurationSection("world-settings." + worldName + "." + path);
++		return section != null ? section : SugarcaneConfig.config.getConfigurationSection("world-settings.default." + path);
++	}
++
++	private String getString(String path, String def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getString("world-settings." + worldName + "." + path, SugarcaneConfig.config.getString("world-settings.default." + path));
++	}
++
++	private boolean getBoolean(String path, boolean def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getBoolean("world-settings." + worldName + "." + path, SugarcaneConfig.config.getBoolean("world-settings.default." + path));
++	}
++
++	private boolean getBoolean(String path, Predicate<Boolean> predicate) {
++		String val = getString(path, "default").toLowerCase();
++		Boolean bool = BooleanUtils.toBooleanObject(val, "true", "false", "default");
++		return predicate.test(bool);
++	}
++
++	private double getDouble(String path, double def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getDouble("world-settings." + worldName + "." + path, SugarcaneConfig.config.getDouble("world-settings.default." + path));
++	}
++
++	private int getInt(String path, int def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getInt("world-settings." + worldName + "." + path, SugarcaneConfig.config.getInt("world-settings.default." + path));
++	}
++
++	private <T> List<?> getList(String path, T def) {
++		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
++		return SugarcaneConfig.config.getList("world-settings." + worldName + "." + path, SugarcaneConfig.config.getList("world-settings.default." + path));
++	}
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java b/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..49209ca447f671348c2f850c2385a0546a3a93ac
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java
+@@ -0,0 +1,99 @@
++package org.sugarcanemc.sugarcane.util;
++
++import net.minecraft.world.entity.Entity;
++import org.reflections.Reflections;
++
++import java.io.File;
++import java.io.FileWriter;
++import java.io.IOException;
++import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.Set;
++
++public class ClassGenerators {
++    private static final String cd = "generated_classes";
++
++    public static void Generate() {
++        System.out.println("Generating classes...");
++        new File(cd).mkdir();
++        //deprecated, use as template only:
++        //GenerateMobSpawnTresholds();
++    }
++
++    public static void GenerateMobSpawnTresholds() {
++        var stime = System.nanoTime();
++        var fullBlacklist = Arrays.stream(("LightningBolt EndCrystal LivingEntity HangingEntity " +
++                "AbstractMinecart EnderDragon EyeOfEnder Mob Player LeashFenceKnotEntity AbstractMinecartContainer " +
++                "FireworkRocketEntity AbstractArrow ShulkerBullet FishingHook LlamaSpit AbstractHurtingProjectile " +
++                "ThrowableProjectile FlyingMob EnderDragonPart Projectile EvokerFangs PathfinderMob AmbientCreature " +
++                "ServerPlayer GlowItemFrame WaterAnimal Monster AbstractGolem AgeableMob AbstractPiglin AbstractSkeleton " +
++                "PatrollingMonster AbstractFish Animal AbstractVillager AbstractSchoolingFish AbstractHorse TamableAnimal " +
++                "AbstractIllager AbstractChestedHorse ShoulderRidingEntity AreaEffectCloud DragonFireball Marker ItemFrame " +
++                "Painting Endermite").split(" ")).toList();
++        var spawnBlacklist = Arrays.stream(("FallingBlockEntity ExperienceOrb PrimedTnt ItemEntity Boat Marker " +
++                "ArmorStand Minecart MinecartFurnace MinecartTNT MinecartCommandBlock MinecartFurnace MinecartSpawner " +
++                "ThrownTrident DragonFireball SpectralArrow Fireball ThrowableItemProjectile SmallFireball LargeFireball " +
++                "ThrownPotion ThrownEggThrownEnderPearl ThrownExperienceBottle Giant WitherBoss Vex Silverfish CaveSpider " +
++                "Villager ZombieHorse SkeletonHorse TraderLlama MinecartHopper MinecartChest Arrow ThrownEnderpearl" +
++                "ThrownEgg ItemFrame ThrownEgg Snowball").split(" ")).toList();
++        var tickBlacklist = Arrays.stream("".split(" ")).toList();
++        ArrayList<String> configClass = new ArrayList<>();
++        configClass.add("\n\t// Config class loading:");
++        configClass.add("\tpublic static void loadMobTresholds() {");
++        configClass.add("\t\tvar stime = System.nanoTime();");
++        configClass.add("\t\tSystem.out.println(\"Loading mob tresholds...\");");
++
++        var file = openFile(cd + "/MobTPSTresholds.java");
++        try {
++            //write header
++            file.write("""
++                    package org.sugarcanemc.sugarcane.config;
++
++                    public class MobTPSTresholds {
++                    """);
++            //write vars
++            Reflections reflections = new Reflections("net.minecraft");
++            Set<Class<? extends Entity>> classes = reflections.getSubTypesOf(Entity.class);
++            for (var i : classes) {
++                System.out.println(i.getSimpleName());
++                if (i.getSimpleName() != "") {
++                    if (!fullBlacklist.contains(i.getSimpleName())) {
++                        file.write(String.format("\t//Tresholds for %s:\n", i.getSimpleName()));
++                        file.flush();
++                        if (!spawnBlacklist.contains(i.getSimpleName())) {
++                            file.write(String.format("\tpublic static int %sSpawnTreshold = 7;\n", i.getSimpleName()));
++                            configClass.add("\t\t%SSpawnTreshold = SugarcaneConfig.getInt(\"performance.tps-treshold.%s.spawn\", %SSpawnTreshold);".replace("%s", i.getSimpleName().toLowerCase()).replace("%S", i.getSimpleName()));
++                        }
++                        if (!tickBlacklist.contains(i.getSimpleName())) {
++                            file.write(String.format("\tpublic static int %sTickTreshold = 10;\n", i.getSimpleName()));
++                            configClass.add("\t\t%STickTreshold = SugarcaneConfig.getInt(\"performance.tps-treshold.%s.tick\", %STickTreshold);".replace("%s", i.getSimpleName().toLowerCase()).replace("%S", i.getSimpleName()));
++                        }
++                    }
++                }
++            }
++            configClass.add("\t\tSystem.out.printf(\"Loaded mob TPS tresholds in %s ms\\n\", (System.nanoTime() - stime) / 1000000d);");
++            configClass.add("\t}\n");
++            file.write(String.join("\n", configClass));
++            file.write("}");
++            file.flush();
++            file.close();
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++        System.out.printf("Generated mob TPS treshold class in %s ms\n", (System.nanoTime() - stime) / 1000000d);
++    }
++
++    private static FileWriter openFile(String name) {
++        var file = new File(name);
++        file.delete();
++        try {
++            file.createNewFile();
++            return new FileWriter(name);
++        } catch (IOException e) {
++            e.printStackTrace();
++        }
++        System.out.println("Couldn't open %s for writing, exiting!");
++        System.exit(0);
++        return null;
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java b/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..ed5c49d852e7437a2ee7b4b8805f3b32adeb4c3c
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/Constants.java
+@@ -0,0 +1,7 @@
++package org.sugarcanemc.sugarcane.util;
++
++public class Constants {
++
++    public static final int[] EMPTY_ARRAY = new int[0];
++    public static final int[] ZERO_ARRAY = new int[]{0};
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java b/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..ea540d07eb62976613ad9d5d7c4183a594ee3073
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/FastRandom.java
+@@ -0,0 +1,64 @@
++package org.sugarcanemc.sugarcane.util;
++
++import org.apache.commons.rng.core.source64.XoRoShiRo128PlusPlus;
++
++import java.util.Random;
++import java.util.SplittableRandom;
++
++public class FastRandom extends Random {
++
++    private XoRoShiRo128PlusPlus random;
++
++    public FastRandom() {
++        super();
++        SplittableRandom randomseed = new SplittableRandom();
++        this.random = new XoRoShiRo128PlusPlus(randomseed.nextLong(), randomseed.nextLong());
++    }
++
++    public FastRandom(long seed) {
++        super(seed);
++        SplittableRandom randomseed = new SplittableRandom(seed);
++        this.random = new XoRoShiRo128PlusPlus(randomseed.nextLong(), randomseed.nextLong());
++    }
++
++    @Override
++    public boolean nextBoolean() {
++        return random.nextBoolean();
++    }
++
++    @Override
++    public int nextInt() {
++        return random.nextInt();
++    }
++
++    @Override
++    public float nextFloat() {
++        return (float) random.nextDouble();
++    }
++
++    @Override
++    public double nextDouble() {
++        return random.nextDouble();
++    }
++
++    @Override
++    public synchronized void setSeed(long seed) {
++        SplittableRandom randomseed = new SplittableRandom(seed);
++        this.random = new XoRoShiRo128PlusPlus(randomseed.nextLong(), randomseed.nextLong());
++    }
++
++    @Override
++    public void nextBytes(byte[] bytes) {
++        random.nextBytes(bytes);
++    }
++
++    @Override
++    public int nextInt(int bound) {
++        return random.nextInt(bound);
++    }
++
++    @Override
++    public long nextLong() {
++        return random.nextLong();
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java b/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..c5c4a37162c26d88a7fac5bde75def39985706dc
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/SugarcanePreloadProtocolLib.java
+@@ -0,0 +1,28 @@
++package org.sugarcanemc.sugarcane.util;
++
++import net.minecraft.server.MinecraftServer;
++import org.bukkit.Bukkit;
++import org.bukkit.plugin.Plugin;
++import org.bukkit.plugin.SimplePluginManager;
++
++import java.lang.reflect.Method;
++
++public class SugarcanePreloadProtocolLib {
++
++    public synchronized static void run() {
++        try {
++            final SimplePluginManager pluginManager = (SimplePluginManager) Bukkit.getPluginManager();
++            final Plugin protocolLib = pluginManager.getPlugin("ProtocolLib");
++            if(protocolLib != null && protocolLib.isEnabled()) {
++                MinecraftServer.LOGGER.info("Sugarcane: Attempting to preload ProtocolLib's EnumWrappers");
++                final Method initialize = Class.forName("com.comphenix.protocol.wrappers.EnumWrappers", true, protocolLib.getClass().getClassLoader()).getDeclaredMethod("initialize");
++                initialize.setAccessible(true);
++                initialize.invoke(null);
++                synchronized (SugarcanePreloadProtocolLib.class) {
++                }
++            }
++        } catch (Throwable t) {
++            MinecraftServer.LOGGER.warn("Sugarcane: Failed to preload ProtocolLib's EnumWrappers", t);
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..8d82a813c7021788aee39cb016dc71c073995092
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/TimeUtils.java
+@@ -0,0 +1,27 @@
++package org.sugarcanemc.sugarcane.util;
++
++import java.util.concurrent.TimeUnit;
++
++public class TimeUtils {
++
++    public static String getFriendlyName(TimeUnit unit) {
++        switch (unit) {
++            case NANOSECONDS:
++                return "ns";
++            case MILLISECONDS:
++                return "ms";
++            case MICROSECONDS:
++                return "micros";
++            case SECONDS:
++                return "s";
++            case MINUTES:
++                return "m";
++            case DAYS:
++                return "d";
++            case HOURS:
++                return "h";
++            default:
++                throw new AssertionError();
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/Util.java b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..e390f08f886b3785afb60123fbb783368e2deaaf
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/Util.java
+@@ -0,0 +1,20 @@
++package org.sugarcanemc.sugarcane.util;
++
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
++
++public class Util {
++    private final static int ConsoleBarWidth = 78; //80 column display
++    public static int getIndentation(String s){
++        if(!s.startsWith(" ")) return 0;
++        int i = 0;
++        while((s = s.replaceFirst(" ", "")).startsWith(" ")) i++;
++        return i+1;
++    }
++    public static void logDebug(String s){
++        if(SugarcaneConfig.debug) System.out.println(s);
++    }
++    public static String getTextProgressBar(double value) {
++        int progress = (int) (value*ConsoleBarWidth);
++        return String.format("[%s%s]", "=".repeat(progress), "_".repeat(ConsoleBarWidth - progress));
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..ed087104f38c6135aa86579f94324c93470fc835
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/BranchReader.java
+@@ -0,0 +1,28 @@
++package org.sugarcanemc.sugarcane.util.versioning;
++
++import javax.annotation.Nonnull;
++import java.io.IOException;
++import java.io.InputStream;
++import java.util.Properties;
++import java.util.logging.Level;
++import java.util.logging.Logger;
++
++public final class BranchReader {
++	@Nonnull
++	public static final String getBranch() {
++		@Nonnull String branch = "unknown";
++		InputStream branchStream = BranchReader.class.getClassLoader().getResourceAsStream("branch-info.properties");
++		Properties properties = new Properties();
++		if (branchStream != null) {
++			try {
++				properties.load(branchStream);
++				branch = properties.getProperty("branch");
++			} catch (IOException ex) {
++				Logger.getLogger(BranchReader.class.getName()).log(Level.WARNING, "Could not get branch info from branch-info.properties!", ex);
++			}
++		} else {
++			Logger.getLogger(BranchReader.class.getName()).log(Level.WARNING, "Could not load branch-info.properties from the JAR!");
++		}
++		return branch;
++	}
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/BaseYamlConfig.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/BaseYamlConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..efd4b11b25d643e900cbd0c1c2f8412cb65560d0
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/BaseYamlConfig.java
+@@ -0,0 +1,61 @@
++package org.sugarcanemc.sugarcane.util.yaml;
++
++import org.bukkit.Bukkit;
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
++
++import java.util.concurrent.TimeUnit;
++import java.util.regex.Pattern;
++
++public class BaseYamlConfig {
++    protected static final Pattern SPACE = Pattern.compile(" ");
++    protected static final Pattern NOT_NUMERIC = Pattern.compile("[^-\\d.]");
++
++    protected static void logError(String s) {
++        Bukkit.getLogger().severe(s);
++    }
++
++    protected static void log(String s) {
++        if (SugarcaneConfig.verbose) {
++            Bukkit.getLogger().info(s);
++        }
++    }
++
++    public static int getSeconds(String str) {
++        str = SPACE.matcher(str).replaceAll("");
++        final char unit = str.charAt(str.length() - 1);
++        str = NOT_NUMERIC.matcher(str).replaceAll("");
++        double num;
++        try {
++            num = Double.parseDouble(str);
++        } catch (Exception e) {
++            num = 0D;
++        }
++        switch (unit) {
++            case 'd':  num *= (double) 60 * 60 * 24;
++            case 'h':  num *= (double) 60 * 60;
++            case 'm':  num *= 60;
++            case 's':  break;
++            default: break;
++        }
++        return (int) num;
++    }
++
++    protected static String timeSummary(int seconds) {
++        String time = "";
++
++        if (seconds > 60 * 60 * 24) {
++            time += TimeUnit.SECONDS.toDays(seconds) + "d";
++            seconds %= 60 * 60 * 24;
++        }
++
++        if (seconds > 60 * 60) {
++            time += TimeUnit.SECONDS.toHours(seconds) + "h";
++            seconds %= 60 * 60;
++        }
++
++        if (seconds > 0) {
++            time += TimeUnit.SECONDS.toMinutes(seconds) + "m";
++        }
++        return time;
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..3bb7cfebfd6e50ec8e4477402251932dbea9cc75
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlCommenter.java
+@@ -0,0 +1,74 @@
++package org.sugarcanemc.sugarcane.util.yaml;
++
++import java.io.File;
++import java.io.FileWriter;
++import java.io.IOException;
++import java.nio.file.Files;
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.Map;
++
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
++import org.sugarcanemc.sugarcane.util.Util;
++
++public class YamlCommenter {
++    private final HashMap<String, String> comments = new HashMap<>();
++    private String Header = "";
++
++    /**
++     * Add comment to a config option.<br>
++     * Supports multiline comments!
++     *
++     * @param path    Config path to add comment to
++     * @param comment Comment to add
++     */
++    public void addComment(String path, String comment) {
++        comments.put(path, comment);
++    }
++
++    /**
++     * Set the header for this config file
++     *
++     * @param header Header to add
++     */
++    public void setHeader(String header) {
++        Header = header;
++    }
++
++    /**
++     * Saves comments to config file
++     *
++     * @param file File to save to
++     * @throws IOException
++     */
++    public void saveComments(File file) throws IOException {
++        ld("Saving comments...");
++        ArrayList<String> lines = (ArrayList<String>) Files.readAllLines(file.toPath());
++        lines.removeIf(s -> s.trim().startsWith("#") || s.trim().length() <= 3);
++        lines.add(0, "# " + Header.replace("\n", "\n# ") + "\n");
++        for (Map.Entry<String, String> _comment : comments.entrySet()) {
++            ld(_comment.getKey());
++            int line = YamlUtils.findKey(lines, _comment.getKey());
++            if(line == -1) {
++                System.out.printf("Couldn't find key %s in sugarcane.yml! Are you sure this key exists?\n", _comment.getKey());
++                //System.exit(1);
++                continue;
++            }
++            String prefix = " ".repeat(Util.getIndentation(lines.get(line))) + "# ";
++            boolean noNewline = Util.getIndentation(lines.get(line)) > Util.getIndentation(lines.get(line-1));
++            if (line >= 0)
++                lines.add(line, (noNewline ?"":"\n") + prefix + _comment.getValue().replace("\n", "\n" + prefix));
++            else System.out.printf("Failed to find key %s in %s!", _comment.getKey(), file);
++            //String text = String.join("\n", lines);
++            //ld(text);
++        }
++        String text = String.join("\n", lines);
++        //Util.logDebug(text);
++        FileWriter fw = new FileWriter(file);
++        fw.write(text);
++        fw.close();
++    }
++    private static void ld(String s) {
++        //if(SugarcaneConfig.debug) System.out.println(s);
++    }
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..401be66f99b956d9d807d8c870e9834579211794
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/YamlUtils.java
+@@ -0,0 +1,29 @@
++package org.sugarcanemc.sugarcane.util.yaml;
++
++import java.util.ArrayList;
++import java.util.List;
++import org.sugarcanemc.sugarcane.util.Util;
++
++public class YamlUtils {
++    public static int findKey(List<String> lines, String key) {
++        String[] parts = key.split("\\.");
++        //Util.logDebug("Starting to look for " + String.join(".", parts) + "...");
++        int _line = 0;
++        int indent = 0;
++        List<String> _cpath = new ArrayList<>();
++        for (String part : parts) {
++            _cpath.add(part);
++            //Util.logDebug("Looking for " + String.join(".", _cpath) + "...");
++            for (int i = _line; i < lines.size(); i++) {
++                if (lines.get(i).trim().startsWith(part)) {
++                    _line = i;
++                    //Util.logDebug(String.format("Found key %s at line %d with %d indents (%s)%n", String.join(".", _cpath), i, indent, lines.get(i)));
++                    if (String.join(".", _cpath).equals(key)) {
++                        return _line;
++                    }
++                }
++            }
++        }
++        return -1;
++    }
++}

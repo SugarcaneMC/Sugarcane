@@ -1,0 +1,59 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 19:49:59 +0200
+Subject: [PATCH] Build fixes
+
+
+diff --git a/.gitignore b/.gitignore
+index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21e0033d41 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -40,6 +40,7 @@ dependency-reduced-pom.xml
+ 
+ /src/main/resources/achievement
+ /src/main/resources/lang
++/src/main/resources/branch-info.properties
+ 
+ # vs code
+ /.vscode
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 5dc4106efefb5400cf5504b225e1e6e5788d14f3..a34f748dd732b4a46b6eb39edd4656ad30f7b935 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -18,7 +18,7 @@ repositories {
+ }
+ 
+ dependencies {
+-    implementation(project(":purpur-api")) // Pufferfish // Paper // Purpur
++    implementation(project(":Sugarcane-API")) // Pufferfish // Paper // Purpur // Sugarcane
+     // Pufferfish start
+     implementation("io.papermc.paper:paper-mojangapi:1.18.2-R0.1-SNAPSHOT") {
+         exclude("io.papermc.paper", "paper-api")
+@@ -68,6 +68,8 @@ dependencies {
+     testImplementation("io.github.classgraph:classgraph:4.8.47") // Paper - mob goal test
+     testImplementation("junit:junit:4.13.2")
+     testImplementation("org.hamcrest:hamcrest-library:1.3")
++    implementation("org.reflections:reflections:0.10.2") // Sugarcane
++    implementation("org.apache.commons:commons-rng-core:1.3") // Sugarcane - Utilities
+ }
+ 
+ // Pufferfish Start
+@@ -89,7 +91,7 @@ tasks.jar {
+         attributes(
+             "Main-Class" to "org.bukkit.craftbukkit.Main",
+             "Implementation-Title" to "CraftBukkit",
+-            "Implementation-Version" to "git-Purpur-$implementationVersion", // Pufferfish // Purpur
++            "Implementation-Version" to "git-Sugarcane-$gitBranch-$implementationVersion", // Pufferfish // Purpur // Sugarcane
+             "Implementation-Vendor" to date, // Paper
+             "Specification-Title" to "Bukkit",
+             "Specification-Version" to project.version,
+@@ -100,6 +102,9 @@ tasks.jar {
+         for (tld in setOf("net", "com", "org")) {
+             attributes("$tld/bukkit", "Sealed" to true)
+         }
++        File("Sugarcane-Server/src/main/resources/branch-info.properties").bufferedWriter().use { out ->
++            out.write("branch=$gitBranch")
++        }
+     }
+ }
+ 

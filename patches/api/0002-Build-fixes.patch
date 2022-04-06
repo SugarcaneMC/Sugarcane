@@ -1,0 +1,52 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 19:53:15 +0200
+Subject: [PATCH] Build fixes
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 9fb982d7f956a2629a2973c1f53b1df8357b4e34..00443c328fdb6601c0a86ed40c49b2ead0de91dd 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -1,6 +1,7 @@
+ plugins {
+     `java-library`
+     `maven-publish`
++    id("com.github.johnrengelman.shadow")
+ }
+ 
+ java {
+@@ -29,9 +30,12 @@ dependencies {
+     api("net.md-5:bungeecord-chat:1.16-R0.4-deprecated+build.6") // Paper
+     api("org.yaml:snakeyaml:1.30")
+     // Paper start
+-    api("com.googlecode.json-simple:json-simple:1.1.1") {
+-        isTransitive = false // includes junit
++    compileOnly("com.mojang:authlib:2.3.31") // Sugarcane
++    api("de.tr7zw:item-nbt-api:2.8.0") // Sugarcane
++    api("com.googlecode.json-simple:json-simple:1.1.1") { // Paper // Sugarcane
++        exclude(group = "junit", module = "junit")
+     }
++
+     api("it.unimi.dsi:fastutil:8.5.6")
+     apiAndDocs(platform("net.kyori:adventure-bom:$adventureVersion"))
+     apiAndDocs("net.kyori:adventure-api")
+@@ -81,6 +85,7 @@ val generateApiVersioningFile by tasks.registering {
+     doLast {
+         pomProps.get().asFile.writeText("version=$projectVersion")
+     }
++    outputs.cacheIf { true }
+ }
+ 
+ // Pufferfish Start
+@@ -101,6 +106,10 @@ tasks.jar {
+     }
+ }
+ 
++tasks.shadowJar {
++    relocate("de.tr7zw.changeme.nbtapi", "de.tr7zw.nbtapi")
++}
++
+ tasks.withType<Javadoc> {
+     (options as StandardJavadocDocletOptions).addStringOption("-add-modules", "jdk.incubator.vector") // Purpur - our javadocs need this for pufferfish's SIMD patch
+     (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet") // Purpur - silence Paper's bajillion javadoc warnings
