@@ -1,0 +1,74 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 23:12:36 +0200
+Subject: [PATCH] Optimise banlist remove jsonlist get
+
+
+diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
+index 174c2b1ebff5bdc68441881a1a44c3bf9a6cbee6..033b046d7746a68d263861642fe5194d9ecc483b 100644
+--- a/src/main/java/net/minecraft/server/players/PlayerList.java
++++ b/src/main/java/net/minecraft/server/players/PlayerList.java
+@@ -757,14 +757,20 @@ public abstract class PlayerList {
+         if (getBans().isBanned(gameprofile) && (gameprofilebanentry = getBans().get(gameprofile)) != null) {
+             // Paper end
+ 
++            if (!gameprofilebanentry.hasExpired()) { // Sugarcane - Stop wasting resources on JsonList#get
+             chatmessage = new TranslatableComponent("multiplayer.disconnect.banned.reason", new Object[]{gameprofilebanentry.getReason()});
+             if (gameprofilebanentry.getExpires() != null) {
+                 chatmessage.append((Component) (new TranslatableComponent("multiplayer.disconnect.banned.expiration", new Object[]{PlayerList.BAN_DATE_FORMAT.format(gameprofilebanentry.getExpires())})));
+             }
+ 
+             // return chatmessage;
++                // Sugarcane start - Stop wasting resources on JsonList#get
+             event.disallow(PlayerLoginEvent.Result.KICK_BANNED, PaperAdventure.asAdventure(chatmessage)); // Paper - Adventure
+-        } else if (!this.isWhitelisted(gameprofile, event)) { // Paper
++            } else {
++                getBans().remove(gameprofile);
++            }
++            // Sugarcane end
++            } else if (!this.isWhitelisted(gameprofile, event)) { // Paper
+             //chatmessage = new ChatMessage("multiplayer.disconnect.not_whitelisted"); // Paper
+             //event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, org.spigotmc.SpigotConfig.whitelistMessage); // Spigot // Paper - moved to isWhitelisted
+         } else if (this.getIpBans().isBanned(socketaddress) && getIpBans().get(socketaddress) != null && !this.getIpBans().get(socketaddress).hasExpired()) { // Paper - fix NPE with temp ip bans
+diff --git a/src/main/java/net/minecraft/server/players/StoredUserList.java b/src/main/java/net/minecraft/server/players/StoredUserList.java
+index 4fd709a550bf8da1e996894a1ca6b91206c31e9e..a6cf967e24aee17b9abbab700180b778d63822b6 100644
+--- a/src/main/java/net/minecraft/server/players/StoredUserList.java
++++ b/src/main/java/net/minecraft/server/players/StoredUserList.java
+@@ -73,9 +73,14 @@ public abstract class StoredUserList<K, V extends StoredUserEntry<K>> {
+         // Paper start
+         // this.g();
+         // return (V) this.d.get(this.a(k0)); // CraftBukkit - fix decompile error
++        // Sugarcane start - only remove if it expires and has been requested (Stop wasting resources on JsonList#get)
++        return this.map.get(this.getKeyForUser(key));
++        /*
+         return (V) this.map.computeIfPresent(this.getKeyForUser(key), (k, v) -> {
+             return v.hasExpired() ? null : v;
+         });
++        */
++        // Sugarcane end
+         // Paper end
+     }
+ 
+@@ -150,6 +155,8 @@ public abstract class StoredUserList<K, V extends StoredUserEntry<K>> {
+     public void save() throws IOException {
+         this.removeExpired(); // Paper - remove expired values before saving
+         JsonArray jsonarray = new JsonArray();
++        // Sugarcane start - we're nuking streams wherever possible (Stop wasting resources on JsonList#get)
++        /*
+         Stream<JsonObject> stream = this.map.values().stream().map((jsonlistentry) -> { // CraftBukkit - decompile error
+             JsonObject jsonobject = new JsonObject();
+ 
+@@ -159,6 +166,13 @@ public abstract class StoredUserList<K, V extends StoredUserEntry<K>> {
+ 
+         Objects.requireNonNull(jsonarray);
+         stream.forEach(jsonarray::add);
++        */
++        for (V value : this.map.values()) {
++            JsonObject obj = new JsonObject();
++            value.serialize(obj);
++            jsonarray.add(obj);
++        }
++        // Sugarcane end
+         BufferedWriter bufferedwriter = Files.newWriter(this.file, StandardCharsets.UTF_8);
+ 
+         try {

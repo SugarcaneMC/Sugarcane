@@ -1,0 +1,88 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 23:58:56 +0200
+Subject: [PATCH] Item merge behavior
+
+
+diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
+index 896a4237f871d46cf39b0721e909c2cc3b5fc728..66de8a0745502ce97d0aed5ae87cdda0b72e4ab2 100644
+--- a/src/main/java/net/minecraft/network/FriendlyByteBuf.java
++++ b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
+@@ -490,7 +490,7 @@ public class FriendlyByteBuf extends ByteBuf {
+             Item item = stack.getItem();
+ 
+             this.writeVarInt(Item.getId(item));
+-            this.writeByte(stack.getCount());
++            this.writeByte(Math.min(stack.getCount(),127)); // Sugarcane - limit stack size to 127
+             CompoundTag nbttagcompound = null;
+ 
+             if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index 1c5aa4e7b06c2b2ce32ea63140154db3c5c58231..6a754f8ed887a26b79e77761d932c14df7fa2372 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -109,6 +109,7 @@ public class ItemEntity extends Entity {
+             this.discard();
+         } else {
+             super.tick();
++            org.sugarcanemc.sugarcane.feature.ItemMergeBehavior.TickItem(this);
+             // CraftBukkit start - Use wall time for pickup and despawn timers
+             int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
+             if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
+@@ -232,7 +233,7 @@ public class ItemEntity extends Entity {
+         if (this.isMergable()) {
+             // Paper start - avoid item merge if stack size above max stack size
+             ItemStack stack = getItem();
+-            if (stack.getCount() >= stack.getMaxStackSize()) return;
++            if (stack.getCount() >= stack.getMaxStackSize() && org.sugarcanemc.sugarcane.config.SugarcaneConfig.ItemMergeBehavior != 0) return; // Sugarcane - add exception for infinite stacking mode
+             // Paper end
+             // Spigot start
+             double radius = level.spigotConfig.itemMerge;
+@@ -273,7 +274,7 @@ public class ItemEntity extends Entity {
+     private boolean isMergable() {
+         ItemStack itemstack = this.getItem();
+ 
+-        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize(); // Paper - respect despawn rate in pickup check.
++        return org.sugarcanemc.sugarcane.feature.ItemMergeBehavior.IsItemEntityMergable(this, itemstack);
+     }
+ 
+     private void tryToMerge(ItemEntity other) {
+@@ -291,11 +292,11 @@ public class ItemEntity extends Entity {
+     }
+ 
+     public static boolean areMergable(ItemStack stack1, ItemStack stack2) {
+-        return !stack2.is(stack1.getItem()) ? false : (stack2.getCount() + stack1.getCount() > stack2.getMaxStackSize() ? false : (stack2.hasTag() ^ stack1.hasTag() ? false : !stack2.hasTag() || stack2.getTag().equals(stack1.getTag())));
++        return org.sugarcanemc.sugarcane.feature.ItemMergeBehavior.AreItemEntitiesMergable(stack1, stack2);
+     }
+ 
+     public static ItemStack merge(ItemStack stack1, ItemStack stack2, int maxCount) {
+-        int j = Math.min(Math.min(stack1.getMaxStackSize(), maxCount) - stack1.getCount(), stack2.getCount());
++        int j = org.sugarcanemc.sugarcane.feature.ItemMergeBehavior.GetMergeTargetCount(stack1, stack2, maxCount);
+         ItemStack itemstack2 = stack1.copy();
+ 
+         itemstack2.grow(j);
+@@ -304,7 +305,7 @@ public class ItemEntity extends Entity {
+     }
+ 
+     private static void merge(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
+-        ItemStack itemstack2 = ItemEntity.merge(stack1, stack2, 64);
++        ItemStack itemstack2 = org.sugarcanemc.sugarcane.feature.ItemMergeBehavior.MergeItemStacks(targetEntity, stack1, stack2);
+ 
+         if (!itemstack2.isEmpty()) targetEntity.setItem(itemstack2); // CraftBukkit - don't set empty stacks
+     }
+@@ -376,6 +377,7 @@ public class ItemEntity extends Entity {
+         }
+ 
+         if (!this.getItem().isEmpty()) {
++            org.sugarcanemc.sugarcane.feature.ItemMergeBehavior.SplitItemStacksForSave(this);
+             nbt.put("Item", this.getItem().save(new CompoundTag()));
+         }
+ 
+@@ -408,6 +410,7 @@ public class ItemEntity extends Entity {
+ 
+     @Override
+     public void playerTouch(Player player) {
++        org.sugarcanemc.sugarcane.feature.ItemMergeBehavior.HandlePlayerTouch(this, player); if(true) return;
+         if (!this.level.isClientSide) {
+             ItemStack itemstack = this.getItem();
+             Item item = itemstack.getItem();

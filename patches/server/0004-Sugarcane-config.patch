@@ -1,0 +1,256 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Thu, 7 Apr 2022 00:41:51 +0200
+Subject: [PATCH] Sugarcane config
+
+fixup! Sugarcane config
+
+fixup! Sugarcane config
+
+fixup! Sugarcane config
+
+fixup! Sugarcane config
+
+diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
+index abbfb819e327186ff2c05d8dbdf00ff2c18dc0ab..214f747e03862b3fab4bf2a511f0c816ee7c86d7 100644
+--- a/src/main/java/co/aikar/timings/TimingsExport.java
++++ b/src/main/java/co/aikar/timings/TimingsExport.java
+@@ -242,7 +242,8 @@ public class TimingsExport extends Thread {
+             pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
+             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)),
+             pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)), // Pufferfish
+-            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null))
++            pair("purpur", mapAsJSON(Bukkit.spigot().getPurpurConfig(), null)),
++            pair("sugarcane", mapAsJSON(Bukkit.spigot().getSugarcaneConfig(), null))
+             // Purpur end
+         ));
+ 
+diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+index 8e0c6c3e5fb40928d2290792aaee271bea749fdd..24b931b3fe7b1be3a5f85c5ec33bbe4d3a09e360 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+@@ -251,7 +251,7 @@ public class PaperConfig {
+         timings = reallyEnableTimings;
+         // Pufferfish end
+         boolean verboseTimings = getBoolean("timings.verbose", true);
+-        TimingsManager.url = getString("timings.url", "https://timings.aikar.co/");
++        TimingsManager.url = getString("timings.url", "https://timin.gs/");
+         // Purpur start
+         if (org.purpurmc.purpur.PurpurConfig.version < 23 && TimingsManager.url.contains("timings.pl3x.net")) {
+             set("timings.url", "https://timings.aikar.co/");
+diff --git a/src/main/java/net/minecraft/commands/Commands.java b/src/main/java/net/minecraft/commands/Commands.java
+index 7c30d8d61a8e82d8a1f61451090e9bbbca933d2a..423cdab100170aeb7a907c9cc08fff06a5b39760 100644
+--- a/src/main/java/net/minecraft/commands/Commands.java
++++ b/src/main/java/net/minecraft/commands/Commands.java
+@@ -230,6 +230,8 @@ public class Commands {
+             // CommandDispatcher.LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", new Object[]{this.dispatcher.getPath(commandnode1), this.dispatcher.getPath(commandnode2), collection}); // CraftBukkit
+         });
+         // CraftBukkit start
++
++        org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager.registerWithDispatcher(this.dispatcher); //Sugarcane
+     }
+ 
+     public Commands() {
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 69917030089f29ca0b26e13b8182c966103e6cd6..8e249b7eabcf23965cb1bf79e8f374dfb501ab80 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1253,7 +1253,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                         this.delayedTasksMaxNextTickTime = this.nextTickTime = curTime / 1000000L + 50L;
+                     }
+                     // Purpur end - tps catchup
+-                    this.waitUntilNextTick();
++                    if(!org.sugarcanemc.sugarcane.config.SugarcaneConfig.UncapTPS) this.waitUntilNextTick();
+                     this.profiler.pop();
+                     this.endMetricsRecordingTick();
+                     this.isReady = true;
+diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+index 119989e11c2e11aceaddec507f15d0260fba648a..d70955248cfd3a866eb3fec750c6409842ed002c 100644
+--- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -240,13 +240,21 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         }
+         org.purpurmc.purpur.PurpurConfig.registerCommands();
+         // Purpur end
++        org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager.registerCommands(); // Sugarcane
+         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // load version history now
+         io.papermc.paper.util.ObfHelper.INSTANCE.getClass(); // load mappings for stacktrace deobf and etc.
+         io.papermc.paper.brigadier.PaperBrigadierProviderImpl.INSTANCE.getClass(); // init PaperBrigadierProvider
+         // Paper end
+         gg.pufferfish.pufferfish.PufferfishConfig.load(); // Pufferfish
+         gg.pufferfish.pufferfish.PufferfishCommand.init(); // Pufferfish
+-
++        // Sugarcane start - config
++        try {
++            org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((java.io.File) options.valueOf("sugarcane-settings"));
++        } catch (Exception e) {
++            DedicatedServer.LOGGER.error("Unable to load server configuration", e);
++            return false;
++        }
++        // Sugarcane end
+         this.setPvpAllowed(dedicatedserverproperties.pvp);
+         this.setFlightAllowed(dedicatedserverproperties.allowFlight);
+         this.setResourcePack(dedicatedserverproperties.resourcePack, this.getPackHash());
+diff --git a/src/main/java/net/minecraft/server/level/ServerLevel.java b/src/main/java/net/minecraft/server/level/ServerLevel.java
+index 46bef68497acc6fef0625383bc78dac702cfd7c7..7b54c2bbd60370c1cdd0818c4fe7f977e0cc098e 100644
+--- a/src/main/java/net/minecraft/server/level/ServerLevel.java
++++ b/src/main/java/net/minecraft/server/level/ServerLevel.java
+@@ -654,6 +654,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+         timings.doSounds.stopTiming(); // Spigot
+         this.handlingTick = false;
+         gameprofilerfiller.pop();
++        if(!org.sugarcanemc.sugarcane.config.SugarcaneConfig.DisableEntityTicking) {
+         boolean flag = true || !this.players.isEmpty() || !this.getForcedChunks().isEmpty(); // CraftBukkit - this prevents entity cleanup, other issues on servers with no players
+ 
+         if (flag) {
+@@ -672,14 +673,14 @@ public class ServerLevel extends Level implements WorldGenLevel {
+             org.spigotmc.ActivationRange.activateEntities(this); // Spigot
+             timings.entityTick.startTiming(); // Spigot
+             this.entityTickList.forEach((entity) -> {
+-                if (!entity.isRemoved()) {
++                if (!entity.isRemoved() && entity.shouldTick()) {
+                     if (false && this.shouldDiscardEntity(entity)) { // CraftBukkit - We prevent spawning in general, so this butchering is not needed
+                         entity.discard();
+                     } else {
+                         gameprofilerfiller.push("checkDespawn");
+                         entity.checkDespawn();
+                         gameprofilerfiller.pop();
+-                        if (true || this.chunkSource.chunkMap.getDistanceManager().inEntityTickingRange(entity.chunkPosition().toLong())) { // Paper - now always true if in the ticking list
++                        if (org.sugarcanemc.sugarcane.config.SugarcaneConfig.TickAllEntities || this.chunkSource.chunkMap.getDistanceManager().inEntityTickingRange(entity.chunkPosition().toLong())) { // Paper - now always true if in the ticking list
+                             Entity entity1 = entity.getVehicle();
+ 
+                             if (entity1 != null) {
+@@ -719,6 +720,7 @@ public class ServerLevel extends Level implements WorldGenLevel {
+         gameprofilerfiller.push("entityManagement");
+         this.entityManager.tick();
+         gameprofilerfiller.pop();
++        }
+     }
+ 
+     @Override
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 00a5731e7b1e2b84453e6d1416dce8bd9e1b1b10..a4044512bbbe9e1b7d32db396da931c43b04c6ee 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -94,7 +94,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener
+             }
+         }
+ 
+-        if (this.tick++ == 600) {
++        if (this.tick++ == 600 && !org.sugarcanemc.sugarcane.config.SugarcaneConfig.UncapTPS) {
+             this.disconnect(new TranslatableComponent("multiplayer.disconnect.slow_login"));
+         }
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index d58de23619321fadad3755f6110954ac462bbba1..2a56064d15f315ea89c8807e23df46265712f63b 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -4522,4 +4522,16 @@ public abstract class Entity implements Nameable, EntityAccess, CommandSource {
+         return false;
+     }
+     // Purpur end
++
++    // Sugarcane
++    @Nullable
++    public Integer TickThreshold = null;
++    public boolean shouldTick(){
++        if(TickThreshold == null) {
++            TickThreshold = org.sugarcanemc.sugarcane.config.MobTPSThresholds.getTickThreshold(this.getClass());
++            //if(org.sugarcanemc.sugarcane.config.SugarcaneConfig.debug) System.out.printf("%s: Loaded tick treshold: %s\n", this.getClass(), TickThreshold);
++        }
++
++        return org.sugarcanemc.sugarcane.config.MobTPSThresholds.CurrentTPS >= TickThreshold;
++    }
+ }
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index 92154459fd46db7e9182952cc1f844298c2dcb3c..41e0a650edaeb4401e5e987208c6296fc0a591b1 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -400,7 +400,7 @@ public abstract class LivingEntity extends Entity {
+             this.clearFire();
+         }
+ 
+-        if (this.isAlive()) {
++        if (!org.sugarcanemc.sugarcane.config.SugarcaneConfig.disableEntityStuckChecks && this.isAlive()) { // Sugarcane
+             boolean flag = this instanceof net.minecraft.world.entity.player.Player;
+             if ((!gg.pufferfish.pufferfish.PufferfishConfig.enableSuffocationOptimization || (tickCount % 10 == 0 && couldPossiblyBeHurt(1.0F))) && this.isInWall()) { // Pufferfish - optimize suffocation
+                 this.hurt(DamageSource.IN_WALL, 1.0F);
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index c29fdc40b72da7ca18a1c0bbcf02162799458063..64cbb68924f80f7d44aba99f1d515c347515a68c 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -165,6 +165,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+     public final com.destroystokyo.paper.antixray.ChunkPacketBlockController chunkPacketBlockController; // Paper - Anti-Xray
+ 
+     public final org.purpurmc.purpur.PurpurWorldConfig purpurConfig; // Purpur
++    public final org.sugarcanemc.sugarcane.config.SugarcaneWorldConfig sugarcaneConfig; // Sugarcane - world config
+ 
+     public final co.aikar.timings.WorldTimingsHandler timings; // Paper
+     public static BlockPos lastPhysicsProblem; // Spigot
+@@ -319,6 +320,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+         this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName()); // Spigot
+         this.paperConfig = new com.destroystokyo.paper.PaperWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), this.spigotConfig); // Paper
+         this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Purpur
++        this.sugarcaneConfig = new org.sugarcanemc.sugarcane.config.SugarcaneWorldConfig((ServerLevel) this, ((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Sugarcane - world config
+         this.playerBreedingCooldowns = this.getNewBreedingCooldownCache(); // Purpur
+         this.generator = gen;
+         this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 5a3323c9f21819c597a78803347f8e424ceafb22..4fbca0b90420e10ac09fdd38e2ac2b55836f3222 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -956,6 +956,7 @@ public final class CraftServer implements Server {
+         org.spigotmc.SpigotConfig.init((File) console.options.valueOf("spigot-settings")); // Spigot
+         com.destroystokyo.paper.PaperConfig.init((File) console.options.valueOf("paper-settings")); // Paper
+         org.purpurmc.purpur.PurpurConfig.init((File) console.options.valueOf("purpur-settings")); // Purpur
++        org.sugarcanemc.sugarcane.config.SugarcaneConfig.init((File) console.options.valueOf("sugarcane-settings")); // Sugarcane - config
+         for (ServerLevel world : this.console.getAllLevels()) {
+             // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
+             world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters, config.spawnAnimals); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
+@@ -973,6 +974,7 @@ public final class CraftServer implements Server {
+             world.spigotConfig.init(); // Spigot
+             world.paperConfig.init(); // Paper
+             world.purpurConfig.init(); // Purpur
++            world.sugarcaneConfig.init(); // Sugarcane
+         }
+ 
+         Plugin[] pluginClone = pluginManager.getPlugins().clone(); // Paper
+@@ -989,6 +991,7 @@ public final class CraftServer implements Server {
+         org.spigotmc.SpigotConfig.registerCommands(); // Spigot
+         com.destroystokyo.paper.PaperConfig.registerCommands(); // Paper
+         org.purpurmc.purpur.PurpurConfig.registerCommands(); // Purpur
++        org.sugarcanemc.sugarcane.command.SugarcaneCommandsManager.registerCommands(); // Sugarcane
+         this.overrideAllCommandBlockCommands = this.commandsConfiguration.getStringList("command-block-overrides").contains("*");
+         this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
+ 
+@@ -2722,6 +2725,11 @@ public final class CraftServer implements Server {
+             return org.purpurmc.purpur.PurpurConfig.config;
+         }
+ 
++        @Override
++        public YamlConfiguration getSugarcaneConfig() {
++            return org.sugarcanemc.sugarcane.config.SugarcaneConfig.config;
++        }
++
+         @Override
+         public java.util.Properties getServerProperties() {
+             return getProperties().properties;
+diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
+index 639dc3bb56cc90b84da08dc93cea89c658ed6dc8..e9fddcefba2528fe6b7fb23b374387dfb53ef931 100644
+--- a/src/main/java/org/bukkit/craftbukkit/Main.java
++++ b/src/main/java/org/bukkit/craftbukkit/Main.java
+@@ -161,6 +161,14 @@ public class Main {
+                     .describedAs("Yml file");
+                 // Purpur end
+ 
++                // Sugarcane start - config
++                acceptsAll(asList("sugarcane", "sugarcane-settings"), "File for Sugarcane settings")
++                        .withRequiredArg()
++                        .ofType(File.class)
++                        .defaultsTo(new File("sugarcane.yml"))
++                        .describedAs("Yml file");
++                // Sugarcane end
++
+                 // Paper start
+                 acceptsAll(asList("server-name"), "Name of the server")
+                         .withRequiredArg()

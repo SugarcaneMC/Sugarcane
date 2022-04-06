@@ -1,8 +1,17 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: The Arcane Brony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 19:42:58 +0200
+Date: Thu, 7 Apr 2022 00:42:04 +0200
 Subject: [PATCH] Sugarcane classes
 
+fixup! Sugarcane classes
+
+fixup! Sugarcane classes
+
+fixup! Sugarcane classes
+
+fixup! Sugarcane classes
+
+fixup! Sugarcane classes
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/cache/NBTCache.java b/src/main/java/org/sugarcanemc/sugarcane/cache/NBTCache.java
 new file mode 100644
@@ -979,10 +988,10 @@ index 0000000000000000000000000000000000000000..8c5a82643721df79ad7cbf9b79022139
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..de4d86a2287dcdb5a2fd069d9279f93527d0ab03
+index 0000000000000000000000000000000000000000..02d1016e4c97a9038f80d0f22d6e2a8f6a0885e0
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/SugarcaneConfig.java
-@@ -0,0 +1,233 @@
+@@ -0,0 +1,235 @@
 +package org.sugarcanemc.sugarcane.config;
 +
 +import com.google.common.base.Throwables;
@@ -998,6 +1007,7 @@ index 0000000000000000000000000000000000000000..de4d86a2287dcdb5a2fd069d9279f935
 +import org.bukkit.Bukkit;
 +import org.bukkit.configuration.InvalidConfigurationException;
 +import org.bukkit.configuration.file.YamlConfiguration;
++import org.purpurmc.purpur.PurpurConfig;
 +import org.sugarcanemc.sugarcane.util.ClassGenerators;
 +import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
 +import org.sugarcanemc.sugarcane.util.yaml.YamlCommenter;
@@ -1163,11 +1173,11 @@ index 0000000000000000000000000000000000000000..de4d86a2287dcdb5a2fd069d9279f935
 +		isRunningInIDE = getBoolean("dev.is-running-in-ide", false);
 +		SharedConstants.IS_RUNNING_IN_IDE = isRunningInIDE;
 +	}
-+	public static boolean modSharedConstants = false;
++	/*public static boolean modSharedConstants = false;
 +	private static void setModSharedConstants() {
 +		modSharedConstants = getBoolean("dev.enable-shared-constant-overrides", false);
 +		if(modSharedConstants) SharedConstantOverridesConfig.Load();
-+	}
++	}*/
 +
 +	public static boolean logPlayerLoginLoc = true;
 +	private static void general() {
@@ -1187,6 +1197,7 @@ index 0000000000000000000000000000000000000000..de4d86a2287dcdb5a2fd069d9279f935
 +	public static String brandName = "Sugarcane";
 +		private static void brandName() {
 +		brandName = getString("brand-name", brandName);
++        PurpurConfig.serverModName = brandName;
 +	}
 +
 +	public static boolean checkFlying = true;
@@ -1300,6 +1311,466 @@ index 0000000000000000000000000000000000000000..45428aea898630e05270a6ccfbcc687d
 +		SugarcaneConfig.config.addDefault("world-settings.default." + path, def);
 +		return SugarcaneConfig.config.getList("world-settings." + worldName + "." + path, SugarcaneConfig.config.getList("world-settings.default." + path));
 +	}
++}
+\ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/feature/GlobalEula.java b/src/main/java/org/sugarcanemc/sugarcane/feature/GlobalEula.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..336f57ff1347f9ed020096ad6f20d51d826485be
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/feature/GlobalEula.java
+@@ -0,0 +1,14 @@
++package org.sugarcanemc.sugarcane.feature;
++
++public class GlobalEula {
++    public static boolean Accepted() {
++        java.io.File globalEula = new java.io.File(System.getProperty("user.home"), ".mc-eula.accept");
++        if (globalEula.exists()) {
++            System.out.println("Global eula file found at " + globalEula.getAbsolutePath());
++            return true;
++        } else {
++            System.out.println("No global eula file found at " + globalEula.getAbsolutePath());
++        }
++        return false;
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/feature/ItemMergeBehavior.java b/src/main/java/org/sugarcanemc/sugarcane/feature/ItemMergeBehavior.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..adf6fd5c2ab1d0969ae9db255f5fcef19a772f52
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/feature/ItemMergeBehavior.java
+@@ -0,0 +1,147 @@
++package org.sugarcanemc.sugarcane.feature;
++
++import net.minecraft.nbt.CompoundTag;
++import net.minecraft.stats.Stats;
++import net.minecraft.world.entity.item.ItemEntity;
++import net.minecraft.world.entity.player.Player;
++import net.minecraft.world.item.ItemStack;
++import net.minecraft.world.phys.Vec3;
++import org.bukkit.event.entity.EntityPickupItemEvent;
++import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
++import org.bukkit.event.player.PlayerPickupItemEvent;
++import org.sugarcanemc.sugarcane.config.SugarcaneConfig;
++
++public class ItemMergeBehavior {
++    public static void TickItem(ItemEntity item) {
++        if (SugarcaneConfig.SplitItems && item.getItem().getCount() > 1) {
++            for (int i = 0; i < item.getItem().getCount(); i++) {
++                //spawn item
++                Vec3 pos = item.getEyePosition();
++                var is = item.getItem().copy();
++                is.setCount(1);
++                ItemEntity a = item.spawnAtLocation(is);
++                if (item.getDeltaMovement().normalize().length() == 0)
++                    a.setDeltaMovement((Math.random() * 2 - 1) / 10, Math.random(), (Math.random() * 2 - 1) / 10);
++                else
++                    a.setDeltaMovement(item.getDeltaMovement().multiply(1 + (Math.random()) / 10, Math.random(), 1 + (Math.random()) / 10));
++                a.setPickUpDelay(item.pickupDelay);
++            }
++            item.discard();
++        }
++    }
++
++    public static boolean IsItemEntityMergable(ItemEntity item, ItemStack itemstack) {
++        //vanilla
++        if (SugarcaneConfig.ItemMergeBehavior == -1)
++            return item.isAlive() && item.pickupDelay != 32767 && item.age != -32768 && item.age < item.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize();
++            // Sugarcane - merge items infinitely
++        else if (SugarcaneConfig.ItemMergeBehavior == 0)
++            return item.isAlive() && item.pickupDelay != 32767 && item.age != -32768 && item.age < item.getDespawnRate();
++            // Sugarcane - limit to 1 item per stack
++        else return false; // Sugarcane - handled during tick
++    }
++
++    public static boolean AreItemEntitiesMergable(ItemStack stack1, ItemStack stack2) {
++        // Sugarcane - item drop behavior - infinite merging
++        if (SugarcaneConfig.ItemMergeBehavior == 0)
++            return stack2.is(stack1.getItem()) && (!(stack2.hasTag() ^ stack1.hasTag()) && (!stack2.hasTag() || stack2.getTag().equals(stack1.getTag())));
++        else
++            return stack2.is(stack1.getItem()) && (stack2.getCount() + stack1.getCount() <= stack2.getMaxStackSize() && (!(stack2.hasTag() ^ stack1.hasTag()) && (!stack2.hasTag() || stack2.getTag().equals(stack1.getTag()))));
++    }
++
++    public static int GetMergeTargetCount(ItemStack stack1, ItemStack stack2, int maxCount) {
++        if (SugarcaneConfig.ItemMergeBehavior == 0) maxCount = Integer.MAX_VALUE;
++        return Math.min(maxCount - stack1.getCount(), stack2.getCount());
++    }
++
++    public static ItemStack MergeItemStacks(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
++        int max = 64;
++        if (SugarcaneConfig.ItemMergeBehavior == 0) max = Integer.MAX_VALUE;
++        ItemStack itemstack2 = ItemEntity.merge(stack1, stack2, max);
++        if (SugarcaneConfig.verbose) {
++            System.out.println(String.format("Item merged: %s + %s -> %s/%s", stack1.getCount(), stack2.getCount(), itemstack2.getCount(), max));
++        }
++        return itemstack2;
++    }
++
++    public static void SplitItemStacksForSave(ItemEntity item) {
++        while (item.getItem().getCount() > item.getItem().getMaxStackSize()) {
++            ItemStack e = item.getItem().copy();
++            e.setCount(item.getItem().getMaxStackSize());
++            item.spawnAtLocation(e).save(new CompoundTag());
++            item.getItem().shrink(item.getItem().getMaxStackSize());
++        }
++    }
++
++    public static void HandlePlayerTouch(ItemEntity item, Player player){
++        if (!item.level.isClientSide) {
++            ItemStack itemstack = item.getItem();
++            int count = itemstack.getCount();
++
++            // CraftBukkit start - fire PlayerPickupItemEvent
++            int canHold = player.getInventory().canHold(itemstack);
++            int remaining = Math.max(count - canHold, 0);
++            boolean flyAtPlayer = false; // Paper
++
++            // Paper start
++            if(item.pickupDelay <= 0) {
++                // Sugarcane - Move paper event here
++                PlayerAttemptPickupItemEvent attemptEvent = new PlayerAttemptPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) item.getBukkitEntity(), remaining);
++                item.level.getCraftServer().getPluginManager().callEvent(attemptEvent);
++
++                if (canHold > 0) {
++                    itemstack.setCount(canHold);
++                    // Call legacy event
++                    PlayerPickupItemEvent playerEvent = new PlayerPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) item.getBukkitEntity(), remaining);
++                    item.level.getCraftServer().getPluginManager().callEvent(playerEvent);
++                    // Call newer event afterwards
++                    EntityPickupItemEvent entityEvent = new EntityPickupItemEvent((org.bukkit.entity.Player) player.getBukkitEntity(), (org.bukkit.entity.Item) item.getBukkitEntity(), remaining);
++                    item.level.getCraftServer().getPluginManager().callEvent(entityEvent);
++
++                    if (playerEvent.isCancelled() || entityEvent.isCancelled() || attemptEvent.isCancelled()) {
++                        itemstack.setCount(count); // SPIGOT-5294 - restore count
++                        return;
++                    }
++
++                    flyAtPlayer = playerEvent.getFlyAtPlayer(); // Paper
++                    // Update the ItemStack if it was changed in the event
++                    ItemStack current = item.getItem();
++                    if (!itemstack.equals(current)) {
++                        itemstack = current;
++
++                    }
++                    boolean full = false;
++                    int added = 0;
++                    while(!full) {
++                        if (item.pickupDelay == 0 && (item.getOwner() == null || item.getOwner().equals(player.getUUID()))) {
++                            ItemStack is = new ItemStack(item.getItem().getItem(), 1);
++                            is.setTag(item.getItem().getTag());
++
++                            if(player.getInventory().add(is)) {
++                                // Paper Start
++                                if (flyAtPlayer) {
++                                    player.take(item, 1);
++                                    added++;
++                                }
++                                // Paper End
++                                if (itemstack.isEmpty()) {
++                                    item.discard();
++                                    itemstack.setCount(count);
++                                    player.awardStat(Stats.ITEM_PICKED_UP.get(itemstack.getItem()), added);
++                                    player.onItemPickup(item);
++                                    return;
++                                }
++
++                                itemstack.shrink(1);
++                            } else {
++                                full = true;
++                            }
++                        }
++                    }
++                    player.awardStat(Stats.ITEM_PICKED_UP.get(itemstack.getItem()), added);
++                    player.onItemPickup(item);
++                }
++            }
++        }
++    }
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/lithiumclasses/HashedList.java b/src/main/java/org/sugarcanemc/sugarcane/lithiumclasses/HashedList.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..aa029acb28eb31f9d3780cddd15fe7030a1178d7
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/lithiumclasses/HashedList.java
+@@ -0,0 +1,280 @@
++package org.sugarcanemc.sugarcane.lithiumclasses;
++
++import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
++import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
++import java.util.Collection;
++import java.util.Iterator;
++import java.util.List;
++import java.util.ListIterator;
++import java.util.NoSuchElementException;
++
++/**
++ * Wraps a {@link List} with a hash table which provides O(1) lookups for {@link Collection#contains(Object)}. The type
++ * contained by this list must use reference-equality semantics.
++ */
++@SuppressWarnings("SuspiciousMethodCalls")
++public class HashedList<T> implements List<T> {
++    private final ReferenceArrayList<T> list;
++    private final Reference2IntOpenHashMap<T> counter;
++
++    public HashedList(List<T> list) {
++        this.list = new ReferenceArrayList<>();
++        this.list.addAll(list);
++
++        this.counter = new Reference2IntOpenHashMap<>();
++        this.counter.defaultReturnValue(0);
++
++        for (T obj : this.list) {
++            this.counter.addTo(obj, 1);
++        }
++    }
++
++    @Override
++    public int size() {
++        return this.list.size();
++    }
++
++    @Override
++    public boolean isEmpty() {
++        return this.list.isEmpty();
++    }
++
++    @Override
++    public boolean contains(Object o) {
++        return this.counter.containsKey(o);
++    }
++
++    @Override
++    public Iterator<T> iterator() {
++        return this.listIterator();
++    }
++
++    @Override
++    public Object[] toArray() {
++        return this.list.toArray();
++    }
++
++    @SuppressWarnings("SuspiciousToArrayCall")
++    @Override
++    public <T1> T1[] toArray(T1[] a) {
++        return this.list.toArray(a);
++    }
++
++    @Override
++    public boolean add(T t) {
++        this.trackReferenceAdded(t);
++
++        return this.list.add(t);
++    }
++
++    @Override
++    public boolean remove(Object o) {
++        this.trackReferenceRemoved(o);
++
++        return this.list.remove(o);
++    }
++
++    @Override
++    public boolean containsAll(Collection<?> c) {
++        for (Object obj : c) {
++            if (!this.counter.containsKey(obj)) {
++                return false;
++            }
++        }
++
++        return true;
++    }
++
++    @Override
++    public boolean addAll(Collection<? extends T> c) {
++        for (T obj : c) {
++            this.trackReferenceAdded(obj);
++        }
++
++        return this.list.addAll(c);
++    }
++
++    @Override
++    public boolean addAll(int index, Collection<? extends T> c) {
++        for (T obj : c) {
++            this.trackReferenceAdded(obj);
++        }
++
++        return this.list.addAll(index, c);
++    }
++
++    @Override
++    public boolean removeAll(Collection<?> c) {
++        for (Object obj : c) {
++            this.trackReferenceRemoved(obj);
++        }
++
++        return this.list.removeAll(c);
++    }
++
++    @Override
++    public boolean retainAll(Collection<?> c) {
++        return this.list.retainAll(c);
++    }
++
++    @Override
++    public void clear() {
++        this.counter.clear();
++        this.list.clear();
++    }
++
++    @Override
++    public T get(int index) {
++        return this.list.get(index);
++    }
++
++    @Override
++    public T set(int index, T element) {
++        T prev = this.list.set(index, element);
++
++        if (prev != element) {
++            if (prev != null) {
++                this.trackReferenceRemoved(prev);
++            }
++
++            this.trackReferenceAdded(element);
++        }
++
++        return prev;
++    }
++
++    @Override
++    public void add(int index, T element) {
++        this.trackReferenceAdded(element);
++
++        this.list.add(index, element);
++    }
++
++    @Override
++    public T remove(int index) {
++        T prev = this.list.remove(index);
++
++        if (prev != null) {
++            this.trackReferenceRemoved(prev);
++        }
++
++        return prev;
++    }
++
++    @Override
++    public int indexOf(Object o) {
++        return this.list.indexOf(o);
++    }
++
++    @Override
++    public int lastIndexOf(Object o) {
++        return this.list.lastIndexOf(o);
++    }
++
++    @Override
++    public ListIterator<T> listIterator() {
++        return this.listIterator(0);
++    }
++
++    @Override
++    public ListIterator<T> listIterator(int index) {
++        return new ListIterator<T>() {
++            private final ListIterator<T> inner = HashedList.this.list.listIterator(index);
++
++            @Override
++            public boolean hasNext() {
++                return this.inner.hasNext();
++            }
++
++            @Override
++            public T next() {
++                return this.inner.next();
++            }
++
++            @Override
++            public boolean hasPrevious() {
++                return this.inner.hasPrevious();
++            }
++
++            @Override
++            public T previous() {
++                return this.inner.previous();
++            }
++
++            @Override
++            public int nextIndex() {
++                return this.inner.nextIndex();
++            }
++
++            @Override
++            public int previousIndex() {
++                return this.inner.previousIndex();
++            }
++
++            @Override
++            public void remove() {
++                int last = this.previousIndex();
++
++                if (last == -1) {
++                    throw new NoSuchElementException();
++                }
++
++                T prev = HashedList.this.get(last);
++
++                if (prev != null) {
++                    HashedList.this.trackReferenceRemoved(prev);
++                }
++
++                this.inner.remove();
++            }
++
++            @Override
++            public void set(T t) {
++                int last = this.previousIndex();
++
++                if (last == -1) {
++                    throw new NoSuchElementException();
++                }
++
++                T prev = HashedList.this.get(last);
++
++                if (prev != t) {
++                    if (prev != null) {
++                        HashedList.this.trackReferenceRemoved(prev);
++                    }
++
++                    HashedList.this.trackReferenceAdded(t);
++                }
++
++                this.inner.remove();
++            }
++
++            @Override
++            public void add(T t) {
++                HashedList.this.trackReferenceAdded(t);
++
++                this.inner.add(t);
++            }
++        };
++    }
++
++    @Override
++    public List<T> subList(int fromIndex, int toIndex) {
++        return this.list.subList(fromIndex, toIndex);
++    }
++
++    private void trackReferenceAdded(T t) {
++        this.counter.addTo(t, 1);
++    }
++
++    @SuppressWarnings("unchecked")
++    private void trackReferenceRemoved(Object o) {
++        if (this.counter.addTo((T) o, -1) <= 1) {
++            this.counter.removeInt(o);
++        }
++    }
++
++    public static <T> HashedList<T> wrapper(List<T> list) {
++        return new HashedList<>(list);
++    }
 +}
 \ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java b/src/main/java/org/sugarcanemc/sugarcane/util/ClassGenerators.java
@@ -1623,6 +2094,153 @@ index 0000000000000000000000000000000000000000..ed087104f38c6135aa86579f94324c93
 +	}
 +}
 \ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/versioning/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/SugarcaneVersionFetcher.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..39e7ec4753c72f9d46fa78edfbf4ce5f6c7fdb28
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/SugarcaneVersionFetcher.java
+@@ -0,0 +1,141 @@
++package org.sugarcanemc.sugarcane.util.versioning;
++
++import com.destroystokyo.paper.VersionHistoryManager;
++import com.destroystokyo.paper.util.VersionFetcher;
++import com.google.common.base.Charsets;
++import com.google.common.io.Resources;
++import com.google.gson.*;
++import net.kyori.adventure.text.Component;
++import net.kyori.adventure.text.event.ClickEvent;
++import net.kyori.adventure.text.format.NamedTextColor;
++import net.kyori.adventure.text.format.TextDecoration;
++import net.kyori.adventure.text.TextComponent;
++import net.kyori.adventure.text.JoinConfiguration;
++import javax.annotation.Nonnull;
++import javax.annotation.Nullable;
++import java.io.*;
++import java.net.HttpURLConnection;
++import java.net.URL;
++import java.net.URLEncoder;
++import org.sugarcanemc.sugarcane.util.versioning.BranchReader;
++
++public class SugarcaneVersionFetcher implements VersionFetcher {
++    private static final java.util.regex.Pattern VER_PATTERN = java.util.regex.Pattern.compile("^([0-9\\.]*)\\-.*R"); // R is an anchor, will always give '-R' at end
++    private static final String DOWNLOAD_PAGE = "https://ci.sugarcanemc.org/job/Sugarcane/";
++    private static int distance = -2;
++    public int distance() { return distance; }
++    private static @Nullable String mcVer;
++
++    @Override
++    public long getCacheTime() {
++        return 720000;
++    }
++
++    @Nonnull
++    @Override
++    public Component getVersionMessage(@Nonnull String serverVersion) {
++        String[] parts = serverVersion.substring("git-Sugarcane-".length()).split("[-\\s]");
++        final @Nonnull String branch = BranchReader.getBranch();
++        final Component updateMessage = getUpdateStatusMessage("SugarcaneMC/Sugarcane", branch, parts[0]);
++        final Component history = getHistory();
++
++        return history != null ? Component.join(JoinConfiguration.separator(Component.newline()), history, updateMessage) : updateMessage;
++    }
++
++    private static @Nullable String getMinecraftVersion() {
++        if (mcVer == null) {
++            java.util.regex.Matcher matcher = VER_PATTERN.matcher(org.bukkit.Bukkit.getBukkitVersion());
++            if (matcher.find()) {
++                String result = matcher.group();
++                mcVer = result.substring(0, result.length() - 2); // strip 'R' anchor and trailing '-'
++            } else {
++                org.bukkit.Bukkit.getLogger().warning("Unable to match version to pattern! Report to Sugarcane!");
++                org.bukkit.Bukkit.getLogger().warning("Pattern: " + VER_PATTERN.toString());
++                org.bukkit.Bukkit.getLogger().warning("Version: " + org.bukkit.Bukkit.getBukkitVersion());
++            }
++        }
++
++        return mcVer;
++    }
++
++    private static Component getUpdateStatusMessage(@Nonnull String repo, @Nonnull String branch, @Nonnull String versionInfo) {
++        String err = "";
++        try {
++            int jenkinsBuild = Integer.parseInt(versionInfo);
++            distance = fetchDistanceFromJenkins(jenkinsBuild, branch);
++        } catch (Exception ignored) {
++            versionInfo = versionInfo.replace("\"", "");
++            //distance = fetchDistanceFromJenkins(jenkinsBuild, branch);
++            distance = -2;
++            err = ignored.getMessage();
++        }
++
++        switch (distance) {
++            case -2:
++                return Component.text(String.format("* Unknown version (%s), are you running a custom build?", versionInfo), NamedTextColor.RED);
++            case -1:
++                return Component.text(String.format("* Error obtaining version information (%s)!", err), NamedTextColor.RED);
++            case 0:
++                return Component.text("* You are running the latest version!", NamedTextColor.GREEN);
++            default:
++                return Component.text("* You are " + distance + " version(s) behind!", NamedTextColor.YELLOW)
++                        .append(Component.newline())
++                        .append(Component.text("Download the new version at: ")
++                        .append(Component.text(DOWNLOAD_PAGE, NamedTextColor.GOLD)
++                        .hoverEvent(Component.text("Click to open", NamedTextColor.WHITE))
++                        .clickEvent(ClickEvent.openUrl(DOWNLOAD_PAGE))));
++        }
++    }
++
++    private static int fetchDistanceFromJenkins(int jenkinsBuild, @Nonnull String branch) {
++        try {
++            try (BufferedReader reader = Resources.asCharSource(new URL("https://ci.sugarcanemc.org/job/Sugarcane/job/" + URLEncoder.encode(branch, Charsets.UTF_8.name()) + "/lastStableBuild/buildNumber"), Charsets.UTF_8).openBufferedStream()) { // Sugarcane
++                return Integer.decode(reader.readLine()) - jenkinsBuild;
++            } catch (NumberFormatException ex) {
++                ex.printStackTrace();
++                return -2;
++            }
++        } catch (IOException e) {
++            e.printStackTrace();
++            return -1;
++        }
++    }
++
++    // Contributed by Techcable <Techcable@outlook.com> in GH-65
++    private static int fetchDistanceFromGitHub(@Nonnull String repo, @Nonnull String branch, @Nonnull String hash) {
++        try {
++            HttpURLConnection connection = (HttpURLConnection) new URL("https://api.github.com/repos/" + repo + "/compare/" + branch + "..." + hash).openConnection();
++            connection.connect();
++            if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND) return -2; // Unknown commit
++            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charsets.UTF_8));
++            JsonObject obj = new Gson().fromJson(reader, JsonObject.class);
++            String status = obj.get("status").getAsString();
++            switch (status) {
++                case "identical":
++                    return 0;
++                case "behind":
++                    return obj.get("behind_by").getAsInt();
++                default:
++                    return -1;
++            }
++        } catch (Exception e) {
++            e.printStackTrace();
++            return -1;
++        }
++    }
++
++    @Nullable
++    private Component getHistory() {
++        final VersionHistoryManager.VersionData data = VersionHistoryManager.INSTANCE.getVersionData();
++        if (data == null) {
++            return null;
++        }
++
++        final String oldVersion = data.getOldVersion();
++        if (oldVersion == null) {
++            return null;
++        }
++
++        return org.bukkit.ChatColor.parseMM("<grey>Previous: %s", oldVersion); // Purpur
++    }
++}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/yaml/BaseYamlConfig.java b/src/main/java/org/sugarcanemc/sugarcane/util/yaml/BaseYamlConfig.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..efd4b11b25d643e900cbd0c1c2f8412cb65560d0

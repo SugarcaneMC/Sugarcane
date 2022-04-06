@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 22:28:51 +0200
+Subject: [PATCH] Sugarcane config
+
+
+diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
+index a272285d1389eed7ab07b253a48f1defabacb187..3fd5cdf1391c49567d923de882e96a63b7022e02 100644
+--- a/src/main/java/org/bukkit/Server.java
++++ b/src/main/java/org/bukkit/Server.java
+@@ -1892,6 +1892,11 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+             throw new UnsupportedOperationException("Not supported yet.");
+         }
+ 
++        @NotNull
++        public org.bukkit.configuration.file.YamlConfiguration getSugarcaneConfig() {
++            throw new UnsupportedOperationException("Not supported yet.");
++        }
++
+         @NotNull
+         public java.util.Properties getServerProperties() {
+             throw new UnsupportedOperationException("Not supported yet.");

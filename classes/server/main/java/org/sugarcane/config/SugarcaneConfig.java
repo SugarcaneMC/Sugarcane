@@ -13,6 +13,7 @@ import net.minecraft.SharedConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.purpurmc.purpur.PurpurConfig;
 import org.sugarcanemc.sugarcane.util.ClassGenerators;
 import org.sugarcanemc.sugarcane.util.yaml.BaseYamlConfig;
 import org.sugarcanemc.sugarcane.util.yaml.YamlCommenter;
@@ -178,11 +179,11 @@ public class SugarcaneConfig extends BaseYamlConfig {
 		isRunningInIDE = getBoolean("dev.is-running-in-ide", false);
 		SharedConstants.IS_RUNNING_IN_IDE = isRunningInIDE;
 	}
-	public static boolean modSharedConstants = false;
+	/*public static boolean modSharedConstants = false;
 	private static void setModSharedConstants() {
 		modSharedConstants = getBoolean("dev.enable-shared-constant-overrides", false);
 		if(modSharedConstants) SharedConstantOverridesConfig.Load();
-	}
+	}*/
 
 	public static boolean logPlayerLoginLoc = true;
 	private static void general() {
@@ -202,6 +203,7 @@ public class SugarcaneConfig extends BaseYamlConfig {
 	public static String brandName = "Sugarcane";
 		private static void brandName() {
 		brandName = getString("brand-name", brandName);
+        PurpurConfig.serverModName = brandName;
 	}
 
 	public static boolean checkFlying = true;

@@ -1,0 +1,102 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 23:22:40 +0200
+Subject: [PATCH] NBT cache
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 5330f171fc77bbcf14b8563323e4c8550ae8a13b..beead8c96d7e8cbb7a24dacb18070bbf08b4cdbb 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1059,7 +1059,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+         }
+         // Spigot start
+         MCUtil.asyncExecutor.shutdown(); // Paper
++        this.playerDataStorage.executorService.shutdown(); // Sugarcane - New nbt cache
+         try { MCUtil.asyncExecutor.awaitTermination(30, java.util.concurrent.TimeUnit.SECONDS); // Paper
++            this.playerDataStorage.executorService.awaitTermination(30, java.util.concurrent.TimeUnit.SECONDS); // Sugarcane - New nbt cache
+         } catch (java.lang.InterruptedException ignored) {} // Paper
+         if (org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) {
+             MinecraftServer.LOGGER.info("Saving usercache.json");
+diff --git a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
+index 17771d52a12117663fbfa10f61f9a1cae88d5d51..0281cbe6d5786997270316812eb4be6ad550ed83 100644
+--- a/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
++++ b/src/main/java/net/minecraft/world/level/storage/PlayerDataStorage.java
+@@ -24,6 +24,10 @@ public class PlayerDataStorage {
+     private static final Logger LOGGER = LogUtils.getLogger();
+     private final File playerDir;
+     protected final DataFixer fixerUpper;
++    // Sugarcane start - NBT Cache system
++    private final org.sugarcanemc.sugarcane.cache.NBTCache dataCache = new org.sugarcanemc.sugarcane.cache.NBTCache();
++    public final java.util.concurrent.ExecutorService executorService = java.util.concurrent.Executors.newSingleThreadExecutor(new com.google.common.util.concurrent.ThreadFactoryBuilder().setDaemon(true).setPriority(Thread.NORM_PRIORITY - 1).build());
++    // Sugarcane end
+ 
+     public PlayerDataStorage(LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer) {
+         this.fixerUpper = dataFixer;
+@@ -37,11 +41,24 @@ public class PlayerDataStorage {
+             CompoundTag nbttagcompound = player.saveWithoutId(new CompoundTag());
+             File file = File.createTempFile(player.getStringUUID() + "-", ".dat", this.playerDir);
+ 
+-            NbtIo.writeCompressed(nbttagcompound, file);
+-            File file1 = new File(this.playerDir, player.getStringUUID() + ".dat");
+-            File file2 = new File(this.playerDir, player.getStringUUID() + ".dat_old");
+-
+-            Util.safeReplaceFile(file1, file, file2);
++            // NbtIo.writeCompressed(nbttagcompound, file); // Sugarcane
++            // Sugarcane start - NBT Cache system
++            Runnable task = () -> {
++                try {
++                    NbtIo.writeCompressed(nbttagcompound, file);
++                    File file1 = new File(this.playerDir, player.getStringUUID() + ".dat");
++                    File file2 = new File(this.playerDir, player.getStringUUID() + ".dat_old");
++
++                    Util.safeReplaceFile(file1, file, file2);
++                } catch (Exception exception) {
++                    PlayerDataStorage.LOGGER.error("Failed to save player data for {}", player.getScoreboardName(), exception); // Paper
++                }
++                };
++            synchronized (this.dataCache){
++                this.dataCache.put(file, nbttagcompound);
++             }
++            this.executorService.execute(task);
++            // Sugarcane end
+         } catch (Exception exception) {
+             PlayerDataStorage.LOGGER.warn("Failed to save player data for {}", player.getScoreboardName(), exception); // Paper
+         }
+@@ -57,9 +74,18 @@ public class PlayerDataStorage {
+             // Spigot Start
+             boolean usingWrongFile = false;
+             boolean normalFile = file.exists() && file.isFile(); // Akarin - ensures normal file
+-            if ( org.bukkit.Bukkit.getOnlineMode() && !normalFile ) // Paper - Check online mode first // Akarin - ensures normal file
++            // if ( org.bukkit.Bukkit.getOnlineMode() && !file.exists() ) // Paper - Check online mode first
++            // Sugarcane start - NBT Cache system
++            CompoundTag playerData;
++            synchronized (this.dataCache){
++                playerData = this.dataCache.get(file);
++            }
++            if (playerData == null && org.bukkit.Bukkit.getOnlineMode() && !normalFile ) // Paper - Check online mode first // Akarin - ensures normal file // Sugarcane
+             {
+                 file = new File( this.playerDir, java.util.UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + player.getScoreboardName() ).getBytes( "UTF-8" ) ).toString() + ".dat");
++                synchronized (this.dataCache){
++                    playerData = this.dataCache.get(file);
++                }
+                 if ( file.exists() )
+                 {
+                     usingWrongFile = true;
+@@ -68,9 +94,15 @@ public class PlayerDataStorage {
+             }
+             // Spigot End
+ 
+-            if (normalFile) { // Akarin - avoid double I/O operation
++            // if (normalFile) { // Akarin - avoid double I/O operation // Sugarcane
++            if (playerData != null) {
++                nbttagcompound = playerData;
++            } else if (normalFile) { // Akarin - avoid double I/O operation
++
++            // if (file.exists() && file.isFile()) {
+                 nbttagcompound = NbtIo.readCompressed(file);
+             }
++            // Sugarcane end
+             // Spigot Start
+             if ( usingWrongFile )
+             {

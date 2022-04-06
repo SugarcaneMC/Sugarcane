@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 23:21:22 +0200
+Subject: [PATCH] Global EULA
+
+
+diff --git a/src/main/java/net/minecraft/server/Eula.java b/src/main/java/net/minecraft/server/Eula.java
+index df44790b1c342d0a6ff794bea86319fa7498cbae..998402d1fe01071b251193cc5a25f2a71853fedf 100644
+--- a/src/main/java/net/minecraft/server/Eula.java
++++ b/src/main/java/net/minecraft/server/Eula.java
+@@ -16,7 +16,7 @@ public class Eula {
+ 
+     public Eula(Path eulaFile) {
+         this.file = eulaFile;
+-        this.agreed = SharedConstants.IS_RUNNING_IN_IDE || this.readFile();
++        this.agreed = SharedConstants.IS_RUNNING_IN_IDE || this.readFile() || org.sugarcanemc.sugarcane.feature.GlobalEula.Accepted();
+     }
+ 
+     private boolean readFile() {

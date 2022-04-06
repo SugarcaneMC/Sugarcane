@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Thu, 7 Apr 2022 00:32:23 +0200
+Subject: [PATCH] Disable spawners on low TPS
+
+
+diff --git a/src/main/java/net/minecraft/world/level/BaseSpawner.java b/src/main/java/net/minecraft/world/level/BaseSpawner.java
+index 6bbf1618e41c81fd2064ffd5d835187a927f24b7..e747daf018d15c1bc491e127a24e98efaa80612f 100644
+--- a/src/main/java/net/minecraft/world/level/BaseSpawner.java
++++ b/src/main/java/net/minecraft/world/level/BaseSpawner.java
+@@ -77,6 +77,8 @@ public abstract class BaseSpawner {
+     }
+ 
+     public void serverTick(ServerLevel world, BlockPos pos) {
++        // Sugarcane - disable mob spawners on TPS treshold
++        if(world.getServer().getAverageTickTime() <= org.sugarcanemc.sugarcane.config.SugarcaneConfig.DisableMobSpawnerBelowTPS) return;
+         // Paper start - Configurable mob spawner tick rate
+         if (spawnDelay > 0 && --tickDelay > 0) return;
+         tickDelay = world.paperConfig.mobSpawnerTickRate;

@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Apr 2022 21:50:41 +0200
+Subject: [PATCH] Rebrand
+
+
+diff --git a/src/main/java/org/bukkit/command/defaults/VersionCommand.java b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
+index b7fa160a305ee89004c11a3d8a01ac3b721f59b6..f34d60b5f93604a0194578f0a641cdc7582c4e79 100644
+--- a/src/main/java/org/bukkit/command/defaults/VersionCommand.java
++++ b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
+@@ -196,6 +196,7 @@ public class VersionCommand extends BukkitCommand {
+     }
+ 
+     private void obtainVersion() {
++        setVersionMessage(getVersionFetcher().getVersionMessage(Bukkit.getVersion())); if(true) return; // Sugarcane
+         String version = Bukkit.getVersion();
+         // Paper start
+         if (version.startsWith("null")) { // running from ide?
