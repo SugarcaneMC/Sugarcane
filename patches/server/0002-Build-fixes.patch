@@ -1,15 +1,17 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: The Arcane Brony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 22:31:05 +0200
+Date: Fri, 8 Apr 2022 03:49:03 +0200
 Subject: [PATCH] Build fixes
 
 fixup! Build fixes
 
+fixup! Build fixes
+
 diff --git a/.gitignore b/.gitignore
-index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21e0033d41 100644
+index bb338269c9e3bef4c274157c490d8b8f8c589937..324393177de111d5740f094e6f23d48e61bba7cb 100644
 --- a/.gitignore
 +++ b/.gitignore
-@@ -40,6 +40,7 @@ dependency-reduced-pom.xml
+@@ -40,7 +40,10 @@ dependency-reduced-pom.xml
  
  /src/main/resources/achievement
  /src/main/resources/lang
@@ -17,8 +19,11 @@ index bb338269c9e3bef4c274157c490d8b8f8c589937..3a90f98739ed7bb62dc2bbf0951a4b21
  
  # vs code
  /.vscode
+ /.factorypath
++
++out/
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 5dc4106efefb5400cf5504b225e1e6e5788d14f3..b965c7eab8ac3e132a8c4269f25f022a7d48b86e 100644
+index 5dc4106efefb5400cf5504b225e1e6e5788d14f3..34fdd32cb8575d01c2a96d3e2231b603f87e1028 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -18,7 +18,7 @@ repositories {
@@ -30,16 +35,17 @@ index 5dc4106efefb5400cf5504b225e1e6e5788d14f3..b965c7eab8ac3e132a8c4269f25f022a
      // Pufferfish start
      implementation("io.papermc.paper:paper-mojangapi:1.18.2-R0.1-SNAPSHOT") {
          exclude("io.papermc.paper", "paper-api")
-@@ -68,6 +68,8 @@ dependencies {
+@@ -68,6 +68,9 @@ dependencies {
      testImplementation("io.github.classgraph:classgraph:4.8.47") // Paper - mob goal test
      testImplementation("junit:junit:4.13.2")
      testImplementation("org.hamcrest:hamcrest-library:1.3")
 +    implementation("org.reflections:reflections:0.10.2") // Sugarcane
 +    implementation("org.apache.commons:commons-rng-core:1.3") // Sugarcane - Utilities
++    compileOnly("com.mojang:authlib:2.3.31") // Sugarcane
  }
  
  // Pufferfish Start
-@@ -89,7 +91,7 @@ tasks.jar {
+@@ -89,7 +92,7 @@ tasks.jar {
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
              "Implementation-Title" to "CraftBukkit",
@@ -48,7 +54,7 @@ index 5dc4106efefb5400cf5504b225e1e6e5788d14f3..b965c7eab8ac3e132a8c4269f25f022a
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
-@@ -100,6 +102,9 @@ tasks.jar {
+@@ -100,6 +103,9 @@ tasks.jar {
          for (tld in setOf("net", "com", "org")) {
              attributes("$tld/bukkit", "Sealed" to true)
          }
@@ -58,7 +64,7 @@ index 5dc4106efefb5400cf5504b225e1e6e5788d14f3..b965c7eab8ac3e132a8c4269f25f022a
      }
  }
  
-@@ -115,6 +120,7 @@ relocation {
+@@ -115,6 +121,7 @@ relocation {
      relocate("org.bukkit.craftbukkit" to "org.bukkit.craftbukkit.v$packageVersion") {
          exclude("org.bukkit.craftbukkit.Main*")
      }

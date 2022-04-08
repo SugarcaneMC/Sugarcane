@@ -1,7 +1,9 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: The Arcane Brony <myrainbowdash949@gmail.com>
-Date: Thu, 7 Apr 2022 00:42:04 +0200
+Date: Fri, 8 Apr 2022 03:48:07 +0200
 Subject: [PATCH] Sugarcane classes
+
+fixup! Sugarcane classes
 
 fixup! Sugarcane classes
 
@@ -51,6 +53,171 @@ index 0000000000000000000000000000000000000000..a1db826de6fd53787c7e3f0d8dd8365d
 +        return super.putAndMoveToFirst(k, v);
 +    }
 +}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/classes/FakePlayer.java b/src/main/java/org/sugarcanemc/sugarcane/classes/FakePlayer.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..72af9404687690c0b41aca83eadff6f26119cbe0
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/classes/FakePlayer.java
+@@ -0,0 +1,70 @@
++package org.sugarcanemc.sugarcane.classes;
++
++import com.mojang.authlib.GameProfile;
++import io.netty.util.concurrent.Future;
++import io.netty.util.concurrent.GenericFutureListener;
++import net.minecraft.network.Connection;
++import net.minecraft.network.ConnectionProtocol;
++import net.minecraft.network.protocol.Packet;
++import net.minecraft.network.protocol.PacketFlow;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.ServerLevel;
++import net.minecraft.server.level.ServerPlayer;
++import net.minecraft.server.network.ServerGamePacketListenerImpl;
++import org.jetbrains.annotations.NotNull;
++import org.jetbrains.annotations.Nullable;
++
++import java.net.SocketAddress;
++import java.util.UUID;
++
++public class FakePlayer extends ServerPlayer {
++    public Connection frawconn;
++    public FakePlayer(MinecraftServer server, ServerLevel world, GameProfile profile) {
++        super(server, world, profile);
++        frawconn = new Connection(PacketFlow.CLIENTBOUND){
++            @Override
++            public boolean isConnected() {
++                return true;
++            }
++
++            @Override
++            public void send(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
++            }
++        };
++        //frawconn.channel = new
++        /*frawconn.address = new SocketAddress() {
++        };
++        frawconn.protocol = ConnectionProtocol.PLAY;
++        frawconn.isPending = false;*/
++        this.connection = new ServerGamePacketListenerImpl(server, frawconn, this){
++            @Override
++            public void send(Packet<?> packet) {
++            }
++
++            @Override
++            public void send(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> listener) {
++            }
++
++            @Override
++            public @NotNull String getClientBrandName() {
++                return "SugarcaneMC Fake Player";
++            }
++        };
++
++        //this.setUUID(UUID.randomUUID());
++        //this.isRealPlayer = false;
++        //this.valid = true;
++    }
++
++    @Override
++    public void tick() {
++        System.out.printf("FakePlayer %s (%s) @ %s/%s/%s: %s HP, %s hunger\n", this.getName().getContents(), this.stringUUID, position().x, position().y, position().z, getHealth(), getFoodData().foodLevel);
++        super.tick();
++    }
++
++    @Override
++    public boolean shouldTick() {
++        return true;
++    }
++
++}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/FakePlayerTestCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/FakePlayerTestCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..0d95e0066bc4b91bdec1ae25a9040099db8ccc8d
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/FakePlayerTestCommand.java
+@@ -0,0 +1,82 @@
++package org.sugarcanemc.sugarcane.command;
++
++import com.mojang.authlib.GameProfile;
++import com.mojang.authlib.yggdrasil.YggdrasilGameProfileRepository;
++import io.netty.util.concurrent.Future;
++import io.netty.util.concurrent.GenericFutureListener;
++import net.minecraft.core.BlockPos;
++import net.minecraft.nbt.CompoundTag;
++import net.minecraft.network.Connection;
++import net.minecraft.network.protocol.Packet;
++import net.minecraft.network.protocol.PacketFlow;
++import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.ServerLevel;
++import net.minecraft.server.level.ServerPlayer;
++import net.minecraft.server.network.ServerGamePacketListenerImpl;
++import net.minecraft.server.network.ServerLoginPacketListenerImpl;
++import org.bukkit.Bukkit;
++import org.bukkit.ChatColor;
++import org.bukkit.Location;
++import org.bukkit.Server;
++import org.bukkit.boss.BossBar;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandSender;
++import org.bukkit.command.ConsoleCommandSender;
++import org.bukkit.entity.EntityType;
++import org.bukkit.entity.Player;
++import org.jetbrains.annotations.NotNull;
++import org.jetbrains.annotations.Nullable;
++import org.sugarcanemc.sugarcane.classes.FakePlayer;
++import org.sugarcanemc.sugarcane.util.Util;
++
++import java.util.*;
++
++public class FakePlayerTestCommand extends Command {
++
++    public FakePlayerTestCommand(String name) {
++        super(name);
++        this.description = "fake player :)";
++        this.usageMessage = "/a";
++        this.setPermission("bukkit.command.a");
++    }
++
++    @Override
++    public List<String> tabComplete(CommandSender sender, String alias, String[] args, Location location) throws IllegalArgumentException {
++        return Collections.emptyList();
++    }
++
++    @Override
++    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
++        if (!testPermission(sender)) return true;
++
++        MinecraftServer server = MinecraftServer.getServer();
++        if(sender instanceof ConsoleCommandSender) {
++            sender.sendMessage("no");
++            return true;
++        }
++        Player p = Bukkit.getPlayer(sender.getName());
++        var ms = MinecraftServer.getServer();
++        var mcp = ms.getPlayerList().getPlayerByName(sender.getName());
++        var mcpsw = mcp.getCommandSenderWorld();
++        var npe = new FakePlayer(ms, (ServerLevel) mcpsw, new GameProfile(UUID.fromString("01a0779a-7f90-430b-908f-d78d99932f47"), "Chris_Chrome"));
++        /*mcpsw.addFreshEntity(npe);
++        npe.joining = false;
++        npe.didPlayerJoinEvent = true;
++        //var nbt = ms.getPlayerList().load(npe);
++        var nbt = ms.getPlayerList().playerIo.load(npe);
++        if(nbt == null) nbt = new CompoundTag();
++        npe.load(nbt);
++        ms.getPlayerList().placeNewPlayer(npe.connection.connection, npe);
++        mcp.connection.send(new ClientboundAddEntityPacket(npe));*/
++        var slpli = new ServerLoginPacketListenerImpl(ms, npe.frawconn);
++        slpli.gameProfile = npe.gameProfile;
++        slpli.handleAcceptedLogin();
++        ms.getPlayerList().placeNewPlayer(npe.frawconn, npe);
++        return true;
++    }
++
++    private static String getColor(double avg) {
++        return ChatColor.COLOR_CHAR + (avg >= 5E+7 ? "c" : avg >= (4E+7) ? "e" : "a") + avg;
++    }
++}
+\ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/NSPTCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/NSPTCommand.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..2c8bb5604748777b0e98252a0589e5f09833e058
@@ -722,12 +889,77 @@ index 0000000000000000000000000000000000000000..03cfab0f80c1646fe9fff696f2c396c3
 +    }
 +}
 \ No newline at end of file
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SudoCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/SudoCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..7bd75d0998c33aca1294bf0fc874e191aff73154
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/command/SudoCommand.java
+@@ -0,0 +1,58 @@
++package org.sugarcanemc.sugarcane.command;
++
++import com.mojang.authlib.GameProfile;
++import net.minecraft.nbt.CompoundTag;
++import net.minecraft.network.Connection;
++import net.minecraft.network.protocol.PacketFlow;
++import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.ServerLevel;
++import net.minecraft.server.network.ServerGamePacketListenerImpl;
++import org.bukkit.Bukkit;
++import org.bukkit.ChatColor;
++import org.bukkit.Location;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandSender;
++import org.bukkit.command.ConsoleCommandSender;
++import org.bukkit.entity.Player;
++import org.sugarcanemc.sugarcane.classes.FakePlayer;
++
++import java.util.Arrays;
++import java.util.Collections;
++import java.util.List;
++import java.util.UUID;
++
++public class SudoCommand extends Command {
++
++    public SudoCommand(String name) {
++        super(name);
++        this.description = "sudo :)";
++        this.usageMessage = "/a";
++        this.setPermission("sudo.command.sudo");
++    }
++
++    @Override
++    public List<String> tabComplete(CommandSender sender, String alias, String[] args, Location location) throws IllegalArgumentException {
++        return Collections.emptyList();
++    }
++
++    @Override
++    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
++        if (!testPermission(sender)) return true;
++
++        MinecraftServer server = MinecraftServer.getServer();
++        if(sender instanceof ConsoleCommandSender) {
++            sender.sendMessage("no");
++            return true;
++        }
++        Player p = Bukkit.getPlayer(args[0]);
++        final String[] res = {""};
++        Arrays.stream(args).skip(1).forEach(x-> res[0] +=x + " ");
++        sender.sendMessage("Executing command: " + res[0]);
++        return p.performCommand(res[0]);
++    }
++
++    private static String getColor(double avg) {
++        return ChatColor.COLOR_CHAR + (avg >= 5E+7 ? "c" : avg >= (4E+7) ? "e" : "a") + avg;
++    }
++}
+\ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..5c1a126d4f0a6cf4ec7848ed95ffc576b1ae9ba6
+index 0000000000000000000000000000000000000000..023d865c56b5b356c1cff0e0d3e7dd8fecb8fae2
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
-@@ -0,0 +1,26 @@
+@@ -0,0 +1,28 @@
 +package org.sugarcanemc.sugarcane.command;
 +
 +import java.util.Map;
@@ -745,6 +977,8 @@ index 0000000000000000000000000000000000000000..5c1a126d4f0a6cf4ec7848ed95ffc576
 +        commands = new HashMap<>();
 +        commands.put("nspt", new NSPTCommand("nspt"));
 +        commands.put("stats", new StatsCommand("stats"));
++        commands.put("fp", new FakePlayerTestCommand("fp"));
++        commands.put("sudo", new SudoCommand("sudo"));
 +        if (commands != null)
 +            for (var command : commands.entrySet()) {
 +                MinecraftServer.getServer().server.getCommandMap().register(command.getKey(), "Sugarcane", command.getValue());
@@ -756,10 +990,10 @@ index 0000000000000000000000000000000000000000..5c1a126d4f0a6cf4ec7848ed95ffc576
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..a40c8138fd76ae0777ab693feb1bbadd5d1b3449
+index 0000000000000000000000000000000000000000..0b681c63e79f117f7ac74d353162a89f262585f6
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/DynamicConfig.java
-@@ -0,0 +1,95 @@
+@@ -0,0 +1,96 @@
 +package org.sugarcanemc.sugarcane.config;
 +
 +import com.google.common.base.Throwables;
@@ -841,6 +1075,7 @@ index 0000000000000000000000000000000000000000..a40c8138fd76ae0777ab693feb1bbadd
 +    }
 +
 +    public int getInt(String path, int def) {
++        if(path == null || path.length()<1 || path.endsWith(".")) return def;
 +        config.addDefault(path, def);
 +        return config.getInt(path, config.getInt(path));
 +    }
@@ -857,10 +1092,10 @@ index 0000000000000000000000000000000000000000..a40c8138fd76ae0777ab693feb1bbadd
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..105da0aee3662b55f67d07145f3ce2b1ea6d62d0
+index 0000000000000000000000000000000000000000..b001fd863748852daf8e3fcc060ace023becdc2c
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
-@@ -0,0 +1,36 @@
+@@ -0,0 +1,40 @@
 +package org.sugarcanemc.sugarcane.config;
 +
 +import java.util.HashMap;
@@ -870,7 +1105,11 @@ index 0000000000000000000000000000000000000000..105da0aee3662b55f67d07145f3ce2b1
 +    public static int CurrentTPS = 20;
 +    private static HashMap<Class<?>, Integer> Thresholds = new HashMap<>();
 +    public static int getTickThreshold(Class<?> type){
-+        if(MobTPSThresholds.Thresholds.containsKey(type)){
++        if(type.getSimpleName().equals("")) {
++            System.out.printf("Unknown entity type: %s:%s!\n", type.getName(), type.getSimpleName());
++            return 0;
++        }
++        else if(MobTPSThresholds.Thresholds.containsKey(type)){
 +            return MobTPSThresholds.Thresholds.get(type);
 +        }
 +        else {
