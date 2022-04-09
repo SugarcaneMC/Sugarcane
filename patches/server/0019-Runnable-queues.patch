@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Sat, 9 Apr 2022 18:43:09 +0200
+Subject: [PATCH] Runnable queues
+
+
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index beead8c96d7e8cbb7a24dacb18070bbf08b4cdbb..4c714a7a00321a3166c2ee92cff2af4402b25b93 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -1529,6 +1529,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             this.isSaving = false;
+         }
+         this.profiler.pop();
++        this.profiler.push("sugarcane.tickRunnableQueues");
++        org.sugarcanemc.sugarcane.util.RunnableQueueRunner.RunServerTickQueues();
++        this.profiler.pop();
+         // Paper end
+         io.papermc.paper.util.CachedLists.reset(); // Paper
+         // Paper start - move executeAll() into full server tick timing
