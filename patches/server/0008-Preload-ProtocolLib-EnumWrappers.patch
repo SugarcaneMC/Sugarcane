@@ -5,15 +5,15 @@ Subject: [PATCH] Preload ProtocolLib EnumWrappers
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 14940973308dd43dd7f5c26ac7ed43a39ffaa8d3..5330f171fc77bbcf14b8563323e4c8550ae8a13b 100644
+index 59c4dffe2adcd0f7112f0c46fc7d04416b2b6d24..f10aadfd775d73df0863b6d5e324732ff4dcec0d 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1195,7 +1195,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
-                 String doneTime = String.format(java.util.Locale.ROOT, "%.3fs", (double) (Util.getNanos() - serverStartTime) / 1.0E9D);
-                 LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
-                 // Paper end
+@@ -1157,7 +1157,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+             String doneTime = String.format(java.util.Locale.ROOT, "%.3fs", (double) (Util.getNanos() - serverStartTime) / 1.0E9D);
+             LOGGER.info("Done ({})! For help, type \"help\"", doneTime);
+             // Paper end
 -
 +                if (org.sugarcanemc.sugarcane.config.SugarcaneConfig.fixProtocolLib) org.sugarcanemc.sugarcane.util.SugarcanePreloadProtocolLib.run(); // Sugarcane - Preload ProtocolLib's Enum Wrappers
-                 org.spigotmc.WatchdogThread.tick(); // Paper
-                 org.spigotmc.WatchdogThread.hasStarted = true; // Paper
-                 Arrays.fill( recentTps, 20 );
+             org.spigotmc.WatchdogThread.tick(); // Paper
+             org.spigotmc.WatchdogThread.hasStarted = true; // Paper
+             Arrays.fill( recentTps, 20 );

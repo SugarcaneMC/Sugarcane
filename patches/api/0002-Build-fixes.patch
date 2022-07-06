@@ -5,7 +5,7 @@ Subject: [PATCH] Build fixes
 
 
 diff --git a/build.gradle.kts b/build.gradle.kts
-index 9fb982d7f956a2629a2973c1f53b1df8357b4e34..00443c328fdb6601c0a86ed40c49b2ead0de91dd 100644
+index b950096a71ba6a3b059cb5385ae39e5f7f2728d8..e38195cfd6384be955f8468a8f1bf5fe94ec4b49 100644
 --- a/build.gradle.kts
 +++ b/build.gradle.kts
 @@ -1,6 +1,7 @@
@@ -16,7 +16,7 @@ index 9fb982d7f956a2629a2973c1f53b1df8357b4e34..00443c328fdb6601c0a86ed40c49b2ea
  }
  
  java {
-@@ -29,9 +30,12 @@ dependencies {
+@@ -28,9 +29,12 @@ dependencies {
      api("net.md-5:bungeecord-chat:1.16-R0.4-deprecated+build.6") // Paper
      api("org.yaml:snakeyaml:1.30")
      // Paper start
@@ -31,7 +31,7 @@ index 9fb982d7f956a2629a2973c1f53b1df8357b4e34..00443c328fdb6601c0a86ed40c49b2ea
      api("it.unimi.dsi:fastutil:8.5.6")
      apiAndDocs(platform("net.kyori:adventure-bom:$adventureVersion"))
      apiAndDocs("net.kyori:adventure-api")
-@@ -81,6 +85,7 @@ val generateApiVersioningFile by tasks.registering {
+@@ -82,6 +86,7 @@ val generateApiVersioningFile by tasks.registering {
      doLast {
          pomProps.get().asFile.writeText("version=$projectVersion")
      }
@@ -39,7 +39,7 @@ index 9fb982d7f956a2629a2973c1f53b1df8357b4e34..00443c328fdb6601c0a86ed40c49b2ea
  }
  
  // Pufferfish Start
-@@ -101,6 +106,10 @@ tasks.jar {
+@@ -102,6 +107,10 @@ tasks.jar {
      }
  }
  

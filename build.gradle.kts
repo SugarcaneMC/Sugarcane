@@ -2,7 +2,7 @@ plugins {
     java
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2" apply false
-    id("io.papermc.paperweight.patcher") version "1.3.4"
+    id("io.papermc.paperweight.patcher") version "1.3.8"
 }
 
 repositories {
@@ -27,6 +27,8 @@ allprojects {
         options.isIncremental = true
         options.encoding = Charsets.UTF_8.name()
         options.release.set(17)
+        if(tasks.findByPath("generateApiVersioningFile") != null)
+            finalizedBy("generateApiVersioningFile")
     }
 
     tasks.withType<Javadoc>().configureEach {

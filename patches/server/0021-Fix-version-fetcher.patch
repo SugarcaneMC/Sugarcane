@@ -1,0 +1,76 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: TheArcaneBrony <myrainbowdash949@gmail.com>
+Date: Wed, 6 Jul 2022 18:37:09 +0200
+Subject: [PATCH] Fix version fetcher
+
+
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index f13ad07b8fdfd797833443449ed8f0d7d4cd09cd..4c02c0cb65a5868c48e842d319f9d6c6e374cce5 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -6,9 +6,11 @@ import java.util.Properties;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ import org.bukkit.Bukkit;
++import org.sugarcanemc.sugarcane.util.versioning.SugarcaneVersionFetcher;
+ 
+ public final class Versioning {
+     public static String getBukkitVersion() {
++        if(true) return SugarcaneVersionFetcher.getBukkitVersion();
+         String result = "Unknown-Version";
+ 
+         InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.sugarcanemc.sugarcane/sugarcane-api/pom.properties"); // Pufferfish // Purpur // Sugarcane
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/versioning/MCVersionInfo.java b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/MCVersionInfo.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..44c147093ee506ce806f31c5286faa2eca9d18d1
+--- /dev/null
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/MCVersionInfo.java
+@@ -0,0 +1,24 @@
++package org.sugarcanemc.sugarcane.util.versioning;
++
++import java.util.Date;
++
++public class MCVersionInfo {
++    public String id;
++    public String name;
++    public String release_target;
++    public int world_version;
++    public String series_id;
++    public int protocol_version;
++    public PackVersion pack_version;
++    public Date build_time;
++    public String java_component;
++    public int java_version;
++    public boolean stable;
++}
++
++class PackVersion{
++    public int resource;
++    public int data;
++}
++
++
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/util/versioning/SugarcaneVersionFetcher.java b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/SugarcaneVersionFetcher.java
+index 39e7ec4753c72f9d46fa78edfbf4ce5f6c7fdb28..c3da4230b838365e4d2af5cd280da88bcba08b15 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/util/versioning/SugarcaneVersionFetcher.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/util/versioning/SugarcaneVersionFetcher.java
+@@ -17,6 +17,8 @@ import java.io.*;
+ import java.net.HttpURLConnection;
+ import java.net.URL;
+ import java.net.URLEncoder;
++
++import org.bukkit.Bukkit;
+ import org.sugarcanemc.sugarcane.util.versioning.BranchReader;
+ 
+ public class SugarcaneVersionFetcher implements VersionFetcher {
+@@ -138,4 +140,10 @@ public class SugarcaneVersionFetcher implements VersionFetcher {
+ 
+         return org.bukkit.ChatColor.parseMM("<grey>Previous: %s", oldVersion); // Purpur
+     }
++
++    public static String getBukkitVersion(){
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("version.json");
++        var versionInfo = new Gson().fromJson(new InputStreamReader(stream), MCVersionInfo.class);
++        return String.format("%s-R1", versionInfo.id);
++    }
+ }

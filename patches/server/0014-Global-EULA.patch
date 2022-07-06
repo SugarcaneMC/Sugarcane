@@ -5,7 +5,7 @@ Subject: [PATCH] Global EULA
 
 
 diff --git a/src/main/java/net/minecraft/server/Eula.java b/src/main/java/net/minecraft/server/Eula.java
-index df44790b1c342d0a6ff794bea86319fa7498cbae..998402d1fe01071b251193cc5a25f2a71853fedf 100644
+index 920a0e6540bc8b8ce34dfaf57d58c200013b7b2c..5737004c863cb6949dca923eaf13085018a927a8 100644
 --- a/src/main/java/net/minecraft/server/Eula.java
 +++ b/src/main/java/net/minecraft/server/Eula.java
 @@ -16,7 +16,7 @@ public class Eula {

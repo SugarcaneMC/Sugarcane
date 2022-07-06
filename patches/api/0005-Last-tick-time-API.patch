@@ -5,10 +5,10 @@ Subject: [PATCH] Last tick time API
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 6ba3272a10e357de99b75a7a7a63047f34a7fb8d..7b0230615ab24e99c628fa7f82b9108326d4fe81 100644
+index 9b9af189b3865055570ba533b97c92c105cc5a37..11785cf5f0a633e4e5d53470d58818f11bcaec32 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -2290,6 +2290,16 @@ public final class Bukkit {
+@@ -2397,6 +2397,16 @@ public final class Bukkit {
          return server.isStopping();
      }
  
@@ -26,10 +26,10 @@ index 6ba3272a10e357de99b75a7a7a63047f34a7fb8d..7b0230615ab24e99c628fa7f82b91083
       * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager
       *
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 3fd5cdf1391c49567d923de882e96a63b7022e02..68bd90e51914a642b5864963ec11c19b3a8998cc 100644
+index 1c8a9a4ea4da15457eb85907464a25a28833fbc6..69ff64f8e59336f9761a56951c1483938b968f74 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2009,6 +2009,27 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2101,6 +2101,27 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      boolean isStopping();
  

@@ -1,0 +1,28 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Sun, 26 Jun 2022 19:05:37 +0200
+Subject: [PATCH] Ignore chat before join
+
+fixup! Ignore chat before join
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 3bb51f34be4341c991487a78d8793f074ffdcba4..923f376f288b04eb3f29177ebda2d5bbe3705bb4 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2192,6 +2192,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+             this.server.scheduleOnMain(() -> { // Paper - push to main for event firing
+             this.disconnect(Component.translatable("multiplayer.disconnect.illegal_characters"), org.bukkit.event.player.PlayerKickEvent.Cause.ILLEGAL_CHARACTERS); // Paper - add cause
+             }); // Paper - push to main for event firing
++        } else if (!player.didPlayerJoinEvent) { return; // EMC - do not handle chat messages before they joined
+         } else {
+             if (this.tryHandleChat(packet.getMessage(), packet.getTimeStamp())) {
+                 // CraftBukkit start
+@@ -2292,6 +2293,8 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+ 
+             this.send(new ClientboundSystemChatPacket(Component.translatable("chat.disabled.options").withStyle(ChatFormatting.RED), i));
+             return false;
++            this.send(new ClientboundChatPacket((new TranslatableComponent("chat.disabled.options")).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID));
++        } else if (!player.didPlayerJoinEvent) { return; // EMC - do not handle chat messages before they joined
+         } else {
+             this.player.resetLastActionTime();
+             return true;

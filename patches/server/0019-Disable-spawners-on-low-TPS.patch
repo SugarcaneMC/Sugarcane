@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Sun, 26 Jun 2022 19:51:41 +0200
+Subject: [PATCH] Disable spawners on low TPS
+
+fixup! Disable spawners on low TPS
+
+diff --git a/src/main/java/net/minecraft/world/level/BaseSpawner.java b/src/main/java/net/minecraft/world/level/BaseSpawner.java
+index deffa277272c34adb39d7c3e69e91502780a090e..3affcd7311d3992d1ee72714008e0bd4cc67937c 100644
+--- a/src/main/java/net/minecraft/world/level/BaseSpawner.java
++++ b/src/main/java/net/minecraft/world/level/BaseSpawner.java
+@@ -78,6 +78,8 @@ public abstract class BaseSpawner {
+     }
+ 
+     public void serverTick(ServerLevel world, BlockPos pos) {
++        // Sugarcane - disable mob spawners on TPS treshold
++        if(world.getServer().getAverageTickTime() <= org.sugarcanemc.sugarcane.config.SugarcaneConfig.DisableMobSpawnerBelowTPS) return;
+         // Paper start - Configurable mob spawner tick rate
+         if (spawnDelay > 0 && --tickDelay > 0) return;
+         tickDelay = world.paperConfig().tickRates.mobSpawner;
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
+index 105da0aee3662b55f67d07145f3ce2b1ea6d62d0..f5687e1eab7981b26d354c119887dab30664ffff 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/config/MobTPSThresholds.java
+@@ -11,13 +11,18 @@ public class MobTPSThresholds {
+             return MobTPSThresholds.Thresholds.get(type);
+         }
+         else {
+-            System.out.printf("Could not get TPS threshold for %s, saving default!\n", type.getSimpleName());
+             var val = Config.getInt("tps-tresholds.tick."+type.getSimpleName(), -1);
+-            if(val == -1) val = getDefault(type);
+-            if(val != -1) Config.set("tps-tresholds.tick."+type.getSimpleName(), val);
+-            MobTPSThresholds.Thresholds.put(type, val);
+-            Config.Save();
+-            return val;
++            if(val != -1) {
++                MobTPSThresholds.Thresholds.put(type, val);
++                return val;
++            } else {
++                System.out.printf("Could not get TPS threshold for %s, saving default!\n", type.getSimpleName());
++                if(val == -1) val = getDefault(type);
++                if(val == -1) val = 0;
++                Config.set("tps-tresholds.tick."+type.getSimpleName(), val);
++                Config.Save();
++                return val;
++            }
+         }
+     }
+ 

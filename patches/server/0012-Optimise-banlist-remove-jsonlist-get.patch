@@ -5,31 +5,39 @@ Subject: [PATCH] Optimise banlist remove jsonlist get
 
 
 diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
-index 174c2b1ebff5bdc68441881a1a44c3bf9a6cbee6..033b046d7746a68d263861642fe5194d9ecc483b 100644
+index 9985a416821f691eac196e7293d4ae534a16f415..bacc071999da056fe5e6f344c23b80e337241cb8 100644
 --- a/src/main/java/net/minecraft/server/players/PlayerList.java
 +++ b/src/main/java/net/minecraft/server/players/PlayerList.java
-@@ -757,14 +757,20 @@ public abstract class PlayerList {
+@@ -760,16 +760,24 @@ public abstract class PlayerList {
          if (getBans().isBanned(gameprofile) && (gameprofilebanentry = getBans().get(gameprofile)) != null) {
              // Paper end
  
+-            ichatmutablecomponent = Component.translatable("multiplayer.disconnect.banned.reason", gameprofilebanentry.getReason());
 +            if (!gameprofilebanentry.hasExpired()) { // Sugarcane - Stop wasting resources on JsonList#get
-             chatmessage = new TranslatableComponent("multiplayer.disconnect.banned.reason", new Object[]{gameprofilebanentry.getReason()});
++            chatmessage = new TranslatableComponent("multiplayer.disconnect.banned.reason", new Object[]{gameprofilebanentry.getReason()});
              if (gameprofilebanentry.getExpires() != null) {
-                 chatmessage.append((Component) (new TranslatableComponent("multiplayer.disconnect.banned.expiration", new Object[]{PlayerList.BAN_DATE_FORMAT.format(gameprofilebanentry.getExpires())})));
+                 ichatmutablecomponent.append((Component) Component.translatable("multiplayer.disconnect.banned.expiration", PlayerList.BAN_DATE_FORMAT.format(gameprofilebanentry.getExpires())));
              }
  
              // return chatmessage;
+-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, PaperAdventure.asAdventure(ichatmutablecomponent)); // Paper - Adventure
+-        } else if (!this.isWhiteListed(gameprofile, event)) { // Paper
+-            //ichatmutablecomponent = Component.translatable("multiplayer.disconnect.not_whitelisted"); // Paper
+-            //event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacySection().deserialize(org.spigotmc.SpigotConfig.whitelistMessage)); // Spigot // Paper - Adventure - moved to isWhitelisted
++
 +                // Sugarcane start - Stop wasting resources on JsonList#get
-             event.disallow(PlayerLoginEvent.Result.KICK_BANNED, PaperAdventure.asAdventure(chatmessage)); // Paper - Adventure
--        } else if (!this.isWhitelisted(gameprofile, event)) { // Paper
++            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, PaperAdventure.asAdventure(chatmessage)); // Paper - Adventure
 +            } else {
 +                getBans().remove(gameprofile);
 +            }
 +            // Sugarcane end
 +            } else if (!this.isWhitelisted(gameprofile, event)) { // Paper
-             //chatmessage = new ChatMessage("multiplayer.disconnect.not_whitelisted"); // Paper
-             //event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, org.spigotmc.SpigotConfig.whitelistMessage); // Spigot // Paper - moved to isWhitelisted
++            //chatmessage = new ChatMessage("multiplayer.disconnect.not_whitelisted"); // Paper
++            //event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, org.spigotmc.SpigotConfig.whitelistMessage); // Spigot // Paper - moved to isWhitelisted
++
          } else if (this.getIpBans().isBanned(socketaddress) && getIpBans().get(socketaddress) != null && !this.getIpBans().get(socketaddress).hasExpired()) { // Paper - fix NPE with temp ip bans
+             IpBanListEntry ipbanentry = this.ipBans.get(socketaddress);
+ 
 diff --git a/src/main/java/net/minecraft/server/players/StoredUserList.java b/src/main/java/net/minecraft/server/players/StoredUserList.java
 index 4fd709a550bf8da1e996894a1ca6b91206c31e9e..a6cf967e24aee17b9abbab700180b778d63822b6 100644
 --- a/src/main/java/net/minecraft/server/players/StoredUserList.java

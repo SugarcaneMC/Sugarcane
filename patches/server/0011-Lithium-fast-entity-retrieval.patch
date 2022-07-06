@@ -1,35 +1,37 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: TheArcaneBrony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 23:11:14 +0200
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Sun, 26 Jun 2022 19:02:15 +0200
 Subject: [PATCH] Lithium fast entity retrieval
 
+fixup! Lithium fast entity retrieval
 
 diff --git a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java b/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
-index 74210dc2eef63da7360b1f833bb59b278419fb2b..917fedb358f0cf5809162fe498f4cbe8f1e761aa 100644
+index f54ca6383298848b2ee7108c41fcea593f924881..7a6a8632cc4dc0390e5cc39676074d080532011e 100644
 --- a/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
 +++ b/src/main/java/net/minecraft/world/level/entity/EntitySectionStorage.java
-@@ -33,33 +33,51 @@ public class EntitySectionStorage<T extends EntityAccess> {
+@@ -33,34 +33,51 @@ public class EntitySectionStorage<T extends EntityAccess> {
      }
  
      public void forEachAccessibleNonEmptySection(AABB box, Consumer<EntitySection<T>> action) {
--        int i = SectionPos.posToSectionCoord(box.minX - 2.0D);
--        int j = SectionPos.posToSectionCoord(box.minY - 2.0D);
--        int k = SectionPos.posToSectionCoord(box.minZ - 2.0D);
--        int l = SectionPos.posToSectionCoord(box.maxX + 2.0D);
--        int m = SectionPos.posToSectionCoord(box.maxY + 2.0D);
--        int n = SectionPos.posToSectionCoord(box.maxZ + 2.0D);
+-        int i = 2;
+-        int j = SectionPos.posToSectionCoord(box.minX - 2.0D);
+-        int k = SectionPos.posToSectionCoord(box.minY - 4.0D);
+-        int l = SectionPos.posToSectionCoord(box.minZ - 2.0D);
+-        int m = SectionPos.posToSectionCoord(box.maxX + 2.0D);
+-        int n = SectionPos.posToSectionCoord(box.maxY + 0.0D);
+-        int o = SectionPos.posToSectionCoord(box.maxZ + 2.0D);
 -
--        for(int o = i; o <= l; ++o) {
--            long p = SectionPos.asLong(o, 0, 0);
--            long q = SectionPos.asLong(o, -1, -1);
--            LongIterator longIterator = this.sectionIds.subSet(p, q + 1L).iterator();
+-        for(int p = j; p <= m; ++p) {
+-            long q = SectionPos.asLong(p, 0, 0);
+-            long r = SectionPos.asLong(p, -1, -1);
+-            LongIterator longIterator = this.sectionIds.subSet(q, r + 1L).iterator();
 -
 -            while(longIterator.hasNext()) {
--                long r = longIterator.nextLong();
--                int s = SectionPos.y(r);
--                int t = SectionPos.z(r);
--                if (s >= j && s <= m && t >= k && t <= n) {
--                    EntitySection<T> entitySection = this.sections.get(r);
+-                long s = longIterator.nextLong();
+-                int t = SectionPos.y(s);
+-                int u = SectionPos.z(s);
+-                if (t >= k && t <= n && u >= l && u <= o) {
+-                    EntitySection<T> entitySection = this.sections.get(s);
 -                    if (entitySection != null && !entitySection.isEmpty() && entitySection.getStatus().isAccessible()) {
 -                        action.accept(entitySection);
 -                    }

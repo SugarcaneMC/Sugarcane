@@ -1,27 +1,30 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: TheArcaneBrony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 23:58:56 +0200
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Sun, 26 Jun 2022 19:04:45 +0200
 Subject: [PATCH] Item merge behavior
 
+fixup! Item merge behavior
+
+fixup! Item merge behavior
 
 diff --git a/src/main/java/net/minecraft/network/FriendlyByteBuf.java b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
-index 896a4237f871d46cf39b0721e909c2cc3b5fc728..66de8a0745502ce97d0aed5ae87cdda0b72e4ab2 100644
+index 35377576ed182814051c11f902e02e8e921e84e3..3f8c905757a3a10c12172c1b8eebd99f76897d11 100644
 --- a/src/main/java/net/minecraft/network/FriendlyByteBuf.java
 +++ b/src/main/java/net/minecraft/network/FriendlyByteBuf.java
-@@ -490,7 +490,7 @@ public class FriendlyByteBuf extends ByteBuf {
+@@ -573,7 +573,7 @@ public class FriendlyByteBuf extends ByteBuf {
              Item item = stack.getItem();
  
-             this.writeVarInt(Item.getId(item));
+             this.writeId(Registry.ITEM, item);
 -            this.writeByte(stack.getCount());
-+            this.writeByte(Math.min(stack.getCount(),127)); // Sugarcane - limit stack size to 127
++            this.writeByte(Math.min(stack.getCount(), 127));
              CompoundTag nbttagcompound = null;
  
              if (item.canBeDepleted() || item.shouldOverrideMultiplayerNbt()) {
 diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-index 1c5aa4e7b06c2b2ce32ea63140154db3c5c58231..6a754f8ed887a26b79e77761d932c14df7fa2372 100644
+index 99176a781a5e375c71197546222e2b6f85544f47..5e0316329fff6c4729eac14ed7358ec285788b2f 100644
 --- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
 +++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
-@@ -109,6 +109,7 @@ public class ItemEntity extends Entity {
+@@ -120,6 +120,7 @@ public class ItemEntity extends Entity {
              this.discard();
          } else {
              super.tick();
@@ -29,25 +32,28 @@ index 1c5aa4e7b06c2b2ce32ea63140154db3c5c58231..6a754f8ed887a26b79e77761d932c14d
              // CraftBukkit start - Use wall time for pickup and despawn timers
              int elapsedTicks = MinecraftServer.currentTick - this.lastTick;
              if (this.pickupDelay != 32767) this.pickupDelay -= elapsedTicks;
-@@ -232,7 +233,7 @@ public class ItemEntity extends Entity {
+@@ -241,6 +242,10 @@ public class ItemEntity extends Entity {
+ 
+     private void mergeWithNeighbours() {
          if (this.isMergable()) {
-             // Paper start - avoid item merge if stack size above max stack size
-             ItemStack stack = getItem();
--            if (stack.getCount() >= stack.getMaxStackSize()) return;
++            // Paper start - avoid item merge if stack size above max stack size
++            ItemStack stack = getItem();
 +            if (stack.getCount() >= stack.getMaxStackSize() && org.sugarcanemc.sugarcane.config.SugarcaneConfig.ItemMergeBehavior != 0) return; // Sugarcane - add exception for infinite stacking mode
-             // Paper end
++            // Paper end
              // Spigot start
              double radius = level.spigotConfig.itemMerge;
-@@ -273,7 +274,7 @@ public class ItemEntity extends Entity {
+             List<ItemEntity> list = this.level.getEntitiesOfClass(ItemEntity.class, this.getBoundingBox().inflate(radius, radius - 0.5D, radius), (entityitem) -> {
+@@ -279,8 +284,7 @@ public class ItemEntity extends Entity {
+ 
      private boolean isMergable() {
          ItemStack itemstack = this.getItem();
- 
--        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize(); // Paper - respect despawn rate in pickup check.
+-
+-        return this.isAlive() && this.pickupDelay != 32767 && this.age != -32768 && this.age < this.despawnRate && itemstack.getCount() < itemstack.getMaxStackSize(); // Paper - respect despawn rate in pickup check.
 +        return org.sugarcanemc.sugarcane.feature.ItemMergeBehavior.IsItemEntityMergable(this, itemstack);
      }
  
      private void tryToMerge(ItemEntity other) {
-@@ -291,11 +292,11 @@ public class ItemEntity extends Entity {
+@@ -298,11 +302,11 @@ public class ItemEntity extends Entity {
      }
  
      public static boolean areMergable(ItemStack stack1, ItemStack stack2) {
@@ -61,7 +67,7 @@ index 1c5aa4e7b06c2b2ce32ea63140154db3c5c58231..6a754f8ed887a26b79e77761d932c14d
          ItemStack itemstack2 = stack1.copy();
  
          itemstack2.grow(j);
-@@ -304,7 +305,7 @@ public class ItemEntity extends Entity {
+@@ -311,7 +315,7 @@ public class ItemEntity extends Entity {
      }
  
      private static void merge(ItemEntity targetEntity, ItemStack stack1, ItemStack stack2) {
@@ -70,7 +76,7 @@ index 1c5aa4e7b06c2b2ce32ea63140154db3c5c58231..6a754f8ed887a26b79e77761d932c14d
  
          if (!itemstack2.isEmpty()) targetEntity.setItem(itemstack2); // CraftBukkit - don't set empty stacks
      }
-@@ -376,6 +377,7 @@ public class ItemEntity extends Entity {
+@@ -383,6 +387,7 @@ public class ItemEntity extends Entity {
          }
  
          if (!this.getItem().isEmpty()) {
@@ -78,7 +84,7 @@ index 1c5aa4e7b06c2b2ce32ea63140154db3c5c58231..6a754f8ed887a26b79e77761d932c14d
              nbt.put("Item", this.getItem().save(new CompoundTag()));
          }
  
-@@ -408,6 +410,7 @@ public class ItemEntity extends Entity {
+@@ -415,6 +420,7 @@ public class ItemEntity extends Entity {
  
      @Override
      public void playerTouch(Player player) {

@@ -5,10 +5,10 @@ Subject: [PATCH] NBT cache
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 5330f171fc77bbcf14b8563323e4c8550ae8a13b..beead8c96d7e8cbb7a24dacb18070bbf08b4cdbb 100644
+index f10aadfd775d73df0863b6d5e324732ff4dcec0d..cc05a6527e445c20545aae5bb8f0d31c94adda2f 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1059,7 +1059,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1017,7 +1017,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
          }
          // Spigot start
          MCUtil.asyncExecutor.shutdown(); // Paper

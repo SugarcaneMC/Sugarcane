@@ -5,10 +5,10 @@ Subject: [PATCH] Sugarcane config
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index a272285d1389eed7ab07b253a48f1defabacb187..3fd5cdf1391c49567d923de882e96a63b7022e02 100644
+index d73b7d72d00fa0edd6542226348af14c5203cf8d..1c8a9a4ea4da15457eb85907464a25a28833fbc6 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1892,6 +1892,11 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1943,6 +1943,11 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
              throw new UnsupportedOperationException("Not supported yet.");
          }
  

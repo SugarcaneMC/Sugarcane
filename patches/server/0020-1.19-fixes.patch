@@ -1,0 +1,513 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Sun, 26 Jun 2022 19:37:15 +0200
+Subject: [PATCH] 1.19 fixes
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperConfig.java b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+index 1b29088842d7b7a1873ae743c17894f6ab6b222e..054f560e6b775da64f4f4dc0addabe6a828e1bea 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperConfig.java
+@@ -1,5 +1,34 @@
+ package com.destroystokyo.paper;
+ 
++import co.aikar.timings.Timings;
++import co.aikar.timings.TimingsManager;
++import co.technove.flare.libs.com.google.common.base.Strings;
++import com.destroystokyo.paper.io.chunk.ChunkTaskManager;
++import com.google.common.base.Throwables;
++import com.google.common.collect.Lists;
++import net.minecraft.server.MinecraftServer;
++import org.bukkit.Bukkit;
++import org.bukkit.ChatColor;
++import org.bukkit.command.Command;
++import org.bukkit.configuration.ConfigurationSection;
++import org.bukkit.configuration.InvalidConfigurationException;
++import org.bukkit.configuration.file.YamlConfiguration;
++import org.spigotmc.SpigotConfig;
++import org.spigotmc.WatchdogThread;
++
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.InvocationTargetException;
++import java.lang.reflect.Method;
++import java.lang.reflect.Modifier;
++import java.nio.charset.StandardCharsets;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.concurrent.TimeUnit;
++import java.util.logging.Level;
++import java.util.regex.Pattern;
++
+ /**
+  * @deprecated kept as a means to identify Paper in older plugins/PaperLib
+  */
+diff --git a/src/main/java/net/minecraft/core/Direction.java b/src/main/java/net/minecraft/core/Direction.java
+index a6cc2a1506364953817bfc9b1698e04975013aa9..01fcc03f035572e07a5b3bb97129fe2d00891580 100644
+--- a/src/main/java/net/minecraft/core/Direction.java
++++ b/src/main/java/net/minecraft/core/Direction.java
+@@ -466,7 +466,15 @@ public enum Direction implements StringRepresentable {
+      * @reason Do not allocate an excessive number of Direction arrays
+      * @author JellySquid
+      */
+-    public static Direction getRandom(Random random) {
++    public static Direction getRandom(java.util.Random random) {
++        return VALUES[random.nextInt(VALUES.length)];
++    }
++    /**
++     *
++     * @reason Do not allocate an excessive number of Direction arrays
++     * @author JellySquid
++     */
++    public static Direction getRandom(RandomSource random) {
+         return VALUES[random.nextInt(VALUES.length)];
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index cad622f2da14b96986997a3ffd8b211b347fd56f..c1cbe2a7829951ac6a206a76bd2afcc6146fcc8c 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2293,8 +2293,7 @@ public class ServerGamePacketListenerImpl implements ServerPlayerConnection, Ser
+ 
+             this.send(new ClientboundSystemChatPacket(Component.translatable("chat.disabled.options").withStyle(ChatFormatting.RED), i));
+             return false;
+-            this.send(new ClientboundChatPacket((new TranslatableComponent("chat.disabled.options")).withStyle(ChatFormatting.RED), ChatType.SYSTEM, Util.NIL_UUID));
+-        } else if (!player.didPlayerJoinEvent) { return; // EMC - do not handle chat messages before they joined
++        } else if (!player.didPlayerJoinEvent) { return false; // EMC - do not handle chat messages before they joined
+         } else {
+             this.player.resetLastActionTime();
+             return true;
+diff --git a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+index 04f04c1bb8d5df665ea0e2876590324fd5f052d9..9b175fee56425069760bdaf21142d2cb7abac8b1 100644
+--- a/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerLoginPacketListenerImpl.java
+@@ -104,7 +104,7 @@ public class ServerLoginPacketListenerImpl implements ServerLoginPacketListener
+         }
+ 
+         if (this.tick++ == 600 && !org.sugarcanemc.sugarcane.config.SugarcaneConfig.UncapTPS) {
+-            this.disconnect(new TranslatableComponent("multiplayer.disconnect.slow_login"));
++            this.disconnect(Component.translatable("multiplayer.disconnect.slow_login"));
+         }
+ 
+     }
+diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
+index bacc071999da056fe5e6f344c23b80e337241cb8..7c2b19c7e4a53ff61100a6e36fbb9eebfe994b1c 100644
+--- a/src/main/java/net/minecraft/server/players/PlayerList.java
++++ b/src/main/java/net/minecraft/server/players/PlayerList.java
+@@ -761,9 +761,9 @@ public abstract class PlayerList {
+             // Paper end
+ 
+             if (!gameprofilebanentry.hasExpired()) { // Sugarcane - Stop wasting resources on JsonList#get
+-            chatmessage = new TranslatableComponent("multiplayer.disconnect.banned.reason", new Object[]{gameprofilebanentry.getReason()});
++            var chatmessage = Component.translatable("multiplayer.disconnect.banned.reason", gameprofilebanentry.getReason());
+             if (gameprofilebanentry.getExpires() != null) {
+-                ichatmutablecomponent.append((Component) Component.translatable("multiplayer.disconnect.banned.expiration", PlayerList.BAN_DATE_FORMAT.format(gameprofilebanentry.getExpires())));
++                chatmessage.append(Component.translatable("multiplayer.disconnect.banned.expiration", PlayerList.BAN_DATE_FORMAT.format(gameprofilebanentry.getExpires())));
+             }
+ 
+             // return chatmessage;
+@@ -774,7 +774,7 @@ public abstract class PlayerList {
+                 getBans().remove(gameprofile);
+             }
+             // Sugarcane end
+-            } else if (!this.isWhitelisted(gameprofile, event)) { // Paper
++            } else if (!this.isWhiteListed(gameprofile, event)) { // Paper
+             //chatmessage = new ChatMessage("multiplayer.disconnect.not_whitelisted"); // Paper
+             //event.disallow(PlayerLoginEvent.Result.KICK_WHITELIST, org.spigotmc.SpigotConfig.whitelistMessage); // Spigot // Paper - moved to isWhitelisted
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+index 5e0316329fff6c4729eac14ed7358ec285788b2f..4daaf10520ff57fc7447cd213cf19496f1d065e6 100644
+--- a/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
++++ b/src/main/java/net/minecraft/world/entity/item/ItemEntity.java
+@@ -54,7 +54,7 @@ public class ItemEntity extends Entity {
+     public final float bobOffs;
+     private int lastTick = MinecraftServer.currentTick - 1; // CraftBukkit
+     public boolean canMobPickup = true; // Paper
+-    private int despawnRate = -1; // Paper
++    public int despawnRate = -1; // Paper
+     // Purpur start
+     public boolean immuneToCactus = false;
+     public boolean immuneToExplosion = false;
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java b/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java
+deleted file mode 100644
+index e4fce9272f923b5118a771c043f8ca2143db64fa..0000000000000000000000000000000000000000
+--- a/src/main/java/org/sugarcanemc/sugarcane/command/SpreadPlayerFCommand.java
++++ /dev/null
+@@ -1,359 +0,0 @@
+-package org.sugarcanemc.sugarcane.command;
+-
+-import com.google.common.collect.Maps;
+-import com.google.common.collect.Sets;
+-import com.mojang.brigadier.CommandDispatcher;
+-import com.mojang.brigadier.arguments.BoolArgumentType;
+-import com.mojang.brigadier.arguments.FloatArgumentType;
+-import com.mojang.brigadier.arguments.IntegerArgumentType;
+-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+-import com.mojang.brigadier.exceptions.Dynamic4CommandExceptionType;
+-
+-import java.util.*;
+-
+-import net.minecraft.commands.CommandSourceStack;
+-import net.minecraft.commands.arguments.EntityArgument;
+-import net.minecraft.commands.arguments.coordinates.Vec2Argument;
+-import net.minecraft.core.BlockPos;
+-import net.minecraft.core.Direction;
+-import net.minecraft.network.chat.TranslatableComponent;
+-import net.minecraft.server.MinecraftServer;
+-import net.minecraft.server.level.ServerLevel;
+-import net.minecraft.util.Mth;
+-import net.minecraft.world.entity.Entity;
+-import net.minecraft.world.entity.player.Player;
+-import net.minecraft.world.level.BlockGetter;
+-import net.minecraft.world.level.block.state.BlockState;
+-import net.minecraft.world.level.material.Material;
+-import net.minecraft.world.phys.Vec2;
+-import net.minecraft.world.scores.Team;
+-import org.bukkit.Bukkit;
+-import org.bukkit.craftbukkit.scheduler.MinecraftInternalPlugin;
+-import org.bukkit.scheduler.BukkitRunnable;
+-
+-public class SpreadPlayerFCommand {
+-    private static final Queue<Entity> queue = new PriorityQueue<Entity>();
+-    private static final int MAX_ITERATION_COUNT = 1000;
+-    private static final Dynamic4CommandExceptionType ERROR_FAILED_TO_SPREAD_TEAMS = new Dynamic4CommandExceptionType((object, object1, object2, object3) -> {
+-        return new TranslatableComponent("commands.spreadplayers.failed.teams", object, object1, object2, object3);
+-    });
+-    private static final Dynamic4CommandExceptionType ERROR_FAILED_TO_SPREAD_ENTITIES = new Dynamic4CommandExceptionType((object, object1, object2, object3) -> {
+-        return new TranslatableComponent("commands.spreadplayers.failed.entities", object, object1, object2, object3);
+-    });
+-    static Random random = new Random();
+-    private static CommandSourceStack lsource;
+-    private static Vec2 lcenter;
+-    private static float lspreadDistance;
+-    private static float lmaxRange;
+-    private static int lmaxY;
+-    private static boolean lrespectTeams;
+-
+-    public SpreadPlayerFCommand() {
+-    }
+-
+-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+-        dispatcher.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) net.minecraft.commands.Commands.literal("spreadplayersf").requires((commandlistenerwrapper) -> {
+-            return commandlistenerwrapper.hasPermission(2);
+-        })).then(net.minecraft.commands.Commands.argument("center", Vec2Argument.vec2()).then(net.minecraft.commands.Commands.argument("spreadDistance", FloatArgumentType.floatArg(0.0F)).then(((RequiredArgumentBuilder) net.minecraft.commands.Commands.argument("maxRange", FloatArgumentType.floatArg(1.0F)).then(net.minecraft.commands.Commands.argument("respectTeams", BoolArgumentType.bool()).then(net.minecraft.commands.Commands.argument("targets", EntityArgument.entities()).executes((commandcontext) -> {
+-            return SpreadPlayerFCommand.spreadPlayers(commandcontext.getSource(), Vec2Argument.getVec2(commandcontext, "center"), FloatArgumentType.getFloat(commandcontext, "spreadDistance"), FloatArgumentType.getFloat(commandcontext, "maxRange"), commandcontext.getSource().getLevel().getMaxBuildHeight(), BoolArgumentType.getBool(commandcontext, "respectTeams"), EntityArgument.getEntities(commandcontext, "targets"));
+-        })))).then(net.minecraft.commands.Commands.literal("under").then(net.minecraft.commands.Commands.argument("maxHeight", IntegerArgumentType.integer(0)).then(net.minecraft.commands.Commands.argument("respectTeams", BoolArgumentType.bool()).then(net.minecraft.commands.Commands.argument("targets", EntityArgument.entities()).executes((commandcontext) -> {
+-            return SpreadPlayerFCommand.spreadPlayers(commandcontext.getSource(), Vec2Argument.getVec2(commandcontext, "center"), FloatArgumentType.getFloat(commandcontext, "spreadDistance"), FloatArgumentType.getFloat(commandcontext, "maxRange"), IntegerArgumentType.getInteger(commandcontext, "maxHeight"), BoolArgumentType.getBool(commandcontext, "respectTeams"), EntityArgument.getEntities(commandcontext, "targets"));
+-        })))))))));
+-        new BukkitRunnable() {
+-            @Override
+-            public void run() {
+-                if (Bukkit.isStopping() || MinecraftServer.getServer().hasStopped()) cancel();
+-                if (!queue.isEmpty()) {
+-                    List<Entity> ents = new ArrayList<>();
+-                    for (int i = 0; i < Math.min(queue.size(), MAX_ITERATION_COUNT); i++) {
+-                        ents.add(queue.remove());
+-                    }
+-                    try {
+-                        runSpreadPlayers(lsource, lcenter, lspreadDistance, lmaxRange, lmaxY, lrespectTeams, ents);
+-                    } catch (CommandSyntaxException e) {
+-                        e.printStackTrace();
+-                    }
+-                }
+-            }
+-        }.runTaskTimerAsynchronously(new MinecraftInternalPlugin(), 0L, 1L);
+-    }
+-
+-    private static int spreadPlayers(CommandSourceStack source, Vec2 center, float spreadDistance, float maxRange, int maxY, boolean respectTeams, Collection<? extends Entity> players) throws CommandSyntaxException {
+-        lsource = source;
+-        lcenter = center;
+-        lspreadDistance = spreadDistance;
+-        lmaxRange = maxRange;
+-        lmaxY = maxY;
+-        lrespectTeams = respectTeams;
+-        queue.addAll(players);
+-        return players.size();
+-    }
+-
+-    private static int runSpreadPlayers(CommandSourceStack source, Vec2 center, float spreadDistance, float maxRange, int maxY, boolean respectTeams, Collection<? extends Entity> players) throws CommandSyntaxException {
+-        double d0 = center.x - maxRange;
+-        double d1 = center.y - maxRange;
+-        double d2 = center.x + maxRange;
+-        double d3 = center.y + maxRange;
+-        SpreadPlayerFCommand.Position[] acommandspreadplayers_a = SpreadPlayerFCommand.createInitialPositions(random, respectTeams ? SpreadPlayerFCommand.getNumberOfTeams(players) : players.size(), d0, d1, d2, d3);
+-
+-        SpreadPlayerFCommand.spreadPositions(center, spreadDistance, source.getLevel(), random, d0, d1, d2, d3, maxY, acommandspreadplayers_a, respectTeams);
+-        double d4 = SpreadPlayerFCommand.setPlayerPositions(players, source.getLevel(), acommandspreadplayers_a, maxY, respectTeams);
+-
+-        source.sendSuccess(new TranslatableComponent("commands.spreadplayers.success." + (respectTeams ? "teams" : "entities"), acommandspreadplayers_a.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d4)), true);
+-        return acommandspreadplayers_a.length;
+-    }
+-
+-    private static int getNumberOfTeams(Collection<? extends Entity> entities) {
+-        Set<Team> set = Sets.newHashSet();
+-        Iterator iterator = entities.iterator();
+-
+-        while (iterator.hasNext()) {
+-            Entity entity = (Entity) iterator.next();
+-
+-            if (entity instanceof Player) {
+-                set.add(entity.getTeam());
+-            } else {
+-                set.add(null); // CraftBukkit - decompile error
+-            }
+-        }
+-
+-        return set.size();
+-    }
+-
+-    private static void spreadPositions(Vec2 center, double spreadDistance, ServerLevel world, Random random, double minX, double minZ, double maxX, double maxZ, int maxY, SpreadPlayerFCommand.Position[] piles, boolean respectTeams) throws CommandSyntaxException {
+-        boolean flag1 = true;
+-        double d5 = 3.4028234663852886E38D;
+-
+-        int j;
+-
+-        for (j = 0; j < 10000 && flag1; ++j) {
+-            flag1 = false;
+-            d5 = 3.4028234663852886E38D;
+-
+-            int k;
+-            SpreadPlayerFCommand.Position commandspreadplayers_a;
+-
+-            for (int l = 0; l < piles.length; ++l) {
+-                SpreadPlayerFCommand.Position commandspreadplayers_a1 = piles[l];
+-
+-                k = 0;
+-                commandspreadplayers_a = new SpreadPlayerFCommand.Position();
+-
+-                for (int i1 = 0; i1 < piles.length; ++i1) {
+-                    if (l != i1) {
+-                        SpreadPlayerFCommand.Position commandspreadplayers_a2 = piles[i1];
+-                        double d6 = commandspreadplayers_a1.dist(commandspreadplayers_a2);
+-
+-                        d5 = Math.min(d6, d5);
+-                        if (d6 < spreadDistance) {
+-                            ++k;
+-                            commandspreadplayers_a.x += commandspreadplayers_a2.x - commandspreadplayers_a1.x;
+-                            commandspreadplayers_a.z += commandspreadplayers_a2.z - commandspreadplayers_a1.z;
+-                        }
+-                    }
+-                }
+-
+-                if (k > 0) {
+-                    commandspreadplayers_a.x /= k;
+-                    commandspreadplayers_a.z /= k;
+-                    double d7 = commandspreadplayers_a.getLength();
+-
+-                    if (d7 > 0.0D) {
+-                        commandspreadplayers_a.normalize();
+-                        commandspreadplayers_a1.moveAway(commandspreadplayers_a);
+-                    } else {
+-                        commandspreadplayers_a1.randomize(random, minX, minZ, maxX, maxZ);
+-                    }
+-
+-                    flag1 = true;
+-                }
+-
+-                if (commandspreadplayers_a1.clamp(minX, minZ, maxX, maxZ)) {
+-                    flag1 = true;
+-                }
+-            }
+-
+-            if (!flag1) {
+-                SpreadPlayerFCommand.Position[] acommandspreadplayers_a1 = piles;
+-                int j1 = piles.length;
+-
+-                for (k = 0; k < j1; ++k) {
+-                    commandspreadplayers_a = acommandspreadplayers_a1[k];
+-                    if (!commandspreadplayers_a.isSafe(world, maxY)) {
+-                        commandspreadplayers_a.randomize(random, minX, minZ, maxX, maxZ);
+-                        flag1 = true;
+-                    }
+-                }
+-            }
+-        }
+-
+-        if (d5 == 3.4028234663852886E38D) {
+-            d5 = 0.0D;
+-        }
+-
+-        if (j >= 10000) {
+-            if (respectTeams) {
+-                throw SpreadPlayerFCommand.ERROR_FAILED_TO_SPREAD_TEAMS.create(piles.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d5));
+-            } else {
+-                throw SpreadPlayerFCommand.ERROR_FAILED_TO_SPREAD_ENTITIES.create(piles.length, center.x, center.y, String.format(Locale.ROOT, "%.2f", d5));
+-            }
+-        }
+-    }
+-
+-    private static double setPlayerPositions(Collection<? extends Entity> entities, ServerLevel world, SpreadPlayerFCommand.Position[] piles, int maxY, boolean respectTeams) {
+-        double d0 = 0.0D;
+-        int j = 0;
+-        Map<Team, SpreadPlayerFCommand.Position> map = Maps.newHashMap();
+-
+-        double d1;
+-
+-        for (Iterator iterator = entities.iterator(); iterator.hasNext(); d0 += d1) {
+-            Entity entity = (Entity) iterator.next();
+-            SpreadPlayerFCommand.Position commandspreadplayers_a;
+-
+-            if (respectTeams) {
+-                Team scoreboardteambase = entity instanceof Player ? entity.getTeam() : null;
+-
+-                if (!map.containsKey(scoreboardteambase)) {
+-                    map.put(scoreboardteambase, piles[j++]);
+-                }
+-
+-                commandspreadplayers_a = map.get(scoreboardteambase);
+-            } else {
+-                commandspreadplayers_a = piles[j++];
+-            }
+-
+-            entity.teleportToWithTicket((double) Mth.floor(commandspreadplayers_a.x) + 0.5D, commandspreadplayers_a.getSpawnY(world, maxY), (double) Mth.floor(commandspreadplayers_a.z) + 0.5D);
+-            d1 = Double.MAX_VALUE;
+-            SpreadPlayerFCommand.Position[] acommandspreadplayers_a1 = piles;
+-            int k = piles.length;
+-
+-            for (int l = 0; l < k; ++l) {
+-                SpreadPlayerFCommand.Position commandspreadplayers_a1 = acommandspreadplayers_a1[l];
+-
+-                if (commandspreadplayers_a != commandspreadplayers_a1) {
+-                    double d2 = commandspreadplayers_a.dist(commandspreadplayers_a1);
+-
+-                    d1 = Math.min(d2, d1);
+-                }
+-            }
+-        }
+-
+-        if (entities.size() < 2) {
+-            return 0.0D;
+-        } else {
+-            d0 /= entities.size();
+-            return d0;
+-        }
+-    }
+-
+-    private static SpreadPlayerFCommand.Position[] createInitialPositions(Random random, int count, double minX, double minZ, double maxX, double maxZ) {
+-        SpreadPlayerFCommand.Position[] acommandspreadplayers_a = new SpreadPlayerFCommand.Position[count];
+-
+-        for (int j = 0; j < acommandspreadplayers_a.length; ++j) {
+-            SpreadPlayerFCommand.Position commandspreadplayers_a = new SpreadPlayerFCommand.Position();
+-
+-            commandspreadplayers_a.randomize(random, minX, minZ, maxX, maxZ);
+-            acommandspreadplayers_a[j] = commandspreadplayers_a;
+-        }
+-
+-        return acommandspreadplayers_a;
+-    }
+-
+-    private static class Position {
+-
+-        double x;
+-        double z;
+-
+-        Position() {
+-        }
+-
+-        // CraftBukkit start - add a version of getBlockState which force loads chunks
+-        private static BlockState getBlockState(BlockGetter iblockaccess, BlockPos position) {
+-            ((ServerLevel) iblockaccess).getChunkSource().getChunk(position.getX() >> 4, position.getZ() >> 4, true);
+-            return iblockaccess.getBlockState(position);
+-        }
+-
+-        double dist(SpreadPlayerFCommand.Position other) {
+-            double d0 = this.x - other.x;
+-            double d1 = this.z - other.z;
+-
+-            return Math.sqrt(d0 * d0 + d1 * d1);
+-        }
+-
+-        void normalize() {
+-            double d0 = this.getLength();
+-
+-            this.x /= d0;
+-            this.z /= d0;
+-        }
+-
+-        double getLength() {
+-            return Math.sqrt(this.x * this.x + this.z * this.z);
+-        }
+-
+-        public void moveAway(SpreadPlayerFCommand.Position other) {
+-            this.x -= other.x;
+-            this.z -= other.z;
+-        }
+-
+-        public boolean clamp(double minX, double minZ, double maxX, double maxZ) {
+-            boolean flag = false;
+-
+-            if (this.x < minX) {
+-                this.x = minX;
+-                flag = true;
+-            } else if (this.x > maxX) {
+-                this.x = maxX;
+-                flag = true;
+-            }
+-
+-            if (this.z < minZ) {
+-                this.z = minZ;
+-                flag = true;
+-            } else if (this.z > maxZ) {
+-                this.z = maxZ;
+-                flag = true;
+-            }
+-
+-            return flag;
+-        }
+-
+-        public int getSpawnY(BlockGetter blockView, int maxY) {
+-            BlockPos.MutableBlockPos blockposition_mutableblockposition = new BlockPos.MutableBlockPos(this.x, maxY + 1, this.z);
+-            boolean flag = blockView.getBlockState(blockposition_mutableblockposition).isAir();
+-
+-            blockposition_mutableblockposition.move(Direction.DOWN);
+-
+-            boolean flag1;
+-
+-            for (boolean flag2 = blockView.getBlockState(blockposition_mutableblockposition).isAir(); blockposition_mutableblockposition.getY() > blockView.getMinBuildHeight(); flag2 = flag1) {
+-                blockposition_mutableblockposition.move(Direction.DOWN);
+-                flag1 = Position.getBlockState(blockView, blockposition_mutableblockposition).isAir(); // CraftBukkit
+-                if (!flag1 && flag2 && flag) {
+-                    return blockposition_mutableblockposition.getY() + 1;
+-                }
+-
+-                flag = flag2;
+-            }
+-
+-            return maxY + 1;
+-        }
+-
+-        public boolean isSafe(BlockGetter world, int maxY) {
+-            BlockPos blockposition = new BlockPos(this.x, this.getSpawnY(world, maxY) - 1, this.z);
+-            BlockState iblockdata = Position.getBlockState(world, blockposition); // CraftBukkit
+-            Material material = iblockdata.getMaterial();
+-
+-            return blockposition.getY() < maxY && !material.isLiquid() && material != Material.FIRE;
+-        }
+-
+-        public void randomize(Random random, double minX, double minZ, double maxX, double maxZ) {
+-            this.x = Mth.nextDouble(random, minX, maxX);
+-            this.z = Mth.nextDouble(random, minZ, maxZ);
+-        }
+-        // CraftBukkit end
+-    }
+-}
+diff --git a/src/main/java/org/sugarcanemc/sugarcane/feature/ItemMergeBehavior.java b/src/main/java/org/sugarcanemc/sugarcane/feature/ItemMergeBehavior.java
+index adf6fd5c2ab1d0969ae9db255f5fcef19a772f52..b399ec12bc9d97122e83337ccfad34e8881eddfe 100644
+--- a/src/main/java/org/sugarcanemc/sugarcane/feature/ItemMergeBehavior.java
++++ b/src/main/java/org/sugarcanemc/sugarcane/feature/ItemMergeBehavior.java
+@@ -33,10 +33,10 @@ public class ItemMergeBehavior {
+     public static boolean IsItemEntityMergable(ItemEntity item, ItemStack itemstack) {
+         //vanilla
+         if (SugarcaneConfig.ItemMergeBehavior == -1)
+-            return item.isAlive() && item.pickupDelay != 32767 && item.age != -32768 && item.age < item.getDespawnRate() && itemstack.getCount() < itemstack.getMaxStackSize();
++            return item.isAlive() && item.pickupDelay != 32767 && item.age != -32768 && item.age < item.despawnRate && itemstack.getCount() < itemstack.getMaxStackSize();
+             // Sugarcane - merge items infinitely
+         else if (SugarcaneConfig.ItemMergeBehavior == 0)
+-            return item.isAlive() && item.pickupDelay != 32767 && item.age != -32768 && item.age < item.getDespawnRate();
++            return item.isAlive() && item.pickupDelay != 32767 && item.age != -32768 && item.age < item.despawnRate;
+             // Sugarcane - limit to 1 item per stack
+         else return false; // Sugarcane - handled during tick
+     }

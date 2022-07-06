@@ -1,18 +1,20 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: TheArcaneBrony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 23:02:15 +0200
+From: The Arcane Brony <myrainbowdash949@gmail.com>
+Date: Sun, 26 Jun 2022 19:03:14 +0200
 Subject: [PATCH] TileEntity HashedList
 
+fixup! TileEntity HashedList
 
 diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
-index 64cbb68924f80f7d44aba99f1d515c347515a68c..8647a62fd902372d2033c62217c4bd744c1178cf 100644
+index 6b6ab535954ad2340f07f39d693b60f03b37cb83..0a6019ebd5fa5b59888f99dd1c4b8dcaaa9b5bf0 100644
 --- a/src/main/java/net/minecraft/world/level/Level.java
 +++ b/src/main/java/net/minecraft/world/level/Level.java
-@@ -115,8 +115,9 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+@@ -117,9 +117,10 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
      public static final int TICKS_PER_DAY = 24000;
      public static final int MAX_ENTITY_SPAWN_Y = 20000000;
      public static final int MIN_ENTITY_SPAWN_Y = -20000000;
 -    protected final List<TickingBlockEntity> blockEntityTickers = Lists.newArrayList(); public final int getTotalTileEntityTickers() { return this.blockEntityTickers.size(); } // Paper
+     protected final NeighborUpdater neighborUpdater;
 -    private final List<TickingBlockEntity> pendingBlockEntityTickers = Lists.newArrayList();
 +    public final List<TickingBlockEntity> blockEntityTickers = org.sugarcanemc.sugarcane.lithiumclasses.HashedList.wrapper(Lists.newArrayList());
 +    public final int getTotalTileEntityTickers() { return this.blockEntityTickers.size(); } // Paper // Sugarcane

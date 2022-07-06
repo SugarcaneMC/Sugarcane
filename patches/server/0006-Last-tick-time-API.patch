@@ -5,10 +5,10 @@ Subject: [PATCH] Last tick time API
 
 
 diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
-index 8e249b7eabcf23965cb1bf79e8f374dfb501ab80..14940973308dd43dd7f5c26ac7ed43a39ffaa8d3 100644
+index b2331edc683c56e4d0da35b9799473896daf82ea..59c4dffe2adcd0f7112f0c46fc7d04416b2b6d24 100644
 --- a/src/main/java/net/minecraft/server/MinecraftServer.java
 +++ b/src/main/java/net/minecraft/server/MinecraftServer.java
-@@ -1173,6 +1173,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1131,6 +1131,8 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
      // Paper End
      // Spigot End
  
@@ -17,21 +17,21 @@ index 8e249b7eabcf23965cb1bf79e8f374dfb501ab80..14940973308dd43dd7f5c26ac7ed43a3
      protected void runServer() {
          try {
              long serverStartTime = Util.getNanos(); // Paper
-@@ -1243,7 +1245,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
-                     this.nextTickTime += 50L;
-                     this.startMetricsRecordingTick();
-                     this.profiler.push("tick");
+@@ -1205,7 +1207,9 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 this.nextTickTime += 50L;
+                 this.startMetricsRecordingTick();
+                 this.profiler.push("tick");
 +                    long tickStart = System.nanoTime(); // Sugarcane
-                     this.tickServer(this::haveTime);
+                 this.tickServer(this::haveTime);
 +                    lastTickTime = java.time.Duration.ofNanos(System.nanoTime() - tickStart); // Sugarcane
-                     this.profiler.popPush("nextTickWait");
-                     this.mayHaveDelayedTasks = true;
+                 this.profiler.popPush("nextTickWait");
+                 this.mayHaveDelayedTasks = true;
                      // Purpur start - tps catchup
 diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index 4fbca0b90420e10ac09fdd38e2ac2b55836f3222..b986f40baeeddd428aabb7d564328427b2f754c2 100644
+index cf06dc26cdeb2a355b23f58916e5893ab7f4ad17..501a4caa1cd72c4ca92e385b580169a5a46a53bc 100644
 --- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -2901,6 +2901,8 @@ public final class CraftServer implements Server {
+@@ -2973,6 +2973,8 @@ public final class CraftServer implements Server {
  
      // Paper end
  
