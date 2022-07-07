@@ -27,7 +27,7 @@ index c46e8b32e419e58d6562adc6711d24f8ce24a18d..122d3202f35891f5f7cae0418d7096bc
  
  val craftbukkitPackageVersion = "1_19_R1" // Paper
 diff --git a/src/main/java/net/minecraft/world/item/BlockItem.java b/src/main/java/net/minecraft/world/item/BlockItem.java
-index fa12a9b6daa82dd032a86f78613a3c3cb32e9660..5b3b87d0c593664d0d4a82a1f6227092f9f88593 100644
+index fa12a9b6daa82dd032a86f78613a3c3cb32e9660..ad39cd03ff68116faddc6486219bbee55f01e523 100644
 --- a/src/main/java/net/minecraft/world/item/BlockItem.java
 +++ b/src/main/java/net/minecraft/world/item/BlockItem.java
 @@ -35,6 +35,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
@@ -43,7 +43,7 @@ index fa12a9b6daa82dd032a86f78613a3c3cb32e9660..5b3b87d0c593664d0d4a82a1f6227092
                              throw e; // Rethrow exception if not placed by a player
                          }
                          // Paper end
-+                        if(SugarcaneConfig.DoBlockLogging) BlockHistoryDatabase.getNewProvider().SetBlockHistoryFor(world.getWorld().getName(), context.getClickedPos().getX(), context.getClickedPos().getY(), context.getClickedPos().getZ(), entityhuman.getUUID().toString(), oldBlockstate.getBlock().toString(), iblockdata.getBlock().toString());
++                        if(SugarcaneConfig.DoBlockLogging) BlockHistoryDatabase.getNewProvider().SetBlockHistoryFor(world, blockposition, entityhuman.getUUID(), iblockdata, iblockdata1);
                          iblockdata1.getBlock().setPlacedBy(world, blockposition, iblockdata1, entityhuman, itemstack);
                          // CraftBukkit start
                          if (blockstate != null) {
@@ -61,25 +61,26 @@ index c45d394ed568122ad21a955c335b2744844a00de..95f4440b29ae5f21a4afc7b229cfd715
  
  public class Block extends BlockBehaviour implements ItemLike {
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
-index 5c1a126d4f0a6cf4ec7848ed95ffc576b1ae9ba6..392b76ed49a6f7a1d70899d5ee5eacb1684ea4f1 100644
+index 5c1a126d4f0a6cf4ec7848ed95ffc576b1ae9ba6..2079c97596e3dc96b80e7ff87b96a7b0714c0377 100644
 --- a/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
 +++ b/src/main/java/org/sugarcanemc/sugarcane/command/SugarcaneCommandsManager.java
-@@ -7,6 +7,7 @@ import com.mojang.brigadier.CommandDispatcher;
+@@ -7,6 +7,8 @@ import com.mojang.brigadier.CommandDispatcher;
  import net.minecraft.server.commands.SpreadPlayersCommand;
  import org.bukkit.command.Command;
  import net.minecraft.server.MinecraftServer;
++import org.sugarcanemc.sugarcane.command.mcgalaxy.AboutCommand;
 +import org.sugarcanemc.sugarcane.command.mcgalaxy.XbanCommand;
  
  public class SugarcaneCommandsManager {
      private static Map<String, Command> commands;
-@@ -15,6 +16,11 @@ public class SugarcaneCommandsManager {
+@@ -15,6 +17,11 @@ public class SugarcaneCommandsManager {
          commands = new HashMap<>();
          commands.put("nspt", new NSPTCommand("nspt"));
          commands.put("stats", new StatsCommand("stats"));
 +
 +        //mcgalaxy
 +        commands.put("xban", new XbanCommand("xban"));
-+        commands.put("about", new XbanCommand("about"));
++        commands.put("about", new AboutCommand("about"));
 +
          if (commands != null)
              for (var command : commands.entrySet()) {
@@ -249,10 +250,10 @@ index 0000000000000000000000000000000000000000..dd2cfcc16a1924467a4d247592560e4a
 \ No newline at end of file
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/config/PostgresqlDbConfig.java b/src/main/java/org/sugarcanemc/sugarcane/config/PostgresqlDbConfig.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..ec1f52b6ed109eb51a678fdb98a0e82ff6191668
+index 0000000000000000000000000000000000000000..54ecfd536fb8b41808c11131073bc0be42621093
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/config/PostgresqlDbConfig.java
-@@ -0,0 +1,44 @@
+@@ -0,0 +1,47 @@
 +package org.sugarcanemc.sugarcane.config;
 +
 +import org.sugarcanemc.sugarcane.util.annotations.Key;
@@ -261,13 +262,13 @@ index 0000000000000000000000000000000000000000..ec1f52b6ed109eb51a678fdb98a0e82f
 +    private static final DynamicConfig Config = new DynamicConfig("config/postgresql.yml");
 +    @Key(key = "postgres.username")
 +    public static String Username = "postgres";
-+    @Key(key = "postgres.username")
++    @Key(key = "postgres.password")
 +    public static String Password = "postgres";
-+    @Key(key = "postgres.username")
-+    public static String Host = "";
-+    @Key(key = "postgres.username")
-+    public static String Database = "";
-+    @Key(key = "postgres.username")
++    @Key(key = "postgres.host")
++    public static String Host = "localhost";
++    @Key(key = "postgres.database")
++    public static String Database = "pgtest";
++    @Key(key = "postgres.port")
 +    public static int Port = 5432;
 +
 +    static {
@@ -280,12 +281,15 @@ index 0000000000000000000000000000000000000000..ec1f52b6ed109eb51a678fdb98a0e82f
 +                        System.out.println("Found property: " + fields[i].getName());
 +                        Key annot = fields[i].getAnnotation(Key.class);
 +                        if (fields[i].getType().equals(String.class)) {
++                            System.out.printf("%s: %s -> %s\n",annot.key(), (String) fields[i].get(null), Config.getString(annot.key(), (String) fields[i].get(null)));
 +                            fields[i].set(null, Config.getString(annot.key(), (String) fields[i].get(null)));
 +                        } else if (fields[i].getType().equals(int.class)) {
++                            System.out.printf("%s: %s -> %s\n",annot.key(), fields[i].get(null), Config.getInt(annot.key(), fields[i].getInt(null)));
 +                            fields[i].set(null, Config.getInt(annot.key(), fields[i].getInt(null)));
 +                        } else {
 +                            System.out.printf("Property %s doesn't have a known type!\n");
 +                        }
++                        Config.set(annot.key(), fields[i].get(null));
 +                    } else {
 +                        System.out.println("Found property with missing Key annotation: " + fields[i].getName());
 +                    }
@@ -373,10 +377,10 @@ index 0000000000000000000000000000000000000000..99cdeda02640a88f554091bd5e1107ee
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/BlockHistoryDbMigrationProvider.java b/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/BlockHistoryDbMigrationProvider.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e089381a14112cc378f941e5223ca42ada7cd589
+index 0000000000000000000000000000000000000000..99e2a02baba00b1ab5a32d9f12fe48dd8f391367
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/BlockHistoryDbMigrationProvider.java
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,25 @@
 +package org.sugarcanemc.sugarcane.database.blockhistory.providers;
 +
 +import org.sugarcanemc.sugarcane.database.blockhistory.providers.postgres.BlockHistoryPostgresProvider;
@@ -386,7 +390,7 @@ index 0000000000000000000000000000000000000000..e089381a14112cc378f941e5223ca42a
 +
 +public class BlockHistoryDbMigrationProvider {
 +    public static void ApplyMigrations(BlockHistoryDbProvider provider){
-+
++        if(provider instanceof BlockHistoryPostgresProvider) ApplyPgMigrations((BlockHistoryPostgresProvider) provider);
 +    }
 +
 +    private static void ApplyPgMigrations(BlockHistoryPostgresProvider provider) {
@@ -395,6 +399,7 @@ index 0000000000000000000000000000000000000000..e089381a14112cc378f941e5223ca42a
 +            version = provider.conn.prepareStatement("select \"version\" from _db_version where db_part = 'block_history'").executeQuery().getInt("version");
 +        } catch (SQLException e) {
 +            e.printStackTrace();
++            System.out.println("Couldn't get db version for block history, you may see errors!");
 +        }
 +        System.out.printf("Applying postgres migrations up from version %s\n", version);
 +        if(version < 1) InitialMigration.Migrate(provider);
@@ -403,28 +408,36 @@ index 0000000000000000000000000000000000000000..e089381a14112cc378f941e5223ca42a
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/BlockHistoryDbProvider.java b/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/BlockHistoryDbProvider.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..6c11befab456718d1bf0b8ea327288533b70befc
+index 0000000000000000000000000000000000000000..bbf9d27578b42b2287ec7cf0091c790480d449a2
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/BlockHistoryDbProvider.java
-@@ -0,0 +1,10 @@
+@@ -0,0 +1,15 @@
 +package org.sugarcanemc.sugarcane.database.blockhistory.providers;
 +
++import net.minecraft.core.BlockPos;
++import net.minecraft.world.level.Level;
++import net.minecraft.world.level.block.state.BlockState;
 +import org.sugarcanemc.sugarcane.database.blockhistory.classes.BlockHistoryEntry;
 +
 +import java.util.List;
++import java.util.UUID;
 +
 +public abstract class BlockHistoryDbProvider {
 +    public abstract List<BlockHistoryEntry> GetBlockHistoryAt(String world, long x, long y, long z);
 +    public abstract void SetBlockHistoryFor(String world, long x, long y, long z, String uuid, String from, String to);
++    public abstract void SetBlockHistoryFor(Level world, BlockPos blockposition, UUID uuid, BlockState from, BlockState to);
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/postgres/BlockHistoryPostgresProvider.java b/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/postgres/BlockHistoryPostgresProvider.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..925e72cae807e235ed9fb7d2e8521eaf96a73627
+index 0000000000000000000000000000000000000000..4e2324567aaf9250db05a3526291ba66a0d06810
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/postgres/BlockHistoryPostgresProvider.java
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,94 @@
 +package org.sugarcanemc.sugarcane.database.blockhistory.providers.postgres;
 +
++import net.minecraft.core.BlockPos;
++import net.minecraft.world.level.Level;
++import net.minecraft.world.level.block.state.BlockState;
 +import org.sugarcanemc.sugarcane.config.DynamicConfig;
 +import org.sugarcanemc.sugarcane.config.PostgresqlDbConfig;
 +import org.sugarcanemc.sugarcane.database.blockhistory.classes.BlockHistoryEntry;
@@ -434,10 +447,12 @@ index 0000000000000000000000000000000000000000..925e72cae807e235ed9fb7d2e8521eaf
 +import java.util.ArrayList;
 +import java.util.List;
 +import java.util.Properties;
++import java.util.UUID;
 +
 +public class BlockHistoryPostgresProvider extends BlockHistoryDbProvider {
 +
 +    public Connection conn = null;
++    
 +    private static boolean hasTriedMigrations = false;
 +    public BlockHistoryPostgresProvider(){
 +        String url = String.format("jdbc:postgresql://%s:%s/%s", PostgresqlDbConfig.Host, PostgresqlDbConfig.Port, PostgresqlDbConfig.Database);
@@ -461,7 +476,7 @@ index 0000000000000000000000000000000000000000..925e72cae807e235ed9fb7d2e8521eaf
 +        ResultSet res;
 +
 +        try {
-+            res = conn.prepareStatement(String.format("select * from blockentries where world = '%s' && x = %s && y = %s && z = %s", world, x, y, z)).executeQuery();
++            res = conn.prepareStatement(String.format("select * from blockhistory where world = '%s' && x = %s && y = %s && z = %s", world, x, y, z)).executeQuery();
 +        } catch (SQLException e) {
 +            e.printStackTrace();
 +            return entries;
@@ -489,22 +504,32 @@ index 0000000000000000000000000000000000000000..925e72cae807e235ed9fb7d2e8521eaf
 +                e.printStackTrace();
 +            }
 +        }
++        try{
++            conn.close();
++        }
++        catch(Exception e){}
 +        return entries;
 +    }
 +
 +    @Override
 +    public void SetBlockHistoryFor(String world, long x, long y, long z, String uuid, String from, String to) {
 +        try {
-+            conn.prepareStatement(String.format("insert into blockentries (world_name, x, y, z, player_uuid, from_block, to_block) values ('%s',%s,%s,%s,'%s','%s','%s')", world, x, y, z, uuid, from, to)).executeQuery();
++            conn.prepareStatement(String.format("insert into blockhistory (world_name, x, y, z, player_uuid, from_block, to_block) values ('%s',%s,%s,%s,'%s','%s','%s')", world, x, y, z, uuid, from, to)).executeUpdate();
++            conn.close();
 +        } catch (SQLException e) {
 +            e.printStackTrace();
 +            System.out.println("Couldn't save block history, see error above!");
 +        }
 +    }
++
++    @Override
++    public void SetBlockHistoryFor(Level world, BlockPos blockposition, UUID uuid, BlockState from, BlockState to) {
++        SetBlockHistoryFor(world.getMinecraftWorld().serverLevelData.getLevelName(), blockposition.getX(), blockposition.getY(), blockposition.getZ(), uuid.toString(), from.toString(), to.toString());
++    }
 +}
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/postgres/pgmigrations/InitialMigration.java b/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/postgres/pgmigrations/InitialMigration.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..92ca14bf404b3426a26055aa05f2f4e5b0d2ef34
+index 0000000000000000000000000000000000000000..18bc2b08305c5add86efb048f771c13e30489c4b
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/database/blockhistory/providers/postgres/pgmigrations/InitialMigration.java
 @@ -0,0 +1,38 @@
@@ -526,7 +551,7 @@ index 0000000000000000000000000000000000000000..92ca14bf404b3426a26055aa05f2f4e5
 +                    "\tfrom_block varchar NULL,\n" +
 +                    "\tto_block varchar NULL,\n" +
 +                    "\tplayer_uuid varchar NULL\n" +
-+                    ");").executeQuery();
++                    ");").executeUpdate();
 +        } catch (SQLException e) {
 +            e.printStackTrace();
 +        }
@@ -534,12 +559,12 @@ index 0000000000000000000000000000000000000000..92ca14bf404b3426a26055aa05f2f4e5
 +            provider.conn.prepareStatement("CREATE TABLE public._db_version (\n" +
 +                    "\tdb_part varchar NOT NULL,\n" +
 +                    "\t\"version\" int NOT NULL\n" +
-+                    ");").executeQuery();
++                    ");").executeUpdate();
 +        } catch (SQLException e) {
 +            e.printStackTrace();
 +        }
 +        try {
-+            provider.conn.prepareStatement("insert into _db_version (db_part, \"version\") values ('block_history',1)").executeQuery();
++            provider.conn.prepareStatement("insert into _db_version (db_part, \"version\") values ('block_history',1)").executeUpdate();
 +        } catch (SQLException e) {
 +            e.printStackTrace();
 +        }
