@@ -47,7 +47,7 @@ Then, add the Sugarcane-API dependency:
 
 ```groovy
 dependencies {
-    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.18.1-R0.1-SNAPSHOT"
+    compileOnly "org.sugarcanemc.sugarcane:sugarcane-api:1.19-R0.1-SNAPSHOT"
 }
  ```
  
@@ -65,7 +65,7 @@ Then, add the Sugarcane-API dependency:
 
 ```kotlin
 dependencies {
-    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.18.1-R0.1-SNAPSHOT")
+    compileOnly("org.sugarcanemc.sugarcane:sugarcane-api:1.19-R0.1-SNAPSHOT")
 }
 ```
 
@@ -92,7 +92,7 @@ And then add the Sugarcane-API dependency:
 <dependency>
     <groupId>org.sugarcanemc.sugarcane</groupId>
     <artifactId>sugarcane-api</artifactId>
-    <version>1.18.1-R0.1-SNAPSHOT</version>
+    <version>1.19-R0.1-SNAPSHOT</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -103,7 +103,7 @@ And then add the Sugarcane-API dependency:
 ## We also have a [Discord Server](https://sugarcanemc.org/discord) for support
 
 # Try it for yourself
-* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/)** - Download latest development builds for Minecraft 1.18.1 (**Not for production**).
+* **[Jenkins](https://ci.sugarcanemc.org/job/Sugarcane/)** - Download latest development builds for Minecraft 1.19 (**Not for production**).
 
 # Contributing
 
