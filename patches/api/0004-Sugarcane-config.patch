@@ -1,22 +1,23 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: TheArcaneBrony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 22:28:51 +0200
-Subject: [PATCH] Sugarcane config
+From: Steven Tracey <steven@nevets.tech>
+Date: Wed, 9 Nov 2022 20:42:17 -0500
+Subject: [PATCH] Sugarcane-config
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index d73b7d72d00fa0edd6542226348af14c5203cf8d..1c8a9a4ea4da15457eb85907464a25a28833fbc6 100644
+index e43fef0152468944d8a33036344a43e95fe58476..5a662426c3487743544b29e9ca7f2f26e8c3e935 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1943,6 +1943,11 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
-             throw new UnsupportedOperationException("Not supported yet.");
+@@ -1969,6 +1969,12 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
+         // Paper end
  
++        // Sugarcane start
 +        @NotNull
 +        public org.bukkit.configuration.file.YamlConfiguration getSugarcaneConfig() {
 +            throw new UnsupportedOperationException("Not supported yet.");
 +        }
 +
-         @NotNull
-         public java.util.Properties getServerProperties() {
-             throw new UnsupportedOperationException("Not supported yet.");
+         /**
+          * Sends the component to the player
+          *

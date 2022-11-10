@@ -1,18 +1,29 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: TheArcaneBrony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 21:50:41 +0200
+From: Steven Tracey <steven@nevets.tech>
+Date: Wed, 9 Nov 2022 20:39:29 -0500
 Subject: [PATCH] Rebrand
 
 
 diff --git a/src/main/java/org/bukkit/command/defaults/VersionCommand.java b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
-index eac5830986cd0638950bbb1e6f10a30e246e09a7..af0a545c848d13c3caa4fe3521e472277de50d34 100644
+index e40f017f87d6b6b4770501b106c76dc69ec69abb..dd29ab0cf53861a64a6a86dade9a91e28af32d2e 100644
 --- a/src/main/java/org/bukkit/command/defaults/VersionCommand.java
 +++ b/src/main/java/org/bukkit/command/defaults/VersionCommand.java
-@@ -195,6 +195,7 @@ public class VersionCommand extends BukkitCommand {
+@@ -195,6 +195,9 @@ public class VersionCommand extends BukkitCommand {
      }
  
      private void obtainVersion() {
-+        setVersionMessage(getVersionFetcher().getVersionMessage(Bukkit.getVersion())); if(true) return; // Sugarcane
++        // Sugarcane Start
++        setVersionMessage(getVersionFetcher().getVersionMessage(Bukkit.getVersion()));
++        /*
          String version = Bukkit.getVersion();
          // Paper start
          if (version.startsWith("null")) { // running from ide?
+@@ -202,6 +205,8 @@ public class VersionCommand extends BukkitCommand {
+             return;
+         }
+         setVersionMessage(getVersionFetcher().getVersionMessage(version));
++        */
++        //Sugarcane End
+         /*
+         if (version == null) version = "Custom";
+         String[] parts = version.substring(0, version.indexOf(' ')).split("-");

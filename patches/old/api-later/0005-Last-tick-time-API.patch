@@ -1,14 +1,14 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: TheArcaneBrony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 22:36:17 +0200
+From: Steven Tracey <steven@nevets.tech>
+Date: Wed, 9 Nov 2022 20:54:28 -0500
 Subject: [PATCH] Last tick time API
 
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index 9b9af189b3865055570ba533b97c92c105cc5a37..11785cf5f0a633e4e5d53470d58818f11bcaec32 100644
+index 232c08c9a588d957d90f198ce479e57615c6e650..db8ad13693693c28f4b0decae971e676f053109a 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -2397,6 +2397,16 @@ public final class Bukkit {
+@@ -2430,6 +2430,17 @@ public final class Bukkit {
          return server.isStopping();
      }
  
@@ -17,6 +17,7 @@ index 9b9af189b3865055570ba533b97c92c105cc5a37..11785cf5f0a633e4e5d53470d58818f1
 +    public static long getLastTickMs() {
 +        return server.getLastTickMs();
 +    }
++
 +    @NotNull public static java.time.Duration getLastTickTime() {
 +        return server.getLastTickTime();
 +    }
@@ -26,10 +27,10 @@ index 9b9af189b3865055570ba533b97c92c105cc5a37..11785cf5f0a633e4e5d53470d58818f1
       * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager
       *
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 1c8a9a4ea4da15457eb85907464a25a28833fbc6..69ff64f8e59336f9761a56951c1483938b968f74 100644
+index 5a662426c3487743544b29e9ca7f2f26e8c3e935..6d87288d8cdd4c326b5060de09c2c86ff58e8465 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2101,6 +2101,27 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2122,6 +2122,26 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       */
      boolean isStopping();
  
@@ -52,7 +53,6 @@ index 1c8a9a4ea4da15457eb85907464a25a28833fbc6..69ff64f8e59336f9761a56951c148393
 +     */
 +    @NotNull
 +    java.time.Duration getLastTickTime();
-+    // Sugarcane end
 +
      /**
       * Returns the {@link com.destroystokyo.paper.entity.ai.MobGoals} manager

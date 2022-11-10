@@ -1,23 +1,24 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: The Arcane Brony <myrainbowdash949@gmail.com>
-Date: Wed, 6 Apr 2022 19:43:10 +0200
+From: Steven Tracey <steven@nevets.tech>
+Date: Wed, 9 Nov 2022 18:10:30 -0500
 Subject: [PATCH] Sugarcane classes
 
 
 diff --git a/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java b/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..e032dd27769d4e40c8e3353cab1c33cb5090d27a
+index 0000000000000000000000000000000000000000..33737bf0fe7b0827dcaac9a3ddbb37b8a97f127f
 --- /dev/null
 +++ b/src/main/java/org/sugarcanemc/sugarcane/api/events/GameProfileLookupEvent.java
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,52 @@
 +package org.sugarcanemc.sugarcane.api.events;
 +
 +import com.mojang.authlib.GameProfile;
-+import java.util.UUID;
 +import org.bukkit.event.Event;
 +import org.bukkit.event.HandlerList;
 +import org.jetbrains.annotations.NotNull;
 +import org.jetbrains.annotations.Nullable;
++
++import java.util.UUID;
 +
 +public class GameProfileLookupEvent extends Event {
 +    private static final HandlerList handlers = new HandlerList();
@@ -36,7 +37,7 @@ index 0000000000000000000000000000000000000000..e032dd27769d4e40c8e3353cab1c33cb
 +        return gameProfile;
 +    }
 +
-+    public void setGameProfile(@Nullable GameProfile gameProfile) {
++    public void setGameProfile(GameProfile gameProfile) {
 +        this.gameProfile = gameProfile;
 +    }
 +
@@ -61,4 +62,3 @@ index 0000000000000000000000000000000000000000..e032dd27769d4e40c8e3353cab1c33cb
 +        return handlers;
 +    }
 +}
-\ No newline at end of file
